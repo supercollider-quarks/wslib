@@ -412,9 +412,19 @@ SVGGroup : SVGObject {
 
 AvailableFonts {
 	classvar <fonts;
-	*initClass { fonts = Font.availableFonts.sort.collect( _.asSymbol ); 
+	*initClass {
+		StartUp.add( {
+			this.getFonts;
+		});
 		// does this work in SwingOSC based sytems?
+		// nescivi: the command asynchronous in SwingOSC, and server may not be started yet.
+		// Putting the command in the startup sequence ensures that GUI has been loaded
+		// On SwingOSC though, the command may have to be called twice, hence the move into a separate function
 		}
+
+	*getFonts{
+		fonts = GUI.font.availableFonts.sort.collect( _.asSymbol );
+	}
 	
 	*includesName { |fontName| ^fonts.includes( fontName.asSymbol ); }
 	*includes { |font| 
