@@ -2,7 +2,7 @@
 
 // a button with ++ functionality and rounded border
 
-// SCv3.2 revision (todo)
+// SCv3.2 revision
 
 RoundButton : SCUserView { 
 	
@@ -14,6 +14,8 @@ RoundButton : SCUserView {
 	var <radius, <>border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
+	var <focusColor;
+	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
 	*viewClass { ^SCUserView }
@@ -21,6 +23,7 @@ RoundButton : SCUserView {
 	init { |parent, bounds|
 		relativeOrigin = false;
 		super.init( parent, bounds );
+		super.focusColor = Color.clear;
 		}
 		
 	mouseDown {
@@ -28,7 +31,7 @@ RoundButton : SCUserView {
 		mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		pressed = true; this.refresh;
 		}
 	
-	mouseUp{arg x, y, modifiers;
+	mouseUp {arg x, y, modifiers;
 		mouseUpAction.value(this, x, y, modifiers);
 		pressed = false; 
 		this.valueAction = value + 1;
@@ -37,6 +40,8 @@ RoundButton : SCUserView {
 	
 	radius_ { |newRadius| radius = newRadius; this.refresh; }
 	
+	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
+	
 	draw {
 		var rect, localRadius;
 		var shadeSide, lightSide;
@@ -44,10 +49,17 @@ RoundButton : SCUserView {
 		
 		if ( relativeOrigin ) // thanks JostM !
 			{ rect = this.bounds.moveTo(0,0) }
-			{ rect = this.bounds; };
+			{ rect = this.absoluteBounds; };
 		
 		radius = radius ?? { rect.width.min( rect.height ) / 2 };
-
+		
+		if( this.hasFocus ) // rounded focus rect
+			{
+			GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+			GUI.pen.width = 2;
+			GUIPen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
+			GUI.pen.stroke;
+			};
 
 		if( inverse )
 			{ lightSide = Color.black.alpha_(0.5);
@@ -70,36 +82,35 @@ RoundButton : SCUserView {
 					   GUI.pen.width = border;
 					   GUIPen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
 					   	(border/2)  ).stroke; 
-					};
-										
+					};							
 			};
 			
-			case { states[value][0].isString }
-				{
-					states[value][0].drawCenteredIn( 
-						rect  + ( if( pressed ) 
-							{ Rect( moveWhenPressed, moveWhenPressed, 0, 0 ) } 
-							{ Rect(0,0,0,0) } ),
-						font,
-						states[value][1] ? Color.black)
-					
-				} 
-				{ states[value][0].class == Symbol }
-				{
-				GUI.pen.use {
-					GUI.pen.color_(states[value][1] ? Color.black);
-					if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
-					DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
-					};
-				 }
-				{ true }
-				{
-				GUI.pen.use {
-					GUI.pen.color_(states[value][1] ? Color.black);
-					if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
-					states[value][0].value( this, rect, radius ); // can be a Pen function
-					};
+		case { states[value][0].isString }
+			{
+				states[value][0].drawCenteredIn( 
+					rect  + ( if( pressed ) 
+						{ Rect( moveWhenPressed, moveWhenPressed, 0, 0 ) } 
+						{ Rect(0,0,0,0) } ),
+					font,
+					states[value][1] ? Color.black)
+				
+			} 
+			{ states[value][0].class == Symbol }
+			{
+			GUI.pen.use {
+				GUI.pen.color_(states[value][1] ? Color.black);
+				if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
+				DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
 				};
+			 }
+			{ true }
+			{
+			GUI.pen.use {
+				GUI.pen.color_(states[value][1] ? Color.black);
+				if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
+				states[value][0].value( this, rect, radius ); // can be a Pen function
+				};
+			};
 			};
 		}
 		

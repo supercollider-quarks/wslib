@@ -122,6 +122,55 @@ SMPTE[slot] : RawArray {
 		^SMPTE[ 0, minutes, seconds, 0, 0 ].reCalculate;
 		}
 		
+	format { |formatString|
+		// h, m, s, f, x or H, M, S, F, X
+		
+		// examples:
+		//   "hh:mm:ss:ff.xx"  -> 00:00:00:00.00
+		//   "M'ss\""  -> 0'00"
+		
+		var outString;
+		formatString = formatString ?? 
+			{ 	"hh:mm:ss:"  ++
+				String.fill( (fps - 1).asString.size, $f ) ++
+				"." ++
+				String.fill( (subFps - 1).asString.size, $x ) };
+				
+		outString = formatString.copy;
+	
+		( \h: hours, \m: minutes, \s: seconds, \f: frames, \x: subFrames )
+			.keysValuesDo({ |key, value|
+				var indices, str;
+				indices = formatString.findAll( key.asString );
+				if( indices.notNil && (indices.size > 0) )
+					{
+					str = value.round(1).asInteger.asStringToBase( 10, indices.size );
+					str.do({ |char, i|
+						outString.put( indices[i], char );
+						});
+					};
+			});
+				
+		( \H: hours, \M: minutes, \S: seconds, \F: frames, \X: subFrames )
+			.keysValuesDo({ |key, value|
+				var indices,  str;
+				indices = outString.findAll( key.asString );
+				if( indices.notNil && (indices.size > 0) )
+					{
+					indices.size.do({ |i|
+						var id = indices[i];
+						outString = 
+							outString[..(id-1)] ++
+							value.asString ++
+							outString[(id+1)..];
+						indices = (-1!(i+1)) ++ outString.findAll( key.asString );
+						});
+					};
+			});
+		
+		^outString;
+		
+		}
 	
 	hours_ { |newHours|
 		newHours = newHours ? hours;

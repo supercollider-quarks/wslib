@@ -116,7 +116,7 @@ SimpleMIDIFile  {
 	
 	convertToVLInteger { arg dT;
 		var dTArray;
-		dT = dT.asInteger;
+		dT = dT.max(0).round.asInteger; // changed 03/19/08 & 06/24/08 ws
 		dTArray = [dT & 127];
 		dT = dT >> 7;
 		while ({dT != 0;},

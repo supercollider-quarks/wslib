@@ -7,7 +7,7 @@ PlotPoint {
 	var <labelFont, <flipped = true;
 	
 	*new { |point|
-		point ? Point(1,1);
+		point = point ? Point(1,1);
 		^super.new.init( point );
 		}
 		
