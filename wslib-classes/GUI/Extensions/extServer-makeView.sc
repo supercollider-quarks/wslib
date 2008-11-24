@@ -1,11 +1,13 @@
 
 + Server {
-	makeView { arg w, useRoundButton = true;
+	makeView { arg w, useRoundButton = true, onColor;
 		var active, booter, killer, makeDefault, running, booting, stopped;
 		var recorder, scoper;
 		var countsViews, ctlr;
 		var dumping=false;
 		var infoString, oldOnClose;
+		
+		onColor = onColor ? Color.new255(74, 120, 74);
 		
 		if (window.notNil, { ^window.front });
 		
@@ -17,12 +19,12 @@
 		
 		if(isLocal,{
 			if( useRoundButton )
-				{ booter = RoundButton(w, Rect(0,0, 24, 24)).canFocus_( false );
+				{ booter = RoundButton(w, Rect(0,0, 18, 18)).canFocus_( false );
 				  booter.states = [[ \power, Color.black, Color.clear],
-						   		[ \power, Color.red, Color.clear]];
+						   		[ \power, Color.black, onColor]];
 			 	}
-				{ booter = GUI.button.new( w, Rect(0,0,24,24));
-				 booter.states = [[ "B"],[ "Q" ]]; };
+				{ booter = GUI.button.new( w, Rect(0,0,18,18));
+				 booter.states = [[ "B"],[ "Q", onColor ]]; };
 						
 			booter.action = { arg view; 
 				if(view.value == 1, {
@@ -42,11 +44,11 @@
 			*/	
 		});
 		
-		active = GUI.staticText.new(w, Rect(0,0, 78, 25));
+		active = GUI.staticText.new(w, Rect(0,0, 78, 18));
 		active.string = this.name.asString;
 		active.align = \center;
 		active.font = GUI.font.new("Helvetica-Bold", 12);
-		active.background = Color.black;
+		active.background = Color.white;
 		if(serverRunning,running,stopped);		
 
 		w.view.keyDownAction = { arg ascii, char;
@@ -84,7 +86,7 @@
 		if (isLocal, {
 			
 			running = {
-				active.stringColor_(Color.red);
+				active.stringColor_( onColor );
 				booter.value = 1;
 				//recorder.enabled = true;
 			};
@@ -96,7 +98,7 @@
 
 			};
 			booting = {
-				active.stringColor_(Color.yellow(0.7));
+				active.stringColor_( Color.new255(255, 140, 0) );
 				//booter.setProperty(\value,0);
 			};
 			
@@ -113,11 +115,11 @@
 			};
 		},{	
 			running = {
-				active.background = Color.red;
+				active.background = onColor
 				//recorder.enabled = true;
 			};
 			stopped = {
-				active.background = Color.black;
+				active.background = Color.white;
 				//recorder.setProperty(\value,0);
 				//recorder.enabled = false;
 
@@ -139,9 +141,9 @@
 			
 		//w.view.decorator;
 		
-		infoString = GUI.staticText.new(w, Rect(0,0, 170, 25));
-		infoString.string = "Port: %, CPU: %/%\nSynths/Defs: %/%"
-			.format( addr.port, "?", "?", "?", "?" );
+		infoString = GUI.staticText.new(w, Rect(0,0, 200, 18));
+		infoString.string = "CPU: %/%\tSynths/Defs: %/%"
+			.format( "?", "?", "?", "?" );
 		infoString.font_( GUI.font.new( "Monaco", 9 ) );
 		
 		w.view.decorator.nextLine;
@@ -153,9 +155,8 @@
 			.put(\serverRunning, {	if(serverRunning,running,stopped) })
 			.put(\counts,{
 				infoString.string =
-					"Port: %, CPU: %/%\nSynths/Defs: %/%"
-						.format( addr.port,
-							avgCPU.round(0.1),  peakCPU.round(0.1), 
+					"CPU: %/%\tSynths/Defs: %/%"
+						.format(avgCPU.round(0.1),  peakCPU.round(0.1), 
 							numSynths, numSynthDefs );
 			})
 			.put(\cmdPeriod,{

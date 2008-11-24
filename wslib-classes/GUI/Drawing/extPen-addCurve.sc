@@ -25,7 +25,9 @@
 		Pen.lineTo( end );
 		}
 		
+	/*
 	// workaround for missing curveTo and quadCurveTo
+	// obsolete now (thank you TheLych!
 	*curveTo { |end, c1, c2, start, div=10|	
 		^this.addCurve( start, c1, c2, end, div );
 	  }
@@ -33,6 +35,7 @@
 	*quadCurveTo { |end, cp, start, div=10|	
 		^this.addQuadCurve( start, cp, end, div );
 	  }
+	 */
 	 
 	*drawSpline { |start, c1, c2, end, strokeColor, controlColor, div=10|
 		// draw spline and controls; GUI class compatible

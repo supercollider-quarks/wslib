@@ -10,7 +10,7 @@
 		dstPointer = dstStartAt;
 		while { numSamplesLeft > 0 }
 			{ 	numSamplesThisTime = numSamplesLeft.min( numFrames - srcPointer );
-				this.copy( buf, dstPointer, srcPointer, numSamplesThisTime );
+				this.copyData( buf, dstPointer, srcPointer, numSamplesThisTime );
 				//"copied: %,%,%\n".postf( dstPointer, srcPointer, numSamplesThisTime );
 				dstPointer =  dstPointer + numSamplesThisTime;
 				numSamplesLeft = numSamplesLeft - numSamplesThisTime;

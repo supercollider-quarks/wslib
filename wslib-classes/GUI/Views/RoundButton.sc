@@ -55,10 +55,12 @@ RoundButton : SCUserView {
 		
 		if( this.hasFocus ) // rounded focus rect
 			{
-			GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
-			GUI.pen.width = 2;
-			GUIPen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
-			GUI.pen.stroke;
+			GUI.pen.use({
+				GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+				GUI.pen.width = 2;
+				GUIPen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
+				GUI.pen.stroke;
+				});
 			};
 
 		if( inverse )

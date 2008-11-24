@@ -7,6 +7,7 @@ SmoothSlider : SCUserView {
 	var <orientation = \v;
 	var <>type = 0; // 0: slider only, 1: green bar next to slider
 	var <thumbSize = 0; // compatible with old sliders
+	var <focusColor;
 	
 	*viewClass { ^SCUserView }
 	
@@ -15,6 +16,7 @@ SmoothSlider : SCUserView {
 		if( bounds.width > bounds.height )
 			{ orientation = \h };
 		super.init(parent, bounds);
+		super.focusColor = Color.clear;
 		
 		this.relativeOrigin_( false );
 		
@@ -45,6 +47,8 @@ SmoothSlider : SCUserView {
 			{ ^drawBounds.insetBy( realKnobSize, realKnobSize / 2 ).moveBy( realKnobSize, 0 ) };
 				
 		}
+		
+	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
 		
 	knobColor { ^color[3] }
 	knobColor_ { |newColor| color[3] = newColor; this.refresh; }
@@ -81,13 +85,13 @@ SmoothSlider : SCUserView {
 		var knobPosition, realKnobSize;
 		var drawBounds, radius;
 		
-		Pen.use {
+		GUI.pen.use {
 			drawBounds = this.bounds;
 			if( orientation == \h )
 				{  drawBounds = Rect( drawBounds.top, drawBounds.left, 
 					drawBounds.height, drawBounds.width );
-				   //Pen.translate( drawBounds.height, 0 );
-				    Pen.rotate( 0.5pi,
+				   //GUI.pen.translate( drawBounds.height, 0 );
+				    GUI.pen.rotate( 0.5pi,
 				   	(this.bounds.left + this.bounds.right) / 2, 
 				   	this.bounds.left  + (this.bounds.width / 2)  );
 				  
@@ -102,11 +106,21 @@ SmoothSlider : SCUserView {
 			radius = (knobSize * drawBounds.width) / 2;
 			knobPosition = drawBounds.top + ( realKnobSize / 2 )
 						+ ( (drawBounds.height - realKnobSize) * (1- value).max(0).min(1));
+			
+			if( this.hasFocus ) // rounded focus rect
+				{
+				GUI.pen.use({
+					GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+					GUI.pen.width = 2;
+					GUIPen.roundedRect( drawBounds.insetBy(-2,-2), radius + 1 );
+					GUI.pen.stroke;
+					});
+				};
 				
 			case { type == 0 } // only slider, different color bottom side
 				{			
 				color[0] !? { color[0].set; // base / background
-					Pen.roundedRect( Rect( 
+					GUIPen.roundedRect( Rect( 
 						drawBounds.left, 
 						drawBounds.top,
 						drawBounds.width,
@@ -118,7 +132,7 @@ SmoothSlider : SCUserView {
 					color[1].set; // hilight
 					if( isCentered )
 					{
-					Pen.roundedRect( Rect.fromPoints( 
+					GUIPen.roundedRect( Rect.fromPoints( 
 							drawBounds.left@
 								((knobPosition - (realKnobSize / 2))
 									.min( drawBounds.center.y ) ),
@@ -129,7 +143,7 @@ SmoothSlider : SCUserView {
 						, radius ).fill;
 					}
 					{
-					Pen.roundedRect( Rect.fromPoints( 
+					GUIPen.roundedRect( Rect.fromPoints( 
 							drawBounds.left@(knobPosition - (realKnobSize / 2)),
 							drawBounds.right@drawBounds.bottom ), radius ).fill;
 					};
@@ -137,8 +151,8 @@ SmoothSlider : SCUserView {
 		
 				color[3] !? {	 
 					color[3].set; // knob
-					Pen.width = realKnobSize;
-					Pen.roundedRect( Rect.fromPoints(
+					GUI.pen.width = realKnobSize;
+					GUIPen.roundedRect( Rect.fromPoints(
 						Point( drawBounds.left, 
 							( knobPosition - (realKnobSize / 2) ) ),
 						Point( drawBounds.right, knobPosition + (realKnobSize / 2) ) ),
@@ -149,42 +163,42 @@ SmoothSlider : SCUserView {
 			{ type == 1 } // with line next to slider; like Knob
 			{ 			
 				color[0].set;
-				Pen.roundedRect( Rect( 
+				GUIPen.roundedRect( Rect( 
 						drawBounds.left + ( realKnobSize * 2), 
 						drawBounds.top,
 						drawBounds.width - (realKnobSize * 2),
 						drawBounds.height ), realKnobSize / 2 ).fill;
 					
 				color[2].set; // line
-				Pen.width = realKnobSize;
-				Pen.moveTo( (drawBounds.left + (realKnobSize/2))@
+				GUI.pen.width = realKnobSize;
+				GUI.pen.moveTo( (drawBounds.left + (realKnobSize/2))@
 					(drawBounds.top + ( realKnobSize / 2) ));
 					
-				Pen.lineTo( (drawBounds.left + (realKnobSize/2))@
+				GUI.pen.lineTo( (drawBounds.left + (realKnobSize/2))@
 					(drawBounds.bottom - ( realKnobSize / 2) ));
 				
-				Pen.perform(\stroke);
+				GUI.pen.perform(\stroke);
 		
 				color[1].set; // green line
-				Pen.width = realKnobSize * 1.75;
-				 Pen.moveTo( (drawBounds.left + ((realKnobSize * 1.75)/2))@
+				GUI.pen.width = realKnobSize * 1.75;
+				 GUI.pen.moveTo( (drawBounds.left + ((realKnobSize * 1.75)/2))@
 						knobPosition ); 
 				if( isCentered )
-					{Pen.lineTo( (drawBounds.left + ((realKnobSize * 1.75)/2))
+					{GUI.pen.lineTo( (drawBounds.left + ((realKnobSize * 1.75)/2))
 						@(drawBounds.center.y ) ); }
-					{Pen.lineTo( (drawBounds.left + ((realKnobSize * 1.75)/2))
+					{GUI.pen.lineTo( (drawBounds.left + ((realKnobSize * 1.75)/2))
 						@(drawBounds.bottom - (realKnobSize / 2) ) ); };
 							
-				Pen.perform(\stroke);
+				GUI.pen.perform(\stroke);
 		
 				color[3].set; // knob
-				Pen.width = realKnobSize;
+				GUI.pen.width = realKnobSize;
 				
-				Pen.roundedRect( Rect.fromPoints(
+				GUIPen.roundedRect( Rect.fromPoints(
 					Point( drawBounds.left + (realKnobSize * 2), 
 							knobPosition - (realKnobSize / 2) ),
 					Point( drawBounds.right, knobPosition + (realKnobSize / 2) )  ) );
-				Pen.fill;
+				GUI.pen.fill;
 				      
 			};
 			};
