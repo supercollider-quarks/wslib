@@ -4,7 +4,7 @@
 
 SMPTE[slot] : RawArray {
 	
-	classvar <>defaultFps = 25; // standard for europe
+	classvar <>defaultFps = 1000; // standard for europe
 	classvar <>defaultSubFps = 100; 
 	classvar <>global;
 	

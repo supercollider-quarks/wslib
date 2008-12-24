@@ -1,8 +1,8 @@
 + Server {
 	*freeAllRemote  { |includeLocal = true|
 		if( includeLocal )
-			{ set.do( _.freeAll ) }
-			{ set.do({ |server|
+			{ Server.set.do( _.freeAll ) }
+			{ Server.set.do({ |server|
 				if( server.isLocal.not )
 					{ server.freeAll; }
 				})
