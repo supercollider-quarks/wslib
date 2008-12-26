@@ -97,7 +97,7 @@ SmoothSlider : SCUserView {
 		var startAngle, arcAngle, size, widthDiv2, aw;
 		var knobPosition, realKnobSize;
 		var drawBounds, radius;
-		var baseRect;
+		var baseRect, knobRect;
 		
 		GUI.pen.use {
 			drawBounds = this.bounds.insetBy( border, border );
@@ -110,11 +110,17 @@ SmoothSlider : SCUserView {
 				    GUI.pen.rotate( 0.5pi,
 				   	(this.bounds.left + this.bounds.right) / 2, 
 				   	this.bounds.left  + (this.bounds.width / 2)  );
+				  
+				  /* // Gradient doesn't respond to .direction. Why??
+				  tempColors = tempColors.collect({ |color|
+				  	if( color.respondsTo( \direction ) )						{ color.direction = (\h: \v, \v: \h)[ color.direction ].postln; };
+				  	color;
+				  	});
+				  */
 				}
 				{
 				baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
 				};
-				
 				
 			size = drawBounds.width;
 			widthDiv2 = drawBounds.width * 0.5;
@@ -186,14 +192,15 @@ SmoothSlider : SCUserView {
 	
 			color[3] !? {	 
 				//color[3].set; // knob
-				GUI.pen.width = realKnobSize;
-				GUIPen.roundedRect( Rect.fromPoints(
+				//GUI.pen.width = realKnobSize;
+				knobRect =  Rect.fromPoints(
 					Point( drawBounds.left, 
 						( knobPosition - (realKnobSize / 2) ) ),
-					Point( drawBounds.right, knobPosition + (realKnobSize / 2) ) ),
-					radius );//.fill; 
+					Point( drawBounds.right, knobPosition + (realKnobSize / 2) ) );
+
+				GUIPen.roundedRect( knobRect, radius );//.fill; 
 				
-				color[3].fill( baseRect );
+				color[3].fill( knobRect ); // requires extGradient-fill.sc methods
 				};
 				
 				};
