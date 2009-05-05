@@ -1,12 +1,15 @@
 
 + Server {
 	makeView { arg w, useRoundButton = true, onColor;
-		var active, booter, killer, makeDefault, running, booting, stopped;
+		var active, booter, killer, makeDefault, running, booting, bundling, stopped;
 		var recorder, scoper;
 		var countsViews, ctlr;
 		var dumping=false;
 		var infoString, oldOnClose;
+		var font;
 		
+		
+		font = Font("Monaco", 9);
 		onColor = onColor ? Color.new255(74, 120, 74);
 		
 		if (window.notNil, { ^window.front });
@@ -23,8 +26,9 @@
 				  booter.states = [[ \power, Color.black, Color.clear],
 						   		[ \power, Color.black, onColor]];
 			 	}
-				{ booter = GUI.button.new( w, Rect(0,0,18,18));
-				 booter.states = [[ "B"],[ "Q", onColor ]]; };
+				{ booter = Button( w, Rect(0,0,18,18));
+				 booter.states = [[ "B"],[ "Q", onColor ]];
+				 booter.font = font; };
 						
 			booter.action = { arg view; 
 				if(view.value == 1, {
@@ -36,21 +40,16 @@
 				});
 			};
 			booter.value = serverRunning.binaryValue;
-			/*
-			killer = SCButton(w, Rect(0,0, 24, 24));
-			killer.states = [["K", Color.black, Color.clear]];
-			
-			killer.action = { Server.killAll };
-			*/	
 		});
 		
-		active = GUI.staticText.new(w, Rect(0,0, 78, 18));
+		active = StaticText(w, Rect(0,0, 78, 18));
 		active.string = this.name.asString;
 		active.align = \center;
 		active.font = GUI.font.new("Helvetica-Bold", 12);
 		active.background = Color.white;
-		if(serverRunning,running,stopped);		
-
+		if(serverRunning,running,stopped);	
+		
+		/*
 		w.view.keyDownAction = { arg ascii, char;
 			var startDump, stopDump, stillRunning;
 			
@@ -82,6 +81,7 @@
 			
 			};
 		};
+		*/
 		
 		if (isLocal, {
 			
@@ -100,6 +100,12 @@
 			booting = {
 				active.stringColor_( Color.new255(255, 140, 0) );
 				//booter.setProperty(\value,0);
+			};
+			
+			bundling = {
+				active.stringColor_(Color.new255(237, 157, 196));
+				booter.value = 1;
+				recorder.enabled = false;
 			};
 			
 			oldOnClose = w.onClose.copy;

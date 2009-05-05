@@ -456,6 +456,7 @@ DrawIcon {
 				
 				},
 				
+			/*
 			polygon:   { |rect, numSides = 6, start, mode = \fill|
 
 				var square, sw, wd;
@@ -478,6 +479,28 @@ DrawIcon {
 				
 				GUI.pen.perform( mode ); 
 				
+				},
+			*/
+				
+			polygon:Ê { |rect, numSides = 6, start, mode = \fill, type = \normal| 
+					// type can also be \star ( kindly added by Jesper Elen )
+				var square, sw, wd, factor;
+				if (type == \star) { if (numSides.odd)Ê
+						{ factor = (numSides / 2).floor } 
+						{ factor = (numSides / 2) + 1 }} 
+					{ factor = 1 };				
+				square = Rect.aboutPoint( rect.center,Ê
+						rect.width.min( rect.height ) / 3,Ê
+						rect.width.min( rect.height ) / 3 );
+				start = start ? -0.5pi;
+				sw = square.width;	
+				wd = sw * (1/8);
+				GUI.pen.moveTo( square.center + Polar( (sw / 2), start ) );
+				(numSides + 1).do({ |i|
+					GUI.pen.lineTo( square.center + Polar( (sw / 2),Ê
+						(2pi * ( i/numSides * factor )) + start).asPoint );
+				});
+				GUI.pen.perform( mode );Ê
 				},
 			
 				

@@ -1,6 +1,10 @@
 // wslib 2007
 // GUI compat (for the time being )
 
+// Obsolete in SC3.3
+/*
+
+
 + Color {
 	guiSet {
 		 if( GUI.pen.respondsTo( \color_ ) )
@@ -52,3 +56,5 @@
 	}
 
 	}
+
+*/

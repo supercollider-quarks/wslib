@@ -2,6 +2,8 @@
 
 SCAlert {
 	
+	classvar <>modal = true;
+	
 	var <string, <buttons, <>actions, <color, <iconName, iconView, stringView, <buttonViews;
 	var <window, <>onCloseIndex = -1;
 	var <>buttonClosesWindow = true;
@@ -91,7 +93,7 @@ SCAlert {
 		
 		buttons = buttons.collect( { |item|
 			case { item.isString }
-				{ [ item ] }
+				{ [ item,  ] }
 				{ item.class == Symbol }
 				{ [ item.asString ] }
 				{ item.isArray }
@@ -101,14 +103,23 @@ SCAlert {
 			} );
 				
 		actions = actions ?? { ( { |i| { |button| buttons[i][0].postln; } } ! buttons.size ); };
-						
-		window = SCWindow( "Alert", 
-			Rect.aboutPoint( SCWindow.screenBounds.center, 
-				((buttons.size * 42) + 2).max( 160 ), 
-					((26 + (string.occurrencesOf( $\n ) * 10) ) + 4).max( 52 )
-					), false, border ? true );
-					
-		window.front;
+			
+		if( modal )		
+			{ window = SCModalWindow( "Alert", 
+				Rect.aboutPoint( SCWindow.screenBounds.center, 
+					((buttons.size * 42) + 2).max( 160 ), 
+						((26 + (string.occurrencesOf( $\n ) * 10) ) + 4).max( 52 )
+						), false, border ? true );
+			} {
+			window = Window( "Alert", 
+				Rect.aboutPoint( SCWindow.screenBounds.center, 
+					((buttons.size * 42) + 2).max( 160 ), 
+						((26 + (string.occurrencesOf( $\n ) * 10) ) + 4).max( 52 )
+						), false, border ? true );
+			
+			window.front;
+			};
+		
 		window.view.background_( background );
 		window.alwaysOnTop_( true );
 		window.alpha_( 0.95 );
@@ -118,12 +129,12 @@ SCAlert {
 			Pen.strokeRect( w.bounds.left_(0).top_(0).insetBy(1, 1) );
 			} );
 		
-		iconView = SCUserView( window, Rect( 4,4, 72, 72) ).drawFunc_({ |vw|
+		iconView = UserView( window, Rect( 4,4, 72, 72) ).drawFunc_({ |vw|
 			color.set;
 			DrawIcon.symbolArgs( iconName, vw.bounds );
 			}).canFocus_( false );
 		
-		stringView = SCStaticText(window, Rect(80,4, window.bounds.width - 84, 
+		stringView = StaticText(window, Rect(80,4, window.bounds.width - 84, 
 				window.bounds.height - 28 ) )
 			.string_( string ).font_( Font( "Helvetica-Bold", 12 ) );
 			//.align_( \center );
@@ -133,7 +144,7 @@ SCAlert {
 			rect = Rect( 
 					(window.view.bounds.width) - ((buttons.size - i ) * 84), 
 					window.view.bounds.height - 24, 80,20 );
-			SCButton(window, rect)
+			Button(window, rect)
 					.states_( [
 						buttons[i] ] )
 					.action_( { |button|
@@ -171,6 +182,8 @@ SCAlert {
 
 SCRequestString {
 
+	var <>modal = true;
+
 	var <window, <stringView, <buttonViews, <action, <>keyDownAction;
 	
 	*new { |default="", question = "Please enter string:", action|		^super.new.init( default, question, action );
@@ -186,12 +199,20 @@ SCRequestString {
 						
 		extraLines = (default.size / 56).floor;
 		
-		window = SCWindow( question, 
-			Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
+		if( modal )
+		{	window = SCModalWindow( question, 
+				Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
 				25 + ( 6 * extraLines ) ), false );
+		}
+		{	window = SCWindow( question, 
+				Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
+				25 + ( 6 * extraLines ) ), false );
+			
+			window.front;
+			window.alwaysOnTop_( true );
+		};
+		
 		window.view.decorator = FlowLayout( window.view.bounds );
-		window.front;
-		window.alwaysOnTop_( true );
 		window.alpha_( 0.9 );
 		
 		stringView = SCTextView(window, 340@(12 + ( 12 * extraLines )) )

@@ -155,7 +155,9 @@
 		blue = blue.max(min).min(max);
 		^this;
 		}
-	
+		
+	// -> remove for 3.3
+	/*
 	round { |quant| // destructive
 		quant = quant ? 1/255;
 		red = red.round(quant);
@@ -163,6 +165,8 @@
 		blue = blue.round(quant);
 		^this;
 		}
+	*/
+	
 	saturate { arg amount = 0; ^this.blend( this.copy.desaturate, amount.neg ).clip; }
 	
 	hueAdd { arg amount = 0; ^this.copy.hue_((this.hue + amount) % 1).clip }

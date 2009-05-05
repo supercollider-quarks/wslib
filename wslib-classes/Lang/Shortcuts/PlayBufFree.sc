@@ -1,6 +1,8 @@
 // wslib 2005
 // convenience classes for PlayBuf
 
+// obsolete in SC3.3, but still here for backward compat
+
 PlayBufFree {
 	// simple shortcut:
 	// play a buffer once and then free synth

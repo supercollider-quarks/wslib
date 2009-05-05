@@ -5,22 +5,28 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.41">
+<meta name="CocoaVersion" content="949.43">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
 p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad140d}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad140d; min-height: 12.0px}
-span.s1 {text-decoration: underline ; color: #002fe0}
-span.s2 {color: #0024f8}
-span.s3 {color: #001bb9}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8f2926}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8f2926; min-height: 12.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad1c1c}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+span.s1 {text-decoration: underline ; color: #1838d3}
+span.s2 {color: #1331ea}
+span.s3 {color: #0e24ae}
 span.s4 {color: #606060}
 span.s5 {color: #000000}
-span.s6 {color: #2c7014}
+span.s6 {color: #456c1f}
 span.s7 {font: 12.0px Helvetica; color: #000000}
+span.s8 {color: #0011b9}
+span.s9 {color: #2a700e}
+span.s10 {color: #0000bf}
+span.s11 {color: #007300}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -58,7 +64,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><b>knobColor / knobColor_</b></p>
 <p class="p2"><b>background / background_</b></p>
 <p class="p2"><b>hilightColor / hilightColor_</b></p>
-<p class="p2">Colors can be varied using these getter/setters:</p>
+<p class="p2">Colors and Gradients can be varied using these getter/setters:</p>
 <p class="p3"><br></p>
 <p class="p4">(</p>
 <p class="p4">w = <span class="s3">SCWindow</span>( <span class="s4">"colorful"</span>, <span class="s3">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
@@ -69,6 +75,27 @@ span.Apple-tab-span {white-space:pre}
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( 0,6,0.2,0.8) )</p>
 <p class="p6"><span class="s5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.canFocus_( </span><span class="s3">false</span><span class="s5"> ); </span>// looks better without the focus rectangle</p>
 <p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p4">x = { <span class="s8">Color</span>.rand(0,0.8).alpha_( [1.0.rand ** 2, 1].choose ) };</p>
+<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"gradients"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
+<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 )</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.knobColor_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hilightColor_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( 0,6,0.2,0.8) )</p>
+<p class="p8"><span class="s5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.canFocus_( </span><span class="s8">false</span><span class="s5"> ); </span>// looks better without the focus rectangle</p>
+<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"smoother smoothslider"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
+<p class="p4">z = <span class="s8">SmoothSlider</span>( w, 160@15 ).value_( 0.5 )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s8">Gradient</span>( Color.gray(0.9), Color.gray(0.1), \h ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( Color.black.alpha_(0.8), Color.white.alpha_(0.8), \h ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s8">Gradient</span>( Color.blue.alpha_(0.5), Color.web.purple.alpha_(0.25), \v ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.knobSize_(1).canFocus_(false);</p>
 <p class="p4">)</p>
 <p class="p5"><br></p>
 <p class="p2"><b>knobSize / knobSize_</b></p>
@@ -83,6 +110,43 @@ span.Apple-tab-span {white-space:pre}
 <p class="p4">d.action_({ <span class="s3">|sl|</span> c.knobSize = sl.value; });</p>
 <p class="p4">)</p>
 <p class="p5"><br></p>
+<p class="p2"><b>baseWidth / baseWidth_</b></p>
+<p class="p2">baseWidth is relative to the width of the sliders base. It defaults to 1.<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p4">(</p>
+<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"basewidths"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
+<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 ).baseWidth_( 1/(i+1) ).value_( i/7 ); });</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"cocoa-like slider"</span>, <span class="s8">Rect</span>(200,200, 200, 120 ) ).front.decorate;</p>
+<p class="p4">z = <span class="s8">SmoothSlider</span>( w, 160@15 ).baseWidth_( 0.3 ).value_( 0.5 )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s8">Gradient</span>( Color.gray(0.8), Color.gray(0.2), \h ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( Color.black.alpha_(0.8), Color.white.alpha_(0.8), \h ) )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.knobSize_(1).hilightColor_(nil).canFocus_(false);</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p2"><b>border / border_</b></p>
+<p class="p2"><b>borderColor / borderColor_</b></p>
+<p class="p2">border is the size of the outline border around the slider. It defaults to 0 (no border).</p>
+<p class="p2">borderColor defines the color of the border</p>
+<p class="p3"><br></p>
+<p class="p4">(</p>
+<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"borders"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
+<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 ).border_( i )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.borderColor_( Color.rand )</p>
+<p class="p4"><span class="Apple-tab-span">	</span>.value_( i/7 ); });</p>
+<p class="p4">)</p>
+<p class="p5"><br></p>
+<p class="p4">(</p>
+<p class="p9">w = <span class="s10">SCWindow</span>( <span class="s4">"levelmeters"</span>, <span class="s10">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
+<p class="p9">7.do({ <span class="s10">|i|</span></p>
+<p class="p9"><span class="Apple-tab-span">	</span><span class="s10">SmoothSlider</span>( w, 30@100 ).border_( 1 ).borderColor_( <span class="s10">Color</span>.gray(0.2) )</p>
+<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( (i+1)/7 ).knobSize_(0).canFocus_(<span class="s10">false</span>)</p>
+<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s10">Color</span>.white.alpha_(0.25) )</p>
+<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s10">Gradient</span>( <span class="s10">Color</span>.red.alpha_(0.9), <span class="s10">Color</span>.green.alpha_(0.8), <span class="s11">\v</span> ) );</p>
+<p class="p9"><span class="Apple-tab-span">	</span>});</p>
+<p class="p4">)</p>
 <p class="p5"><br></p>
 <p class="p2"><b>relThumbSize / relThumbSize_</b></p>
 <p class="p2">the relThumbSize is a little different from the knobSize. It changes the <b>thumbSize</b> variable (inherited from SCSlider) but relative to the slider's length. The default thumbSize is 0. You will only see a change if the thumbSize becomes greater then the absolute knob size (<b>absKnobSize </b>- getter only).</p>

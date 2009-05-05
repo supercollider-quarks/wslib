@@ -12,6 +12,6 @@
 
 + String {
 	digit { ^Array.fill(this.size, { |i| {this[i].digit}.try }); }
-	ascii { ^Array.fill(this.size, { |i| this[i].ascii }); }
+	// ascii { ^Array.fill(this.size, { |i| this[i].ascii }); } //-> remove for 3.3
 	asUnicode { ^this.ascii }
 }

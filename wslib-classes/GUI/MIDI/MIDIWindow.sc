@@ -17,6 +17,7 @@ MIDIWindow {
 		var clientConnectInButton, portPopUp, clientPopUp;
 		var nSources, noMidi = false;
 		var getSourceNames;
+		var font;
 		// only one port so far
 				
 		/* if(MIDIClient.initialized.not)
@@ -25,6 +26,8 @@ MIDIWindow {
 				
 	if(window.isNil) {
 		MIDIClient.init;
+		
+		font = Font("Helvetica", 10);
 		
 		nSources = MIDIClient.sources.size;
 		if(nSources == 0) { noMidi=true };
@@ -41,8 +44,9 @@ MIDIWindow {
 			if(noMidi) { sourceNames = ["(no sources available" /*)*/]; }
 				{ sourceNames =  MIDIClient.sources.collect({|item, i| 
 				if(inIsOn[i])
-					{(item.device + item.name).replaceBrackets + ":" + toPort }
-					{(item.device + item.name).replaceBrackets }
+					{(item.device + item.name)
+						.replaceItems( "()/", "[]:" ) + ":" + toPort }
+					{(item.device + item.name).replaceItems( "()/", "[]:" ) }
 				}); };
 			sourceNames;
 		};
@@ -54,10 +58,34 @@ MIDIWindow {
 		inIsOn.do({ |item, i|
 			if(item) {MIDIIn.connect(toPort, i) } });
 
-		window = SCWindow("MIDIClient", Rect(326, 30, 200, 78), false);
-		SCStaticText(window, Rect(95, 30, 80, 18)).string_("MIDIIn port" + toPort);
-		clientConnectInButton = SCButton(window, Rect(10, 30, 80, 18))
-			.states_([["connect"],["disconnect"]])
+		window = Window("MIDIClient", Rect(326, 60, 200, 48), false);
+		window.addFlowLayout;
+		
+		
+		clientPopUp = SCPopUpMenu(window, Rect(10, 10, 192, 18))
+			.items_( sourceNames )
+			.font_( font )
+			.value_(currentDevice)
+			.action_({ |popup|
+				currentDevice = popup.value;
+				clientConnectInButton.value_(inIsOn[currentDevice].binaryValue); 
+				popup.items_( getSourceNames.value );
+				
+				[	{popup.background_(Color.clear)},
+					{popup.background_(Color.green.alpha_(0.2))}]
+					[inIsOn[currentDevice].binaryValue].value; 
+			})
+			.stringColor_(Color.black)
+			.background_(Color.clear);
+			
+		StaticText(window, Rect(95, 30, 55, 18))
+				.string_( "MIDIIn port: " )
+				.font_( font );
+			
+		clientConnectInButton = Button(window, Rect(10, 30, 18, 18))
+			.states_([[ toPort.asString ],
+				[ toPort.asString, Color.black, Color.green.alpha_(0.2) ]])
+			.font_( font )
 			.value_(inIsOn[currentDevice].binaryValue)
 			.action_({ |button|
 				case {button.value == 1}
@@ -71,32 +99,25 @@ MIDIWindow {
 						inIsOn[currentDevice] = false;
 						clientPopUp.action.value(clientPopUp);}
 				});
-		
-		clientPopUp = SCPopUpMenu(window, Rect(10, 10, 180, 18))
-			.items_( sourceNames )
-			.value_(currentDevice)
-			.action_({ |popup|
-				currentDevice = popup.value;
-				clientConnectInButton.value_(inIsOn[currentDevice].binaryValue); 
-				popup.items_( getSourceNames.value );
 				
-				[	{popup.background_(Color.clear).stringColor_(Color.black)},
-					{popup.background_(Color.black).stringColor_(Color.red)}]
-					[inIsOn[currentDevice].binaryValue].value; 
-			})
-			.stringColor_(Color.black)
-			.background_(Color.clear);
-		
+		StaticText(window, Rect(95, 30, 61, 18))
+				.string_("")
+				//.background_( Color.green )
+				.font_( font );
+				
 		if(noMidi) {clientConnectInButton.enabled=false; clientPopUp.enabled=false; }
 			{ clientPopUp.action.value(clientPopUp);};
-		
+			
+		Button(window, Rect(10, 50, 45, 18)).states_([["restart"]])
+			.font_( font )
+			.action_({ window.close; window = nil; { MIDIWindow.new }.defer(0.2) });
+			
 		};
 		
 		window.onClose_({ window = nil });
 		window.front;
 		
-		SCButton(window, Rect(10, 50, 80, 18)).states_([["restart"]])
-			.action_({ window.close; window = nil; { MIDIWindow.new }.defer(0.2) });
+		
 		}
 	
 }

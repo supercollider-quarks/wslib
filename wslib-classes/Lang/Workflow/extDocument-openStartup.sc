@@ -1,3 +1,7 @@
 + Document {
-	*openStartup { ^Document.open("~/Library/Application Support/SuperCollider/startup.rtf"); }
+
+	*openStartup { ^thisProcess.platform.startupFiles // open all existing startup files
+			.collect( _.pathMatch ).flatten(1)
+			.collect( Document.open(_) ); 
+			}
 	}

@@ -33,10 +33,15 @@ SmoothSlider : SCUserView {
 	}
 	
 	sliderBounds {
-		var realKnobSize, drawBounds;
+		var realKnobSize, drawBounds, rect;
 		//realKnobSize = knobSize * this.bounds.width;
 		
-		drawBounds = this.bounds.insetBy( border, border );
+		if ( relativeOrigin ) // thanks JostM !
+				{ rect = this.bounds.moveTo(0,0) }
+				{ rect = this.absoluteBounds; };
+				
+		drawBounds = rect.insetBy( border, border );
+				
 		if( orientation == \h )
 				{  drawBounds = Rect( drawBounds.top, drawBounds.left, 
 					drawBounds.height, drawBounds.width ); 
@@ -96,20 +101,24 @@ SmoothSlider : SCUserView {
 	draw {
 		var startAngle, arcAngle, size, widthDiv2, aw;
 		var knobPosition, realKnobSize;
-		var drawBounds, radius;
+		var rect, drawBounds, radius;
 		var baseRect, knobRect;
 		
-		GUI.pen.use {
-			drawBounds = this.bounds.insetBy( border, border );
+		Pen.use {
+			if ( relativeOrigin ) // thanks JostM !
+				{ rect = this.bounds.moveTo(0,0) }
+				{ rect = this.absoluteBounds; };
+				
+			drawBounds = rect.insetBy( border, border );
 			
 			if( orientation == \h )
 				{  drawBounds = Rect( drawBounds.top, drawBounds.left, 
 					drawBounds.height, drawBounds.width );
 				   baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
-				   //GUI.pen.translate( drawBounds.height, 0 );
-				    GUI.pen.rotate( 0.5pi,
-				   	(this.bounds.left + this.bounds.right) / 2, 
-				   	this.bounds.left  + (this.bounds.width / 2)  );
+				   //Pen.translate( drawBounds.height, 0 );
+				    Pen.rotate( 0.5pi,
+				   	(rect.left + rect.right) / 2, 
+				   	rect.left  + (rect.width / 2)  );
 				  
 				  /* // Gradient doesn't respond to .direction. Why??
 				  tempColors = tempColors.collect({ |color|
@@ -133,18 +142,18 @@ SmoothSlider : SCUserView {
 			
 			if( this.hasFocus ) // rounded focus rect
 				{
-				GUI.pen.use({
-					GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
-					GUI.pen.width = 2;
-					GUIPen.roundedRect( baseRect.insetBy(-2 - border,-2 - border), 
+				Pen.use({
+					Pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+					Pen.width = 2;
+					Pen.roundedRect( baseRect.insetBy(-2 - border,-2 - border), 
 						(radius.min( baseRect.width/2) + 1) + border );
-					GUI.pen.stroke;
+					Pen.stroke;
 					});
 				};
 			Pen.use{	
 			color[0] !? { // base / background
-				//GUI.pen.fillColor = color[0];
-				GUIPen.roundedRect( baseRect, radius.min( baseRect.width/2) );//.fill;
+				//Pen.fillColor = color[0];
+				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );//.fill;
 				color[0].fill( baseRect );
 				};
 				};
@@ -152,9 +161,9 @@ SmoothSlider : SCUserView {
 			Pen.use{
 			color[2] !? { // // border
 				if( border > 0 )
-					{ GUI.pen.strokeColor = color[2];
-					  GUI.pen.width = border;
-					  GUIPen.roundedRect( baseRect.insetBy( border/(-2), border/(-2) ), 
+					{ Pen.strokeColor = color[2];
+					  Pen.width = border;
+					  Pen.roundedRect( baseRect.insetBy( border/(-2), border/(-2) ), 
 					  	radius.min( baseRect.width/2) + (border/2) ).stroke;
 					};
 				};
@@ -166,7 +175,7 @@ SmoothSlider : SCUserView {
 				//color[1].set; // hilight
 				if( isCentered )
 				{
-				GUIPen.roundedRect( Rect.fromPoints( 
+				Pen.roundedRect( Rect.fromPoints( 
 						baseRect.left@
 							((knobPosition - (realKnobSize / 2))
 								.min( baseRect.center.y ) ),
@@ -178,7 +187,7 @@ SmoothSlider : SCUserView {
 				color[1].fill( baseRect );
 				}
 				{
-				GUIPen.roundedRect( Rect.fromPoints( 
+				Pen.roundedRect( Rect.fromPoints( 
 						baseRect.left@(knobPosition - (realKnobSize / 2)),
 						baseRect.right@baseRect.bottom ), radius.min( baseRect.width/2) );
 				
@@ -192,13 +201,13 @@ SmoothSlider : SCUserView {
 	
 			color[3] !? {	 
 				//color[3].set; // knob
-				//GUI.pen.width = realKnobSize;
+				//Pen.width = realKnobSize;
 				knobRect =  Rect.fromPoints(
 					Point( drawBounds.left, 
 						( knobPosition - (realKnobSize / 2) ) ),
 					Point( drawBounds.right, knobPosition + (realKnobSize / 2) ) );
 
-				GUIPen.roundedRect( knobRect, radius );//.fill; 
+				Pen.roundedRect( knobRect, radius );//.fill; 
 				
 				color[3].fill( knobRect ); // requires extGradient-fill.sc methods
 				};

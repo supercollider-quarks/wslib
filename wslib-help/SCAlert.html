@@ -5,25 +5,27 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.41">
+<meta name="CocoaVersion" content="949.43">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #4d4d4d}
 p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #001bb9; min-height: 14.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #0019a9; min-height: 14.0px}
 p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad140d}
-span.s1 {text-decoration: underline ; color: #0039da}
-span.s2 {color: #001bb9}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica; min-height: 17.0px}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8d1614}
+span.s1 {text-decoration: underline ; color: #052fcf}
+span.s2 {color: #0019a9}
 span.s3 {color: #000000}
 span.s4 {font: 12.0px Helvetica}
-span.s5 {color: #606060}
-span.s6 {color: #0024f8}
-span.s7 {color: #2c7014}
-span.s8 {color: #ad140d}
+span.s5 {color: #4d4d4d}
+span.s6 {color: #0023f2}
+span.s7 {color: #315c0e}
+span.s8 {color: #8d1614}
+span.s9 {color: #0000ff}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -66,6 +68,11 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8"><span class="Apple-tab-span">	</span>iconName: <span class="s7">'sign_$?'</span> );</p>
 <p class="p8">);</p>
 <p class="p3"><br></p>
+<p class="p3"><br></p>
+<p class="p6"><b>class vars:</b></p>
+<p class="p9"><b></b><br></p>
+<p class="p2"><b>modal</b></p>
+<p class="p2">if true (default) runs all SCAlerts in modal mode (see <a href="SC://SCModalWindow"><span class="s9">SCModalWindow</span></a>)</p>
 <p class="p3"><br></p>
 <p class="p6"><b>elements of the SCAlert:</b></p>
 <p class="p3"><br></p>
@@ -121,9 +128,9 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5"><span class="s3">a = </span><span class="s2">SCAlert</span><span class="s3">( </span>"try out these buttons"<span class="s3">, [</span>"cancel"<span class="s3">, </span>"disable me"<span class="s3">, </span>"change text"<span class="s3">] );</span></p>
 <p class="p8">a.buttonClosesWindow_( <span class="s2">false</span> );</p>
 <p class="p8">a.actions_( [<span class="Apple-converted-space"> </span></p>
-<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span>{ a.window.close }, </span>// cancel closes the window</p>
+<p class="p10"><span class="s3"><span class="Apple-tab-span">	</span>{ a.window.close }, </span>// cancel closes the window</p>
 <p class="p8"><span class="Apple-tab-span">	</span>{ a.disable( 1 ); },<span class="Apple-converted-space"> </span></p>
-<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span>{ a.string_( </span><span class="s5">"text changed"</span><span class="s3"> ); </span>// first hit changes text</p>
+<p class="p10"><span class="s3"><span class="Apple-tab-span">	</span>{ a.string_( </span><span class="s5">"text changed"</span><span class="s3"> ); </span>// first hit changes text</p>
 <p class="p8"><span class="Apple-tab-span">	</span>a.buttonLabel_( 2, <span class="s5">"ok"</span> );</p>
 <p class="p8"><span class="Apple-tab-span">	</span>a.actions[2] = { a.window.close; } <span class="s8">// next hit closes window</span></p>
 <p class="p8"><span class="Apple-tab-span">	</span>} ] );</p>

@@ -4,6 +4,8 @@
 //
 // also provides a bit of SC2 compat..
 
+//// ALL OBSOLETE IN SC3.3, except GUIPen for backward compat
+
 /*
 // use like this:
 (
@@ -23,6 +25,7 @@ GUI.cocoa;
 
 */
 
+/*
 GUIWindow {
 
 	*new { |...args|
@@ -74,12 +77,16 @@ GUIStethoscope : GUIView { }
 
 GUIFont : GUIView { }
 
+*/
+
 // Pen: different use
 GUIPen { 
 	*doesNotUnderstand { arg selector ...args; 
 		^GUI.pen.perform( selector, *args ); 
 		} 
 	}
+	
+/*
 
 ///////////////// Common -> Audio /////////////////
 
@@ -105,3 +112,5 @@ GUIStartRow : GUIView { }
 ///////////////// other /////////////////
 
 GUIKnob : GUIView { }
+
+*/

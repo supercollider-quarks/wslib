@@ -47,19 +47,22 @@ RoundButton : SCUserView {
 		var shadeSide, lightSide;
 		// rect = this.bounds;
 		
+		/*
 		if ( relativeOrigin ) // thanks JostM !
 			{ rect = this.bounds.moveTo(0,0) }
 			{ rect = this.absoluteBounds; };
+		*/
+		rect = this.drawBounds;
 		
 		radius = radius ?? { rect.width.min( rect.height ) / 2 };
 		
 		if( this.hasFocus ) // rounded focus rect
 			{
-			GUI.pen.use({
-				GUI.pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
-				GUI.pen.width = 2;
-				GUIPen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
-				GUI.pen.stroke;
+			Pen.use({
+				Pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+				Pen.width = 2;
+				Pen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
+				Pen.stroke;
 				});
 			};
 
@@ -72,17 +75,20 @@ RoundButton : SCUserView {
 			
 		states !? {
 			
-			GUI.pen.use {
-				GUI.pen.color_( states[ value ][ 2 ] ? Color.clear );
-				
-				GUIPen.roundedRect( rect, radius ).fill; // not swingosc compatible!!
-				
+			Pen.use {
+							
+				states[ value ][ 2 ] !? {
+					Pen.roundedRect( rect, radius );
+					states[ value ][ 2 ].fill( rect ); // requires Gradient:fill method
+					};				
+					
+					
 				if( extrude )
-					{ GUIPen.extrudedRect( rect, radius, border, 0.17pi, pressed,
+					{ Pen.extrudedRect( rect, radius, border, 0.17pi, pressed,
 						[ lightSide, shadeSide ] ); }
 					{   if( pressed, { lightSide.set }, { shadeSide.set } ); 
-					   GUI.pen.width = border;
-					   GUIPen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
+					   Pen.width = border;
+					   Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
 					   	(border/2)  ).stroke; 
 					};							
 			};
@@ -99,17 +105,25 @@ RoundButton : SCUserView {
 			} 
 			{ states[value][0].class == Symbol }
 			{
-			GUI.pen.use {
-				GUI.pen.color_(states[value][1] ? Color.black);
-				if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
+			Pen.use {
+				Pen.color_(states[value][1] ? Color.black);
+				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
+				};
+			 }
+			{ states[value][0].class == SCImage }
+			{
+			Pen.use {
+				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
+				states[ value ][0].drawAtPoint( rect.center - 
+					((states[ value ][0].width/2)@(states[ value ][0].height/2)) );
 				};
 			 }
 			{ true }
 			{
-			GUI.pen.use {
-				GUI.pen.color_(states[value][1] ? Color.black);
-				if( pressed ) { GUI.pen.translate( moveWhenPressed, moveWhenPressed ) };
+			Pen.use {
+				Pen.color_(states[value][1] ? Color.black);
+				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				states[value][0].value( this, rect, radius ); // can be a Pen function
 				};
 			};

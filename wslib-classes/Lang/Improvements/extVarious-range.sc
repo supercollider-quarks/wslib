@@ -31,6 +31,16 @@
 		}
 	
 	madd { arg mul, add; ^(this * mul) + add; }
+	
+	bi2uni { |lo = 0, hi = 1, clip = \none| // regardless of input range
+		^this.linlin( -1, 1, lo, hi, clip );
+		}
+		
+	uni2bi { |lo = -1, hi = 1, clip = \none|
+		^this.linlin( 0, 1, lo, hi, clip );
+		}
+	
+	
 }
 
 + UGen {
@@ -50,12 +60,28 @@
 		});
  		^MulAdd(this, mul, add);
  		}
+ 		
+ 	bi2uni { |lo = 0, hi = 1, clip = \none|
+		^this.linlin( -1, 1, lo, hi, clip );
+		}
+		
+	uni2bi { |lo = -1, hi = 1, clip = \none|
+		^this.linlin( 0, 1, lo, hi, clip );
+		}
  	}	
 
 + SequenceableCollection {
 	rangeExp { arg lo, hi;  ^this.collect( _.rangeExp(lo,hi)) }
 	forceRange { arg lo, hi, signalRange = \unipolar;
 				^this.collect( _.forceRange(lo,hi,signalRange)); } 
+				
+	bi2uni { |lo = 0, hi = 1, clip = \none|
+		^this.linlin( -1, 1, lo, hi, clip );
+		}
+		
+	uni2bi { |lo = -1, hi = 1, clip = \none|
+		^this.linlin( 0, 1, lo, hi, clip );
+		}
 	}
 
 	
