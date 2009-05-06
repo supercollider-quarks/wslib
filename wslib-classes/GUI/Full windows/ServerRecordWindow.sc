@@ -45,34 +45,34 @@ ServerRecordWindow {
 		
 		recordNodeID = nodeID;
 		server = inServer ? Server.default;
-		w = SCWindow( "record : " ++ server.name, 
-			Rect.aboutPoint( SCWindow.screenBounds.center, 150, 75 ),
+		w = Window( "record : " ++ server.name, 
+			Rect.aboutPoint( Window.screenBounds.center, 150, 75 ),
 			false ).front;
 			
 		w.decorate;
 		
 		w.onClose = { all.remove( this ) };
 		
-		SCStaticText( w, 60@20 ).string_( "#channels" ).align_( \right );
-		nCha = SNBox( w, 40@20 ).value_( server.recChannels )
+		StaticText( w, 60@20 ).string_( "#channels" ).align_( \right );
+		nCha = NumberBox( w, 40@20 ).value_( server.recChannels )
 			.clipLo_( 1 )
 			.action_({ |v| server.recChannels = v.value.asInt });
 			
 		//w.view.decorator.nextLine;
-		SCStaticText( w, 60@20 ).string_( "format" ).align_( \right );
-		hFormat = SCPopUpMenu( w, 48@20 ).items_( ["aiff", "wav", "caf"] )
+		StaticText( w, 60@20 ).string_( "format" ).align_( \right );
+		hFormat = PopUpMenu( w, 48@20 ).items_( ["aiff", "wav", "caf"] )
 			.action_({ |v| server.recHeaderFormat =  v.items[ v.value ][ v.value ]; 
 					fileName.items = fileName.items.put( 2, 
 						fileName.items[2].replaceExtension( v.items[ v.value ] ) );
 					});
-		sFormat = SCPopUpMenu( w, 60@20 ).items_( 
+		sFormat = PopUpMenu( w, 60@20 ).items_( 
 			["float", "double", "int16", "int24", "int32", "mu", "a"] )
 			.action_({ |v| server.recSampleFormat =
 		     v.items[ v.value ].asString; });
 		
 		w.view.decorator.nextLine;
-		SCStaticText( w, 60@20 ).string_( "filename" ).align_( \right );
-		fileName = SCPopUpMenu( w, 220@20 ).items_( 
+		StaticText( w, 60@20 ).string_( "filename" ).align_( \right );
+		fileName = PopUpMenu( w, 220@20 ).items_( 
 					["auto name", "-" , "recording.aiff", "-", "specify path..", "browse path.."] )
 				.action_({ |v|
 					case { v.value == 4 }
@@ -85,7 +85,7 @@ ServerRecordWindow {
 										string.dirname.deStandardizePath ++ "/";} );
 						}
 						{ v.value == 5 }
-						{ CocoaDialog.savePanel(
+						{ Dialog.savePanel(
 							{ |path| v.items =  v.items.put( 2, path.basename
 								.replaceExtension( hFormat.items[ hFormat.value ] ) );
 								v.value = 2;
@@ -94,9 +94,9 @@ ServerRecordWindow {
 						});
 						
 		w.view.decorator.nextLine;
-		SCStaticText( w, 60@20 ).string_( "folder" ).align_( \right );
+		StaticText( w, 60@20 ).string_( "folder" ).align_( \right );
 		folderName = SCStaticText(  w, 180@20 ).string_( "recordings/" ).align_( \center );
-		SCButton( w, 35@20 ).states_( [["show"]] ).action_({ folderName.string.openInFinder });
+		Button( w, 35@20 ).states_( [["show"]] ).action_({ folderName.string.openInFinder });
 		
 		w.view.decorator.nextLine;
 		
@@ -108,11 +108,11 @@ ServerRecordWindow {
 			};
 		
 		controls = (
-			counterText: SCStaticText( w, 60@20 ).string_( "time" ).align_( \right ),
+			counterText: StaticText( w, 60@20 ).string_( "time" ).align_( \right ),
 			counter: SMPTEView( w, 0@0 ).fontSize_( 15 ).fontColor_( Color.black ),
 			nextLine: w.view.decorator.nextLine,
 			prepare:
-				SCButton( w, 60@20 )
+				Button( w, 60@20 )
 					.states_( [[ "prepare", Color.black, Color.red.alpha_(0.5) ]] )
 					.action_({ 
 						var inFileName;
@@ -138,7 +138,7 @@ ServerRecordWindow {
 						controls[ \record ].value = 1;
 						controls[ \counter ].pos = 0;
 					 	}),
-			spacer: SCStaticText( w, 30@20 ), // spacer
+			spacer: StaticText( w, 30@20 ), // spacer
 			record: RoundButton( w, 60@40 )
 				.states_( [
 					[ \record, Color.red(0.5).blend( Color.white, 0.5 ) , Color.gray(0.75) ],
