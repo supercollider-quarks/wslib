@@ -3,16 +3,17 @@
 
 MasterEQ {
 	classvar <>eq; // dict with all variables
+	classvar <window;
 	
 	*new { |numCha = (2), server|
 		
 		if( \TabbedView.asClass.notNil )
-			{ if( eq.isNil or: { eq[ \fwin ].dataptr.isNil } )
+			{ if( eq.isNil or: { window.dataptr.isNil } )
 				{ ^this.newEQ( numCha, server ) }
 				{ if( eq[ \numChannels ] != numCha )
 					{ if( eq[ \playing ] ) { eq[ \free ].value; };
 					  eq[ \numChannels ] = numCha;
-					  eq[ \fwin ].name = "MasterEQ (% ch)".format( numCha );
+					  window.name = "MasterEQ (% ch)".format( numCha );
 					  eq[ \play ].value; }
 					{ if( eq[ \playing ].not ) 
 						{ eq[ \play ].value; eq[ \bypass_button ].value=1 }; }
@@ -29,13 +30,13 @@ MasterEQ {
 		
 		eq = ();
 		
-		eq[ \fwin ] = GUI.window.new( "MasterEQ (% ch)".format( numCha ), 
+		window = GUI.window.new( "MasterEQ (% ch)".format( numCha ), 
 				Rect(300, 100, 346, 270), false ).front; 
 		
-		eq[ \fwin ].view.decorator = FlowLayout( eq[ \fwin ].view.bounds, 10@10, 4@10 );
+		window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@10 );
 		
-		eq[ \uvw ] = GUI.userView.new( eq[ \fwin ], 
-			eq[ \fwin ].view.bounds.insetBy(10,10).height_(180) ).resize_(5);
+		eq[ \uvw ] = GUI.userView.new( window, 
+			window.view.bounds.insetBy(10,10).height_(180) ).resize_(5);
 		
 		eq[ \font ] = GUI.font.new( GUI.font.defaultMonoFace, 9 );
 		
@@ -71,8 +72,8 @@ MasterEQ {
 		
 		eq[ \selected ] = -1;
 		
-		eq[ \tvw ] = TabbedView( eq[ \fwin ], 
-				eq[ \fwin ].view.bounds.insetBy(10,10).height_(35).top_(200),
+		eq[ \tvw ] = TabbedView( window, 
+				window.view.bounds.insetBy(10,10).height_(35).top_(200),
 			[ "low shelf", "peak 1", "peak 2", "peak 3", "high shelf" ],
 			{ |i| Color.hsv( i.linlin(0,5,0,1), 0.75, 0.5).alpha_( 0.25 ); }!5 )
 				.font_( eq[ \font ] )
@@ -135,34 +136,34 @@ MasterEQ {
 				});
 			};
 			
-		eq[ \pumenu ] = GUI.popUpMenu.new( eq[ \fwin ], 100@15 )
+		eq[ \pumenu ] = GUI.popUpMenu.new( window, 100@15 )
 			.font_( eq[ \font ] ).canFocus_(false);
 			
 		//eq[ \pumenu_check ].value;
 		eq[ \pu_buttons ] = [
-			RoundButton.new( eq[ \fwin ], 15@15 )
+			RoundButton.new( window, 15@15 )
 				.radius_( 2 ).border_(1)
 				.states_( [[ '+' ]] ),
-			RoundButton.new( eq[ \fwin ],  15@15 )
+			RoundButton.new( window,  15@15 )
 				.radius_( 2 ).border_(1)
 				.states_( [[ '-' ]] ),	
 			];
 			
-		GUI.staticText.new( eq[ \fwin ], 26@15  );
+		GUI.staticText.new( window, 26@15  );
 		
 		eq[ \pu_filebuttons ] = [
-			RoundButton.new( eq[ \fwin ], 50@15 )
+			RoundButton.new( window, 50@15 )
 				.extrude_( false ).font_( eq[ \font ] )
 				.states_( [[ "save", Color.black, Color.red(0.75).alpha_(0.25) ]] ),
-			RoundButton.new( eq[ \fwin ],  50@15 )
+			RoundButton.new( window,  50@15 )
 				.extrude_( false ).font_( eq[ \font ] )
 				.states_( [[ "revert", Color.black, Color.green(0.75).alpha_(0.25) ]] )
 			];
 			
 			
-		GUI.staticText.new( eq[ \fwin ], 24@15  );
+		GUI.staticText.new( window, 24@15  );
 		
-		eq[ \bypass_button ] = RoundButton.new( eq[ \fwin ], 17@17 )
+		eq[ \bypass_button ] = RoundButton.new( window, 17@17 )
 				.extrude_( false ) //.font_( eq[ \font ] )
 				.states_( [
 					[ 'power', Color.gray(0.2), Color.white(0.75).alpha_(0.25) ],
@@ -520,7 +521,7 @@ MasterEQ {
 			
 			};
 		eq[ \pu_filebuttons ][1].action.value; // revert
-		 eq[ \fwin ].refresh;
+		 window.refresh;
 		);
 		
 		(
@@ -564,7 +565,7 @@ MasterEQ {
 			CmdPeriod.remove( eq );
 			};
 			
-		eq[ \fwin ].onClose = { if( eq[ \playing ] != false ) { eq[ \free ].value; }; };
+		window.onClose = { if( eq[ \playing ] != false ) { eq[ \free ].value; }; };
 		
 		(
 		eq[ \ar ] = { |input|
