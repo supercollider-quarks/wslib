@@ -1,23 +1,29 @@
 ModKey {
 	classvar <numberDict;
+	classvar <dict;
 	
 	var <>list; 
-	var <>extra; // extras bit indexes for 24bits modifier number
-	
+	var <>extra; // extras bit indexes for 24bits modifier number	
 	// extra args contain left/right shift and cmd and some unknown bits
 	
 	// no setting yet, only testing (except directly with list argument)
 	
 	*initClass {
 		numberDict = (
+		
+			// bit = 1 indexes
+			
 			0: 'fn', // powerbook
+			1: 'help',// help key
+			2: 'num', // num & fn = arrow key (or fn on a num key with no numlock)
 			3: 'cmd',
 			4: 'alt',
 			5: 'ctrl',
 			6: 'shift',
 			7: 'capslock'
+			
 			);
-		
+				
 		}
 		
 	*new { |... args|
@@ -26,18 +32,10 @@ ModKey {
 			{ ^this.fromList( *args ) };
 		}
 	
-	*fromList { |... args| ^super.new.init( args.flat ) } // [\shift, \ctrl] etc. -- no Strings
+	*fromList { |... args| ^super.new.init( args.flat ); } // [\shift, \ctrl] etc. -- no Strings
 	
 	*fromNumber { |number|  // as provided by mouseActions and keyActions 
-		var string, indices = [];
-		string = number.asBinaryString(24);
-		 
-		string.do({ |item, i|
-			if( item == $1 )
-				{ indices = indices.add( i ) };
-				});
-				
-		^this.new( *indices ) 
+		^this.fromList( *number.asBinaryString(24).indicesOfEqual( $1 ) ); 
 		}
 	
 	asNumber {
@@ -46,33 +44,31 @@ ModKey {
 			.collect({ |item| numberDict.findKeyForValue( item ) })
 			.select( _.notNil ) ++ extra;
 		string = String.fill(24, { |i| if( indices.includes( i ) ) { $1 } { $0 } } );
-		^( "2r" ++ string ).interpret;
+		^( "2r" ++ string ).interpret.asInt;
 		}
 	
 	init { |args|
 		var tempList;
 		tempList = args.collect({ |item| numberDict[ item ] ? item; });
 		list = tempList.select({ |item| item.class == Symbol }).sort;
-		extra = tempList.select({ |item| item.class != Symbol }).sort; 
+		extra = tempList.select({ |item| (item.class != Symbol) && (item.notNil) }).sort; 
 		}
 		
 	
 	includes { |modNames, mode = \all|
-		case { mode == \any }
-			{ ^this.includesAny( *modNames ) }
-			{ mode == \only }
-			{ ^this.includesOnly( *modNames ) }
-			{ mode == \onlyAny }
-			{ ^this.includesOnlyAny( *modNames ) }
-			{ mode == \one }
-			{ ^this.includesOne( *modNames ) }
-			{ mode == \onlyOne }
-			{ ^this.includesOnlyOne( *modNames ) }
-			{ true } // mode == \all or anything else
-			{ ^this.includesAll( *modNames ) };
+	
+		switch( mode,
+			\all, { ^this.includesAll( *modNames ); },
+			\any, { ^this.includesAny( *modNames ) },
+			\only, { ^this.includesOnly( *modNames ) },
+			\onlyAny, { ^this.includesOnlyAny( *modNames ) },
+			\one, { ^this.includesOne( *modNames ) },
+			\onlyOne, { ^this.includesOnlyOne( *modNames ) } );
+		
+		 ^this.includesAll( *modNames );
+			
 		}
 			
-	
 	includesAll { |... modNames| ^modNames.every({ |item| list.includes( item ) }); }
 	includesAny { |... modNames| ^modNames.any({ |item| list.includes( item ) }); } 
 	includesOnly { |... modNames| // optimized

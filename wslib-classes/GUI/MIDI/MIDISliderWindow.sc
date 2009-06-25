@@ -10,6 +10,8 @@
 
 
 BasicMIDIWindow {
+
+	classvar <>responder;
 	
 	// so far this class is only used for MIDIBendWindow and MIDITouchWindow
 	
@@ -273,9 +275,10 @@ MIDIBendWindow : BasicMIDIWindow {
 			
 	// preset for lower res 16 ch version:
 	*new1024 {arg inAction; MIDIBendWindow(maxMIDIVal: 1024, inAction:inAction) }
+
 	
-	*connect { |midiFunc| MIDIIn.bend = midiFunc; } //todo: make it use responder instead
-	*disconnect { MIDIIn.bend = nil; }
+	*connect { |midiFunc| if( responder.isNil ) { responder = BendResponder( midiFunc ); } }
+	*disconnect { responder.remove; responder = nil; }
 	
 	*midiRecorderAdd { |i, val|
 			if( midiRecorder.notNil ) { midiRecorder.addType( \pitchBend, i, (val * 2) - 1 ); };
@@ -337,8 +340,14 @@ MIDITouchWindow : BasicMIDIWindow  {
 			Point(540,330), 190); 
 		}
 	
+	/*
 	*connect { |midiFunc| MIDIIn.touch = midiFunc; }
 	*disconnect { MIDIIn.touch = nil; }
+	*/
+	
+	*connect { |midiFunc| if( responder.isNil ) { responder = TouchResponder( midiFunc ); } }
+	*disconnect { responder.remove; responder = nil; }
+
 	
 	*midiRecorderAdd { |i, val|
 			if( midiRecorder.notNil ) { midiRecorder.addType( \afterTouch, i, val * 127 ); };
@@ -457,9 +466,10 @@ RoundButton(window, Rect(90, 10, 68, 18))
 			});
 
 MIDIWindow.new;
-MIDIIn.touch = midiFunc;
+//MIDIIn.touch = midiFunc;
+this.connect( midiFunc );
 window.onClose_({ 
-	window = nil; MIDIIn.touch = nil });
+	window = nil; MIDIIn.disconnect });
 };
 window.front;
 
@@ -516,6 +526,7 @@ MIDIControlWindow {
 			};
 			
 		}
+
 	
 	*new {arg nC = 16, busOffset = 48, type='channel', cc=7, ch=0, initValues = [], historySize = 1, inAction;
 	
@@ -626,7 +637,7 @@ MIDICinetixWindow {
 	
 	*wheels { arg busOffset = 32, inAction;
 		// preset for my own wheel controller
-		^MIDICinetixWindow.new([4,1,2,5], busOffset, [0],inAction) }
+		^this.new([4,1,2,5], busOffset, [0],inAction) }
 	
 	*new { arg channels = 4 , busOffset = 32, reverse, inAction;
 var busMessage = { |chan, val| Server.default.sendMsg("/c_set", chan + busOffset, val) };
@@ -651,6 +662,7 @@ sliders = Array.fill(channels.size, { | i |
 		.value_(values[i])
 		.canFocus_( false )
 		.action_({ |slider|
+			action.value( i, slider.value); 
 			if(useFaders && updateBusses)
 			{ busMessage.(i, slider.value) };
 			});

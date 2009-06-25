@@ -18,6 +18,7 @@ PlotPoint {
 		labelFont = labelFont ?? { Font( "Monaco", 9 ) };
 		view = SCUserView( window, window.view.bounds.insetBy(8,8) );
 		view.resize_( 5 );
+		view.relativeOrigin_( false );
 		
 		range = 10**(point.x.abs.max( point.y.abs ).log10.ceil);
 		includeNeg = point.x.isNegative or: point.y.isNegative;
@@ -26,13 +27,13 @@ PlotPoint {
 		
 			var rectsize, center, strB, negStrB;
 			var scaledPoint;
-			rectsize = vw.bounds.height.min( vw.bounds.width );
-			center = vw.bounds.center;
+			rectsize = vw.drawBounds.height.min( vw.drawBounds.width );
+			center = vw.drawBounds.center;
 			if( includeNeg )
 				{ Pen.width = lineSize;
 				  lineColor.set;
-				  Pen.line( vw.bounds.left@center.y,  vw.bounds.right@center.y ).stroke;
-				  Pen.line(center.x@vw.bounds.top,  center.x@vw.bounds.bottom ).stroke;
+				  Pen.line( vw.drawBounds.left@center.y,  vw.drawBounds.right@center.y ).stroke;
+				  Pen.line(center.x@vw.drawBounds.top,  center.x@vw.drawBounds.bottom ).stroke;
 				  
 				  ((1,2..10)).do({ |i| 
 				  	var vPos, label;
@@ -92,29 +93,30 @@ PlotPoint {
 				
 				{ Pen.width = lineSize;
 				  lineColor.set;
-				  Pen.line( vw.bounds.leftTop,  vw.bounds.leftBottom );
-				  Pen.lineTo( vw.bounds.rightBottom ).stroke;
+				  Pen.line( vw.drawBounds.leftTop,  vw.drawBounds.leftBottom );
+				  Pen.lineTo( vw.drawBounds.rightBottom ).stroke;
 				   ((1,2..10)).do({ |i| 
 				  	var vPos, label;
-				  	vPos = vw.bounds.bottom - ((i/10) * rectsize);
-				  	Pen.line( vw.bounds.left@vPos,(vw.bounds.left + 2)@vPos ).stroke;
+				  	vPos = vw.drawBounds.bottom - ((i/10) * rectsize);
+				  	Pen.line( vw.drawBounds.left@vPos,(vw.drawBounds.left + 2)@vPos ).stroke;
 				  	});
 				
 				 ((1,2..10)).do({ |i| 
 				  	var hPos, label;
-				  	hPos = vw.bounds.left + ((i/10) * rectsize);
-				  	Pen.line( hPos@(vw.bounds.bottom),  hPos@(vw.bounds.bottom - 2)).stroke;
+				  	hPos = vw.drawBounds.left + ((i/10) * rectsize);
+				  	Pen.line( hPos@(vw.drawBounds.bottom),  
+				  		hPos@(vw.drawBounds.bottom - 2)).stroke;
 					});
 				  
 				strB = range.asString.bounds( labelFont );
 										
 				range.asString.drawAtPoint(
-					 (vw.bounds.left + 3)@(vw.bounds.bottom - rectsize ), 
+					 (vw.drawBounds.left + 3)@(vw.drawBounds.bottom - rectsize ), 
 					 labelFont, lineColor 
 					 );
 						
 				range.asString.drawAtPoint(
-					(vw.bounds.left + rectsize)@(vw.bounds.bottom -3)
+					(vw.drawBounds.left + rectsize)@(vw.drawBounds.bottom -3)
 					 - (strB.extent), labelFont, lineColor
 					);
 						
@@ -123,8 +125,8 @@ PlotPoint {
 				scaledPoint = (((point * (1@(-1))) / range) ) * (rectsize);
 				//scaledPoint.postln;
 				
-				Pen.addArc( scaledPoint + vw.bounds.leftBottom, pointSize / 2, 0, 2pi).stroke;
-				Pen.cross( scaledPoint + vw.bounds.leftBottom, pointSize, '+' );
+				Pen.addArc( scaledPoint + vw.drawBounds.leftBottom, pointSize / 2, 0, 2pi).stroke;
+				Pen.cross( scaledPoint + vw.drawBounds.leftBottom, pointSize, '+' );
 				Pen.stroke;
 				};
 			

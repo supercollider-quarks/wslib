@@ -5,28 +5,27 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="949.43">
+<meta name="CocoaVersion" content="949.46">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8f2926}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #8f2926; min-height: 12.0px}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad1c1c}
-p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-span.s1 {text-decoration: underline ; color: #1838d3}
-span.s2 {color: #1331ea}
-span.s3 {color: #0e24ae}
-span.s4 {color: #606060}
-span.s5 {color: #000000}
-span.s6 {color: #456c1f}
-span.s7 {font: 12.0px Helvetica; color: #000000}
-span.s8 {color: #0011b9}
-span.s9 {color: #2a700e}
-span.s10 {color: #0000bf}
-span.s11 {color: #007300}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #9f1414}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #9f1414; min-height: 12.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+span.s1 {text-decoration: underline ; color: #0012b0}
+span.s2 {color: #0012b0}
+span.s3 {color: #0000bf}
+span.s4 {color: #666666}
+span.s5 {color: #950095}
+span.s6 {color: #000000}
+span.s7 {color: #285e08}
+span.s8 {font: 12.0px Helvetica; color: #000000}
+span.s9 {color: #007300}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -40,16 +39,14 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2">But, as the name states, it is smooth. I created this because, frankly, I don't like the looks of SCSlider.</p>
 <p class="p2">SmoothSlider is inspired and partly based upon blackrains Knob (available as <a href="SC://Quark"><span class="s2">Quark</span></a>).</p>
 <p class="p3"><br></p>
-<p class="p4">Rect( 0,0,40,160).centerIn(<span class="s3">Rect</span>( 0,0,220,220))</p>
-<p class="p3"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s3">SCWindow</span>( <span class="s4">"SmoothSlider"</span>, <span class="s3">Rect</span>( 300,150,220,220) ).front; <span class="Apple-converted-space"> </span></p>
-<p class="p4">b = <span class="s3">SmoothSlider</span>( w,<span class="Apple-converted-space">  </span>Rect( 90,30,40,160) ).value_(0.75)</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.action_({ <span class="s3">|sl|</span> sl.value.postln; });</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"SmoothSlider"</span>, <span class="s3">Rect</span>( <span class="s5">300</span>,<span class="s5">150</span>,<span class="s5">220</span>,<span class="s5">220</span>) ).front; <span class="Apple-converted-space"> </span></p>
+<p class="p5">b = <span class="s3">SmoothSlider</span>( w,<span class="Apple-converted-space">  </span><span class="s3">Rect</span>( <span class="s5">90</span>,<span class="s5">30</span>,<span class="s5">40</span>,<span class="s5">160</span>) ).value_(<span class="s5">0.75</span>)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.action_({ <span class="s3">|sl|</span> sl.value.postln; });</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2">SmoothSlider listens to all messages as SCSlider does, but has a few extra of its own:</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2"><b>mode</b></p>
 <p class="p2">Mode indicates the way a SmoothSlider reacts to the mouse. The mode can be 'jump' or 'move'</p>
 <p class="p3"><span class="Apple-tab-span">	</span></p>
@@ -57,113 +54,111 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><span class="Apple-tab-span">	</span><b>'move' </b>:<span class="Apple-converted-space">  </span>the value only changes by the amount the mouse is moved after clicking, and doesn't</p>
 <p class="p2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>jump to the mouse position.</p>
 <p class="p3"><br></p>
-<p class="p6"><span class="s5">b.mode_( </span><span class="s6">\move</span><span class="s5"> ); </span>// try moving the slider before and after running this line</p>
-<p class="p7"><br></p>
-<p class="p6"><span class="s5">b.mode_( </span><span class="s6">\jump</span><span class="s5"> ); </span>// back to default<span class="s7"><b><span class="Apple-tab-span">	</span></b></span></p>
-<p class="p5"><br></p>
+<p class="p7"><span class="s6">b.mode_( </span><span class="s7">\move</span><span class="s6"> ); </span>// try moving the slider before and after running this line</p>
+<p class="p8"><br></p>
+<p class="p7"><span class="s6">b.mode_( </span><span class="s7">\jump</span><span class="s6"> ); </span>// back to default<span class="s8"><b><span class="Apple-tab-span">	</span></b></span></p>
+<p class="p6"><br></p>
 <p class="p2"><b>knobColor / knobColor_</b></p>
 <p class="p2"><b>background / background_</b></p>
 <p class="p2"><b>hilightColor / hilightColor_</b></p>
 <p class="p2">Colors and Gradients can be varied using these getter/setters:</p>
 <p class="p3"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s3">SCWindow</span>( <span class="s4">"colorful"</span>, <span class="s3">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p4">7.do({ <span class="s3">|i|</span> <span class="s3">SmoothSlider</span>( w, 30@100 )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.knobColor_( <span class="s3">Color</span>.rand(0,0.8).alpha_( [1,0.5,1,1,0,1,0][i] ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s3">Color</span>.rand(0,0.8).alpha_( [1,0.5,0,1,1,0,0][i] ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hilightColor_( <span class="s3">Color</span>.rand(0,0.8).alpha_( [1,0.5,1,0,1,0,1][i] ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( 0,6,0.2,0.8) )</p>
-<p class="p6"><span class="s5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.canFocus_( </span><span class="s3">false</span><span class="s5"> ); </span>// looks better without the focus rectangle</p>
-<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"colorful"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p9"><span class="s5">7</span><span class="s6">.do({ </span>|i|<span class="s6"> </span>SmoothSlider<span class="s6">( w, </span><span class="s5">30</span><span class="s6">@</span><span class="s5">100 </span><span class="s6">)</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.knobColor_( <span class="s3">Color</span>.rand(<span class="s5">0</span>,<span class="s5">0.8</span>).alpha_( [<span class="s5">1</span>,<span class="s5">0.5</span>,<span class="s5">1</span>,<span class="s5">1</span>,<span class="s5">0</span>,<span class="s5">1</span>,<span class="s5">0</span>][i] ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s3">Color</span>.rand(<span class="s5">0</span>,<span class="s5">0.8</span>).alpha_( [<span class="s5">1</span>,<span class="s5">0.5</span>,<span class="s5">0</span>,<span class="s5">1</span>,<span class="s5">1</span>,<span class="s5">0</span>,<span class="s5">0</span>][i] ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hilightColor_( <span class="s3">Color</span>.rand(<span class="s5">0</span>,<span class="s5">0.8</span>).alpha_( [<span class="s5">1</span>,<span class="s5">0.5</span>,<span class="s5">1</span>,<span class="s5">0</span>,<span class="s5">1</span>,<span class="s5">0</span>,<span class="s5">1</span>][i] ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( <span class="s5">0</span>,<span class="s5">6</span>,<span class="s5">0.2</span>,<span class="s5">0.8</span>) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>});</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p4">(</p>
-<p class="p4">x = { <span class="s8">Color</span>.rand(0,0.8).alpha_( [1.0.rand ** 2, 1].choose ) };</p>
-<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"gradients"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.knobColor_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hilightColor_( <span class="s8">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( 0,6,0.2,0.8) )</p>
-<p class="p8"><span class="s5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.canFocus_( </span><span class="s8">false</span><span class="s5"> ); </span>// looks better without the focus rectangle</p>
-<p class="p4"><span class="Apple-tab-span">	</span>});</p>
+<p class="p5">x = { <span class="s3">Color</span>.rand(<span class="s5">0</span>,<span class="s5">0.8</span>).alpha_( [<span class="s5">1.0</span>.rand ** <span class="s5">2</span>, <span class="s5">1</span>].choose ) };</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"gradients"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p9"><span class="s5">7</span><span class="s6">.do({ </span>|i|<span class="s6"> </span>SmoothSlider<span class="s6">( w, </span><span class="s5">30</span><span class="s6">@</span><span class="s5">100 </span><span class="s6">)</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.knobColor_( <span class="s3">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s3">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hilightColor_( <span class="s3">Gradient</span>( x.(), x.(), [<span class="s9">\h</span>, <span class="s9">\v</span>].choose ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( i.linlin( <span class="s5">0</span>,<span class="s5">6</span>,<span class="s5">0.2</span>,<span class="s5">0.8</span>) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>});</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"smoother smoothslider"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p4">z = <span class="s8">SmoothSlider</span>( w, 160@15 ).value_( 0.5 )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s8">Gradient</span>( Color.gray(0.9), Color.gray(0.1), \h ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( Color.black.alpha_(0.8), Color.white.alpha_(0.8), \h ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s8">Gradient</span>( Color.blue.alpha_(0.5), Color.web.purple.alpha_(0.25), \v ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.knobSize_(1).canFocus_(false);</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"smoother smoothslider"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5">z = <span class="s3">SmoothSlider</span>( w, <span class="s5">160</span>@<span class="s5">15 </span>).value_( <span class="s5">0.5 </span>)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s3">Gradient</span>( <span class="s3">Color</span>.gray(<span class="s5">0.9</span>), <span class="s3">Color</span>.gray(<span class="s5">0.1</span>), <span class="s9">\h</span> ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.background_( <span class="s3">Gradient</span>( <span class="s3">Color</span>.black.alpha_(<span class="s5">0.8</span>), <span class="s3">Color</span>.white.alpha_(<span class="s5">0.8</span>), <span class="s9">\h</span> ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s3">Gradient</span>( <span class="s3">Color</span>.blue.alpha_(<span class="s5">0.5</span>), <span class="s3">Color</span>.web.purple.alpha_(<span class="s5">0.25</span>), <span class="s9">\v</span> ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.knobSize_(<span class="s5">1</span>).canFocus_(<span class="s3">true</span>);</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2"><b>knobSize / knobSize_</b></p>
 <p class="p2">knobSize is relative to the width of the slider. It defaults to 0.25.<span class="Apple-converted-space"> </span></p>
 <p class="p2">The rounded edges of SmoothSlider are influenced by the knobSize.</p>
 <p class="p3"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s3">SCWindow</span>( <span class="s4">"knobSize"</span>, <span class="s3">Rect</span>(100,100, 120, 250 ) ).front.decorate;</p>
-<p class="p4">c = <span class="s3">SmoothSlider</span>( w, 50@200 ).value_(1).knobSize_( 1 ).canFocus_( <span class="s3">false</span> );</p>
-<p class="p4">d = <span class="s3">SmoothSlider</span>( w, 50@200 ).value_(1).knobSize_( 1 ).canFocus_( <span class="s3">false</span> );</p>
-<p class="p6"><span class="s5">c.action_({ </span><span class="s3">|sl|</span><span class="s5"> d.knobSize = sl.value; }); </span>// moving the slider changes the knobSize of the other</p>
-<p class="p4">d.action_({ <span class="s3">|sl|</span> c.knobSize = sl.value; });</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"knobSize"</span>, <span class="s3">Rect</span>(<span class="s5">100</span>,<span class="s5">100</span>, <span class="s5">120</span>, <span class="s5">250 </span>) ).front.decorate;</p>
+<p class="p5">c = <span class="s3">SmoothSlider</span>( w, <span class="s5">50</span>@<span class="s5">200 </span>).value_(<span class="s5">1</span>).knobSize_( <span class="s5">1 </span>);</p>
+<p class="p5">d = <span class="s3">SmoothSlider</span>( w, <span class="s5">50</span>@<span class="s5">200 </span>).value_(<span class="s5">1</span>).knobSize_( <span class="s5">1 </span>);</p>
+<p class="p10"><span class="s6">c.action_({ </span><span class="s3">|sl|</span><span class="s6"> d.knobSize = sl.value; }); </span>// moving the slider changes the knobSize of the other</p>
+<p class="p5">d.action_({ <span class="s3">|sl|</span> c.knobSize = sl.value; });</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2"><b>baseWidth / baseWidth_</b></p>
 <p class="p2">baseWidth is relative to the width of the sliders base. It defaults to 1.<span class="Apple-converted-space"> </span></p>
 <p class="p3"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"basewidths"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 ).baseWidth_( 1/(i+1) ).value_( i/7 ); });</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"basewidths"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5"><span class="s5">7</span>.do({ <span class="s3">|i|</span> <span class="s3">SmoothSlider</span>( w, <span class="s5">30</span>@<span class="s5">100 </span>).baseWidth_( <span class="s5">1</span>/(i+<span class="s5">1</span>) ).value_( i/<span class="s5">7 </span>); });</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"cocoa-like slider"</span>, <span class="s8">Rect</span>(200,200, 200, 120 ) ).front.decorate;</p>
-<p class="p4">z = <span class="s8">SmoothSlider</span>( w, 160@15 ).baseWidth_( 0.3 ).value_( 0.5 )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s8">Gradient</span>( Color.gray(0.8), Color.gray(0.2), \h ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.background_( <span class="s8">Gradient</span>( Color.black.alpha_(0.8), Color.white.alpha_(0.8), \h ) )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.knobSize_(1).hilightColor_(nil).canFocus_(false);</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"cocoa-like slider"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">200</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5">z = <span class="s3">SmoothSlider</span>( w, <span class="s5">160</span>@<span class="s5">15 </span>).baseWidth_( <span class="s5">0.3 </span>).value_( <span class="s5">0.5 </span>)</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.knobColor_(<span class="Apple-converted-space">  </span><span class="s3">Gradient</span>( <span class="s3">Color</span>.gray(<span class="s5">0.8</span>), <span class="s3">Color</span>.gray(<span class="s5">0.2</span>), <span class="s9">\h</span> ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.background_( <span class="s3">Gradient</span>( <span class="s3">Color</span>.black.alpha_(<span class="s5">0.8</span>), <span class="s3">Color</span>.white.alpha_(<span class="s5">0.8</span>), <span class="s9">\h</span> ) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.knobSize_(<span class="s5">1</span>).hilightColor_(<span class="s3">nil</span>).canFocus_(<span class="s3">false</span>);</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2"><b>border / border_</b></p>
 <p class="p2"><b>borderColor / borderColor_</b></p>
 <p class="p2">border is the size of the outline border around the slider. It defaults to 0 (no border).</p>
 <p class="p2">borderColor defines the color of the border</p>
 <p class="p3"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s8">SCWindow</span>( <span class="s4">"borders"</span>, <span class="s8">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p4">7.do({ <span class="s8">|i|</span> <span class="s8">SmoothSlider</span>( w, 30@100 ).border_( i )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.borderColor_( Color.rand )</p>
-<p class="p4"><span class="Apple-tab-span">	</span>.value_( i/7 ); });</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"borders"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5"><span class="s5">7</span>.do({ <span class="s3">|i|</span> <span class="s3">SmoothSlider</span>( w, <span class="s5">30</span>@<span class="s5">100 </span>).border_( i )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.borderColor_( <span class="s3">Color</span>.rand )</p>
+<p class="p5"><span class="Apple-tab-span">	</span>.value_( i/<span class="s5">7 </span>); });</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p4">(</p>
-<p class="p9">w = <span class="s10">SCWindow</span>( <span class="s4">"levelmeters"</span>, <span class="s10">Rect</span>(200,200, 250, 120 ) ).front.decorate;</p>
-<p class="p9">7.do({ <span class="s10">|i|</span></p>
-<p class="p9"><span class="Apple-tab-span">	</span><span class="s10">SmoothSlider</span>( w, 30@100 ).border_( 1 ).borderColor_( <span class="s10">Color</span>.gray(0.2) )</p>
-<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( (i+1)/7 ).knobSize_(0).canFocus_(<span class="s10">false</span>)</p>
-<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s10">Color</span>.white.alpha_(0.25) )</p>
-<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s10">Gradient</span>( <span class="s10">Color</span>.red.alpha_(0.9), <span class="s10">Color</span>.green.alpha_(0.8), <span class="s11">\v</span> ) );</p>
-<p class="p9"><span class="Apple-tab-span">	</span>});</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"levelmeters"</span>, <span class="s3">Rect</span>(<span class="s5">200</span>,<span class="s5">200</span>, <span class="s5">250</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5"><span class="s5">7</span>.do({ <span class="s3">|i|</span></p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="s3">SmoothSlider</span>( w, <span class="s5">30</span>@<span class="s5">100 </span>).border_( <span class="s5">1 </span>).borderColor_( <span class="s3">Color</span>.gray(<span class="s5">0.2</span>) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.value_( (i+<span class="s5">1</span>)/<span class="s5">7 </span>).knobSize_(<span class="s5">0</span>).canFocus_(<span class="s3">false</span>)</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.background_( <span class="s3">Color</span>.white.alpha_(<span class="s5">0.25</span>) )</p>
+<p class="p5"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>.hiliteColor_( <span class="s3">Gradient</span>( <span class="s3">Color</span>.red.alpha_(<span class="s5">0.9</span>), <span class="s3">Color</span>.green.alpha_(<span class="s5">0.8</span>), <span class="s9">\v</span> ) );</p>
+<p class="p5"><span class="Apple-tab-span">	</span>});</p>
 <p class="p4">)</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p2"><b>relThumbSize / relThumbSize_</b></p>
 <p class="p2">the relThumbSize is a little different from the knobSize. It changes the <b>thumbSize</b> variable (inherited from SCSlider) but relative to the slider's length. The default thumbSize is 0. You will only see a change if the thumbSize becomes greater then the absolute knob size (<b>absKnobSize </b>- getter only).</p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
 <p class="p4">(</p>
-<p class="p4">w = <span class="s3">SCWindow</span>( <span class="s4">"relThumbSize"</span>, <span class="s3">Rect</span>(100,100, 220, 120 ) ).front.decorate;</p>
-<p class="p4">c = <span class="s3">SmoothSlider</span>( w, 200@50 ).canFocus_( <span class="s3">false</span> );</p>
-<p class="p4">d = <span class="s3">SmoothSlider</span>( w, 200@50 ).canFocus_( <span class="s3">false</span> );</p>
-<p class="p4">c.action_({ <span class="s3">|sl|</span> d.relThumbSize = sl.value; });</p>
-<p class="p4">d.action_({ <span class="s3">|sl|</span> c.relThumbSize = sl.value; });</p>
+<p class="p5">w = <span class="s3">SCWindow</span>( <span class="s4">"relThumbSize"</span>, <span class="s3">Rect</span>(<span class="s5">100</span>,<span class="s5">100</span>, <span class="s5">220</span>, <span class="s5">120 </span>) ).front.decorate;</p>
+<p class="p5">c = <span class="s3">SmoothSlider</span>( w, <span class="s5">200</span>@<span class="s5">50 </span>);</p>
+<p class="p5">d = <span class="s3">SmoothSlider</span>( w, <span class="s5">200</span>@<span class="s5">50 </span>);</p>
+<p class="p5">c.action_({ <span class="s3">|sl|</span> d.relThumbSize = sl.value; });</p>
+<p class="p5">d.action_({ <span class="s3">|sl|</span> c.relThumbSize = sl.value; });</p>
 <p class="p4">)</p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
 <p class="p2"><b>safeValue_</b></p>
 <p class="p2">same as .value, but prevents first checks wether the window is not closed to prevent a crash.</p>
-<p class="p5"><br></p>
-<p class="p5"><br></p>
-<p class="p5"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
+<p class="p6"><br></p>
 </body>
 </html>

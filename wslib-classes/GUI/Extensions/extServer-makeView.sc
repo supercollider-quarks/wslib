@@ -7,6 +7,7 @@
 		var dumping=false;
 		var infoString, oldOnClose;
 		var font;
+		var cpuMeter, composite;
 		
 		
 		font = Font("Monaco", 9);
@@ -16,7 +17,7 @@
 		
 		if(w.isNil,{
 			w = window = GUI.window.new(name.asString ++ " server", 
-						Rect(10, named.values.indexOf(this) * 120 + 10, 300, 92));
+						Rect(10, named.values.indexOf(this) * 120 + 10, 320, 92));
 			w.view.decorator = FlowLayout(w.view.bounds);
 		});
 		
@@ -147,10 +148,23 @@
 			
 		//w.view.decorator;
 		
-		infoString = GUI.staticText.new(w, Rect(0,0, 200, 18));
-		infoString.string = "CPU: %/%\tSynths/Defs: %/%"
-			.format( "?", "?", "?", "?" );
+		composite = CompositeView( w, 192@18 );
+		
+			infoString = GUI.staticText.new(composite, Rect(0,0, 192, 18));
+		infoString.string = "CPU: %/%\tSynths/Defs: %/%"			.format( "?", "?", "?", "?" );
 		infoString.font_( GUI.font.new( "Monaco", 9 ) );
+		
+		/*
+		cpuMeter = SCLevelIndicator( composite, 192@18 )
+			//.numTicks_( 9 ) // includes 0;
+			//.numMajorTicks_( 5 )
+			
+			.drawsPeak_( true )
+			.warning_( 0.8 )
+			.critical_( 1 );
+		*/
+		
+	
 		
 		w.view.decorator.nextLine;
 		
@@ -160,10 +174,23 @@
 		ctlr = SimpleController(this)
 			.put(\serverRunning, {	if(serverRunning,running,stopped) })
 			.put(\counts,{
+				
 				infoString.string =
 					"CPU: %/%\tSynths/Defs: %/%"
 						.format(avgCPU.round(0.1),  peakCPU.round(0.1), 
 							numSynths, numSynthDefs );
+				
+				/*
+				infoString.string =
+					"Synths/Defs: %/%"
+						.format( numSynths, numSynthDefs );
+				*/
+				
+				/*
+				cpuMeter.value = avgCPU / 100;
+				cpuMeter.peakLevel = peakCPU / 100;
+				*/
+				
 			})
 			.put(\cmdPeriod,{
 				//recorder.setProperty(\value,0);

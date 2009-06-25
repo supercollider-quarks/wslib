@@ -275,7 +275,16 @@
 	
 
 	}
-
+	
+/*
++ SCPen {
+	*roundedRect { |rect, radius| // radius can be array for 4 corners
+		^Pen.roundedRect( rect, radius );					}
+		
+	*extrudedRect { |rect, radius, width = 2, angle, inverse = false, colors|
+		^Pen.extrudedRect( rect, radius, width, angle, inverse, colors );
+		}}
+*/
 
 + GUIPen {
 

@@ -2,9 +2,9 @@
 
 // a button with ++ functionality and rounded border
 
-// SCv3.2 revision
+// SCv3.3.1 revision
 
-RoundButton : SCUserView { 
+RoundButton : RoundView { 
 	
 	// requires a version of SuperCollider where String:prBounds is working (after april 2007?)
 	
@@ -16,25 +16,66 @@ RoundButton : SCUserView {
 	var <inverse = false;
 	var <focusColor;
 	
+	var <expanded = true;
+	var <shrinkForFocusRing = false;
+	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
 	*viewClass { ^SCUserView }
 	
+	/*
 	init { |parent, bounds|
-		relativeOrigin = false;
-		super.init( parent, bounds );
+		relativeOrigin = true;
+		if( parent.isKindOf( SCLayoutView ) ) { expanded = false; };
+		super.init( parent, if( expanded ) 
+				{ bounds.asRect.insetBy(-3,-3) } 
+				{ bounds } 
+			);
 		super.focusColor = Color.clear;
 		}
+	*/
+		
+	/*
+	drawBounds { ^if( expanded ) 
+			{ this.bounds.moveTo(3,3); } 
+			{ if( shrinkForFocusRing )
+				{ this.bounds.insetBy(3,3).moveTo(3,3) }
+				{ this.bounds.moveTo(0,0); }; 
+			}
+		}
+			
+	bounds { ^if( expanded ) { super.bounds.insetBy(3,3); } { super.bounds; }; }
+	
+	bounds_ { |newBounds| 
+		if( expanded ) 
+			{ super.bounds = newBounds.asRect.insetBy(-3,-3); }
+			{ super.bounds = newBounds; } ;
+		}
+		
+	expanded_ { |bool|
+		var bnds;
+		bnds = this.bounds;
+		expanded = bool ? expanded;
+		this.bounds = bnds;
+		}
+		
+	shrinkForFocusRing_ { |bool|
+		shrinkForFocusRing = bool ? shrinkForFocusRing;
+		this.refresh;
+		}
+	*/
 		
 	mouseDown {
 		arg x, y, modifiers, buttonNumber, clickCount;
-		mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		pressed = true; this.refresh;
+		if( this.drawBounds.containsPoint(x@y) )
+			{ mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		       pressed = true; this.refresh; };
 		}
 	
 	mouseUp {arg x, y, modifiers;
-		mouseUpAction.value(this, x, y, modifiers);
-		pressed = false; 
-		this.valueAction = value + 1;
+		if( pressed == true )
+			{ mouseUpAction.value(this, x, y, modifiers);
+			  pressed = false; 
+			  this.valueAction = value + 1; };
 		//this.refresh;	
 		}
 	
@@ -42,16 +83,12 @@ RoundButton : SCUserView {
 	
 	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
 	
+	
+	
 	draw {
 		var rect, localRadius;
 		var shadeSide, lightSide;
-		// rect = this.bounds;
-		
-		/*
-		if ( relativeOrigin ) // thanks JostM !
-			{ rect = this.bounds.moveTo(0,0) }
-			{ rect = this.absoluteBounds; };
-		*/
+
 		rect = this.drawBounds;
 		
 		radius = radius ?? { rect.width.min( rect.height ) / 2 };

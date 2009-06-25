@@ -40,7 +40,7 @@ MasterEQ {
 		
 		eq[ \font ] = GUI.font.new( GUI.font.defaultMonoFace, 9 );
 		
-		eq[ \uvw ].relativeOrigin = false;
+		// eq[ \uvw ].relativeOrigin = false;
 		
 		eq[ \uvw ].focusColor = Color.clear;
 		
@@ -312,8 +312,9 @@ MasterEQ {
 			var pt;
 			var min = 20, max = 22050, range = 24;
 			
-			bounds = vw.bounds;
-			pt = (x@y) - (bounds.leftTop);
+			bounds = vw.bounds.moveTo(0,0);
+			//pt = (x@y) - (bounds.leftTop);
+			pt = (x@y);
 			
 			eq[ \selected ] =  eq[ \frdb ].detectIndex({ |array|
 				(( array[ 0 ].explin( min, max, 0, bounds.width ) )@
@@ -330,8 +331,9 @@ MasterEQ {
 			var pt;
 			var min = 20, max = 22050, range = 24;
 			
-			bounds = vw.bounds;
-			pt = (x@y) - (bounds.leftTop);
+			bounds = vw.bounds.moveTo(0,0);
+			//pt = (x@y) - (bounds.leftTop);
+			pt = (x@y);
 			
 			if( eq[ \selected ] != -1 )
 				{
@@ -350,7 +352,8 @@ MasterEQ {
 						{
 					eq[ \frdb ][eq[ \selected ]] = eq[ \frdb ][eq[ \selected ]][[0,1]] 
 						++ [ y.linexp( bounds.height, 0, 0.1, 10, \none ).clip(
-								 if( [0,4].includes(eq[ \selected ]) ) { 0.6 } {0.1},10).round(0.01) ];
+								 if( [0,4].includes(eq[ \selected ]) ) { 0.6 } {0.1},
+								 	10).round(0.01) ];
 						};
 					eq[ \tvw_views ][eq[ \selected ]][2].value = eq[ \frdb ][eq[ \selected ]][2];
 						 }
@@ -394,7 +397,7 @@ MasterEQ {
 			var hlines = [-18,-12,-6,6,12,18];
 			var pt;
 			
-			bounds = vw.bounds;
+			bounds = vw.bounds.moveTo(0,0);
 			
 			#freq,db,rq = eq[ \frdb ][0] ? [ freq, db, rq ];
 			
@@ -427,52 +430,49 @@ MasterEQ {
 				@
 				(array[1].linlin(range.neg,range,bounds.height,0,\none));
 				});
-			
-			GUI.pen.use({
-				GUI.pen.translate( bounds.left, bounds.top );
+
+				Pen.color = Color.gray(0.2).alpha_(0.5);
+				Pen.strokeRect( bounds.insetBy(-1,-1) );
 				
-				GUI.pen.color = Color.gray(0.2).alpha_(0.5);
-				GUI.pen.addRect( bounds.moveTo(0,0).insetBy(-1,-1) ).stroke;
+				Pen.addRect( bounds ).clip;
 				
-				GUI.pen.addRect( bounds.moveTo(0,0) ).clip;
-				
-				GUI.pen.color = Color.gray(0.2).alpha_(0.125);
+				Pen.color = Color.gray(0.2).alpha_(0.125);
 				
 				hlines.do({ |hline,i|
 					hline = hline.linlin( range.neg,range, bounds.height, 0, \none );
-					GUI.pen.line( 0@hline, bounds.width@hline )
+					Pen.line( 0@hline, bounds.width@hline )
 					});
 				dimvlines.do({ |vline,i|
-					GUI.pen.line( vline@0, vline@bounds.height );
+					Pen.line( vline@0, vline@bounds.height );
 					});
-				GUI.pen.stroke;
+				Pen.stroke;
 			
-				GUI.pen.color = Color.gray(0.2).alpha_(0.5);
+				Pen.color = Color.gray(0.2).alpha_(0.5);
 				vlines.do({ |vline,i|
-					GUI.pen.line( vline@0, vline@bounds.height );
+					Pen.line( vline@0, vline@bounds.height );
 					});
-				GUI.pen.line( 0@zeroline, bounds.width@zeroline ).stroke;
+				Pen.line( 0@zeroline, bounds.width@zeroline ).stroke;
 				
 				/*
-				GUI.pen.color = Color.white.alpha_(0.5);
-				GUI.pen.fillRect( Rect( 33, 0, 206, 14 ) );
+				Pen.color = Color.white.alpha_(0.5);
+				Pen.fillRect( Rect( 33, 0, 206, 14 ) );
 				*/
 				
-				GUI.pen.font = eq[ \font ];
+				Pen.font = eq[ \font ];
 				
-				GUI.pen.color = Color.gray(0.2).alpha_(0.5);
+				Pen.color = Color.gray(0.2).alpha_(0.5);
 				hlines.do({ |hline|
-					GUI.pen.stringAtPoint( hline.asString ++ "dB", 
+					Pen.stringAtPoint( hline.asString ++ "dB", 
 						1@(hline.linlin( range.neg,range, bounds.height, 0, \none ) -10) );
 					});
 				vlines.do({ |vline,i|
-					GUI.pen.stringAtPoint( ["100Hz", "1KHz", "10KHz"][i], 
+					Pen.stringAtPoint( ["100Hz", "1KHz", "10KHz"][i], 
 						(vline+2)@(bounds.height - 10) );
 					});
 				
 				/*
 				if( eq[ \selected ] != -1 )
-					{ GUI.pen.stringAtPoint(
+					{ Pen.stringAtPoint(
 						[ "low shelf: %hz, %dB, rs=%",
 						  "peak 1: %hz, %dB, rq=%",
 						  "peak 2: %hz, %dB, rq=%",
@@ -485,7 +485,7 @@ MasterEQ {
 							),
 						35@1 );
 					 }
-					 { GUI.pen.stringAtPoint( "shift: snap, alt: rq", 35@1 ); };
+					 { Pen.stringAtPoint( "shift: snap, alt: rq", 35@1 ); };
 				*/
 						
 				values.do({ |svals,i|
@@ -493,35 +493,37 @@ MasterEQ {
 					color = Color.hsv(
 						i.linlin(0,values.size,0,1), 
 						0.75, 0.5).alpha_(if( eq[ \selected ] == i ) { 0.75 } { 0.25 });
-					GUI.pen.color = color;
-					GUI.pen.moveTo( 0@(svals[0]) );
+					Pen.color = color;
+					Pen.moveTo( 0@(svals[0]) );
 					svals[1..].do({ |val, i|
-						GUI.pen.lineTo( (i+1)@val );
+						Pen.lineTo( (i+1)@val );
 						});
-					GUI.pen.lineTo( bounds.width@(bounds.height/2) );
-					GUI.pen.lineTo( 0@(bounds.height/2) );
-					GUI.pen.lineTo( 0@(svals[0]) );
-					GUI.pen.fill;
+					Pen.lineTo( bounds.width@(bounds.height/2) );
+					Pen.lineTo( 0@(bounds.height/2) );
+					Pen.lineTo( 0@(svals[0]) );
+					Pen.fill;
 					
-					GUI.pen.addArc( pt[i], 5, 0, 2pi );
+					Pen.addArc( pt[i], 5, 0, 2pi );
 					
-					GUI.pen.color = color.alpha_(0.75);
-					GUI.pen.stroke;
+					Pen.color = color.alpha_(0.75);
+					Pen.stroke;
 		
 					});
 				
-				GUI.pen.color = Color.blue(0.5);
-				GUI.pen.moveTo( 0@(svals[0]) );
+				Pen.color = Color.blue(0.5);
+				Pen.moveTo( 0@(svals[0]) );
 				svals[1..].do({ |val, i|
-					GUI.pen.lineTo( (i+1)@val );
+					Pen.lineTo( (i+1)@val );
 					});
-				GUI.pen.stroke;
+				Pen.stroke;
 				
-				});
+		
 			
 			};
 		eq[ \pu_filebuttons ][1].action.value; // revert
 		 window.refresh;
+		 
+		//eq[ \uvw ].refreshInRect( eq[ \uvw ].bounds.insetBy(-2,-2) );
 		);
 		
 		(

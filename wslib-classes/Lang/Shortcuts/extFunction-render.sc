@@ -5,7 +5,7 @@
 		arg path, duration = 10, fadeTime=0.02, sampleRate = 44100,
 			headerFormat = "AIFF", sampleFormat = "int24", options, inputFilePath,
 			prependScore, 
-			sfBuffer, async = false; // 1 or more buffers containing <>path information
+			sfBuffer, async = true; // 1 or more buffers containing <>path information
 		
 		// 24 bits AIFF as default
 			

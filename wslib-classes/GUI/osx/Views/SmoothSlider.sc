@@ -1,44 +1,53 @@
 // wslib 2006
 // slider based on blackrain's knob
 
-SmoothSlider : SCUserView {
+SmoothSlider : RoundView {
 	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false;
 	var <border = 0, <baseWidth = 1;
 	var <knobSize = 0.25, hitValue = 0;
 	var <orientation = \v;
-	//var <>type = 0; // 0: slider only, 1: green bar next to slider
 	var <thumbSize = 0; // compatible with old sliders
 	var <focusColor;
 	
-	*viewClass { ^SCUserView }
+	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
 	
-	//refresh { this.refreshInRect( this.bounds.insetBy(-4,-4) ); }
+	*viewClass { ^SCUserView }
 	
 	init { arg parent, bounds;
 		bounds = bounds.asRect;
 		if( bounds.width > bounds.height )
 			{ orientation = \h };
-		super.init(parent, bounds);
+			
+		/*
+		relativeOrigin = true; // as long as the drawig outside bounds bug/feature isn't solved
+
+		super.init(parent, bounds.insetBy(-3,-3));
 		super.focusColor = Color.clear;
+		*/
 		
-		this.relativeOrigin_( false );
-		
+		super.init( parent, bounds );
+				
 		mode = \jump;  // \jump or \move
 		keystep = 0.01;
 		step = 0.01;
 		value = 0.0;
-			// background, hilightColor, borderColor, knobColor
+		
+		// background, hilightColor, borderColor, knobColor
 		color = [Color.gray(0.5, 0.5), Color.blue.alpha_(0.5), Color.white.alpha_(0.5),
 			Color.black.alpha_(0.7)];
 	}
+	
+	/*
+	drawBounds { ^this.bounds.moveTo(3,3); }
+	bounds { ^super.bounds.insetBy(3,3); }
+	bounds_ { |newBounds| super.bounds = newBounds.asRect.insetBy(-3,-3); } 
+	*/
 	
 	sliderBounds {
 		var realKnobSize, drawBounds, rect;
 		//realKnobSize = knobSize * this.bounds.width;
 		
-		if ( relativeOrigin ) // thanks JostM !
-				{ rect = this.bounds.moveTo(0,0) }
-				{ rect = this.absoluteBounds; };
+		rect = this.drawBounds;
 				
 		drawBounds = rect.insetBy( border, border );
 				
@@ -105,9 +114,8 @@ SmoothSlider : SCUserView {
 		var baseRect, knobRect;
 		
 		Pen.use {
-			if ( relativeOrigin ) // thanks JostM !
-				{ rect = this.bounds.moveTo(0,0) }
-				{ rect = this.absoluteBounds; };
+			
+			rect = this.drawBounds;
 				
 			drawBounds = rect.insetBy( border, border );
 			
@@ -119,13 +127,6 @@ SmoothSlider : SCUserView {
 				    Pen.rotate( 0.5pi,
 				   	(rect.left + rect.right) / 2, 
 				   	rect.left  + (rect.width / 2)  );
-				  
-				  /* // Gradient doesn't respond to .direction. Why??
-				  tempColors = tempColors.collect({ |color|
-				  	if( color.respondsTo( \direction ) )						{ color.direction = (\h: \v, \v: \h)[ color.direction ].postln; };
-				  	color;
-				  	});
-				  */
 				}
 				{
 				baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
@@ -217,6 +218,20 @@ SmoothSlider : SCUserView {
 		
 			};
 		}
+		
+	getScale { |modifiers| 
+		^case
+			{ modifiers & 131072 == 131072 } { shift_scale }
+			{ modifiers & 262144 == 262144 } { ctrl_scale }
+			{ modifiers & 524288 == 524288 } { alt_scale }
+			{ 1 };
+	}
+	
+	pixelStep { 
+		var bounds = this.sliderBounds; 
+		^(bounds.width.max(bounds.height) - this.thumbSize).reciprocal
+	}
+	
 
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
 		 hit = Point(x,y);
@@ -227,17 +242,20 @@ SmoothSlider : SCUserView {
 	
 	mouseMove { arg x, y, modifiers;
 		var pt, angle, inc = 0;
+		var bounds = this.drawBounds;
 		if (modifiers != 1048576, { // we are not dragging out - apple key
 			case
 				{ mode == \move } {
 					if( orientation == \v )
-						{ if( thumbSize < this.bounds.height )
-							{ value = 
-								( hitValue + ( (hit.y - y) / this.sliderBounds.height  ) )
+						{ if( thumbSize < bounds.height )
+							{ value = ( hitValue + ( 
+									( (hit.y - y) / this.sliderBounds.height )  
+										* this.getScale( modifiers ) ) )
 							.clip( 0.0,1.0 ); }; }
-						{ if( thumbSize < this.bounds.width )
-							{ value = 
-								( hitValue + ( (x - hit.x) / this.sliderBounds.height  ) )
+						{ if( thumbSize < bounds.width )
+							{ value = ( hitValue + ( 
+									( (x - hit.x) / this.sliderBounds.height  ) 
+									* this.getScale( modifiers ) ) )
 							.clip( 0.0,1.0 ); } };
 							
 					//hit = Point(x,y);
@@ -247,22 +265,22 @@ SmoothSlider : SCUserView {
 				{ mode == \jump } {
 					if( orientation == \v )
 						{ 
-						if( thumbSize < this.bounds.height )
-							{ value = ( 1 - ((y - (this.bounds.top + (
-									( knobSize * this.bounds.width )
-									.max( thumbSize.min( this.bounds.height ) ) / 2))) / 
-								(this.bounds.height - 
-									(knobSize * this.bounds.width )
+						if( thumbSize < bounds.height )
+							{ value = ( 1 - ((y - (bounds.top + (
+									( knobSize * bounds.width )
+									.max( thumbSize.min( bounds.height ) ) / 2))) / 
+								(bounds.height - 
+									(knobSize * bounds.width )
 									.max( thumbSize )  ))
 								).clip( 0.0,1.0 );
 								};
 						 }
-						{ if( thumbSize < this.bounds.width )
-							{ value = ((x - (this.bounds.left + (
-								( knobSize * this.bounds.height )
-								.max( thumbSize.min( this.bounds.width ) ) / 2))) / 
-							(this.bounds.width - (knobSize * this.bounds.height )
-								.max( thumbSize.min( this.bounds.width ) ) ))
+						{ if( thumbSize < bounds.width )
+							{ value = ((x - (bounds.left + (
+								( knobSize * bounds.height )
+								.max( thumbSize.min( bounds.width ) ) / 2))) / 
+							(bounds.width - (knobSize * bounds.height )
+								.max( thumbSize.min( bounds.width ) ) ))
 								.clip(0.0,1.0); };
 						};
 							
@@ -304,21 +322,28 @@ SmoothSlider : SCUserView {
 	orientation_ { |newOrientation| orientation = newOrientation ? orientation; this.refresh; }
 	knobSize_ { |newSize| knobSize = newSize ? knobSize; this.refresh; }
 	
-	increment { ^this.valueAction = (this.value + keystep).min(1) }
-	decrement { ^this.valueAction = (this.value - keystep).max(0) }
+	increment { |zoom=1| ^this.valueAction = 
+		( this.value + (max(this.step, this.pixelStep) * zoom) ).min(1); }
+	decrement { |zoom=1| ^this.valueAction = 
+		( this.value - (max(this.step, this.pixelStep) * zoom) ).max(0); }
+	
 
 	keyDown { arg char, modifiers, unicode,keycode;
+		var zoom = this.getScale(modifiers); 
+		
 		// standard keydown
 		if (char == $r, { this.valueAction = 1.0.rand; });
 		if (char == $n, { this.valueAction = 0.0; });
 		if (char == $x, { this.valueAction = 1.0; });
 		if (char == $c, { this.valueAction = 0.5; });
-		if (char == $], { this.increment; ^this });
-		if (char == $[, { this.decrement; ^this });
-		if (unicode == 16rF700, { this.increment; ^this });
-		if (unicode == 16rF703, { this.increment; ^this });
-		if (unicode == 16rF701, { this.decrement; ^this });
-		if (unicode == 16rF702, { this.decrement; ^this });
+		if (char == $], { this.increment(zoom); ^this });
+		if (char == $[, { this.decrement(zoom); ^this });
+		if (unicode == 16rF700, { this.increment(zoom); ^this });
+		if (unicode == 16rF703, { this.increment(zoom); ^this });
+		if (unicode == 16rF701, { this.decrement(zoom); ^this });
+		if (unicode == 16rF702, { this.decrement(zoom); ^this });
+		
+		^nil;
 		
 	}
 
