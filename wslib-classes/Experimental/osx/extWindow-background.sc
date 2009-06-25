@@ -1,5 +1,6 @@
 + SCWindow {
-
+	
+	/*
 	asNSWindow {
 		var view, window;
 		view = SCNSObject.newFromRawPointer(dataptr);
@@ -7,6 +8,7 @@
 		view.release;
 		^window; // you own it - call release once you do not need it anymore
 	}
+	*/
 	
 	background_ { |color|
 		var ns;
