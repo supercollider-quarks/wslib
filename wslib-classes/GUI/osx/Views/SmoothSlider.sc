@@ -115,6 +115,8 @@ SmoothSlider : RoundView {
 		var baseRect, knobRect;
 		var center, strOri;
 		
+		var bnds; // used with string
+		
 		Pen.use {
 			
 			rect = this.drawBounds;
@@ -259,8 +261,6 @@ SmoothSlider : RoundView {
 				};
 			
 			string !? {
-				
-				var bnds;
 				
 				
 				if( stringAlignToKnob )
