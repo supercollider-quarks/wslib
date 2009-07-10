@@ -3,11 +3,13 @@
 
 SmoothSlider : RoundView {
 	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false;
-	var <border = 0, <baseWidth = 1;
+	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
 	var <knobSize = 0.25, hitValue = 0;
 	var <orientation = \v;
 	var <thumbSize = 0; // compatible with old sliders
 	var <focusColor;
+	
+	var <string, <font, <align, <stringOrientation = \h, <stringAlignToKnob = false;
 	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
 	
@@ -17,14 +19,7 @@ SmoothSlider : RoundView {
 		bounds = bounds.asRect;
 		if( bounds.width > bounds.height )
 			{ orientation = \h };
-			
-		/*
-		relativeOrigin = true; // as long as the drawig outside bounds bug/feature isn't solved
-
-		super.init(parent, bounds.insetBy(-3,-3));
-		super.focusColor = Color.clear;
-		*/
-		
+					
 		super.init( parent, bounds );
 				
 		mode = \jump;  // \jump or \move
@@ -32,20 +27,13 @@ SmoothSlider : RoundView {
 		step = 0.01;
 		value = 0.0;
 		
-		// background, hilightColor, borderColor, knobColor
+		// background, hilightColor, borderColor, knobColor, stringColor
 		color = [Color.gray(0.5, 0.5), Color.blue.alpha_(0.5), Color.white.alpha_(0.5),
-			Color.black.alpha_(0.7)];
+			Color.black.alpha_(0.7), Color.black ];
 	}
-	
-	/*
-	drawBounds { ^this.bounds.moveTo(3,3); }
-	bounds { ^super.bounds.insetBy(3,3); }
-	bounds_ { |newBounds| super.bounds = newBounds.asRect.insetBy(-3,-3); } 
-	*/
 	
 	sliderBounds {
 		var realKnobSize, drawBounds, rect;
-		//realKnobSize = knobSize * this.bounds.width;
 		
 		rect = this.drawBounds;
 				
@@ -59,13 +47,8 @@ SmoothSlider : RoundView {
 		realKnobSize = (knobSize * drawBounds.width)
 					.max( thumbSize ).min( drawBounds.height );
 		
-		//case { type == 0 }
-			//{
-		^drawBounds.insetBy( 0, realKnobSize / 2 )
-			 // }
-			//{ type == 1 }
-			//{ ^drawBounds.insetBy( realKnobSize, realKnobSize / 2 ).moveBy( realKnobSize, 0 ) };
-				
+		
+		^drawBounds.insetBy( 0, realKnobSize / 2 );
 		}
 		
 	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
@@ -80,6 +63,10 @@ SmoothSlider : RoundView {
 	borderColor_ { |newColor| color[2] = newColor; this.refresh; }
 	
 	border_ { |newBorder| border = newBorder; this.refresh; }
+	
+	extrude_ { |bool| extrude = bool; this.refresh; }
+	
+	knobBorderScale_ { |value| knobBorderScale = value; this.refresh; }
 	
 	baseWidth_ { |newBaseWidth| baseWidth = newBaseWidth; this.refresh; }
 	
@@ -106,12 +93,27 @@ SmoothSlider : RoundView {
 		{ ^knobSize * this.bounds.height  }
 		{ ^knobSize * this.bounds.width };
 	 }
+	 
+	stringColor { ^color[4] } // slang but compatible
+	stringColor_ { |newColor| 
+		if( color.size > 4 )
+			{ color[4] = newColor; }
+			{ color = color ++ [newColor] };
+		this.refresh;
+		 }
+		 
+	font_ { |newFont| font = newFont; this.refresh; }
+	string_ { |newString| string = newString; this.refresh; }
+	align_ { |newAlign| align = newAlign; this.refresh; }
+	
+	stringAlignToKnob_ { |bool| stringAlignToKnob = (bool == true); this.refresh; }
 	
 	draw {
 		var startAngle, arcAngle, size, widthDiv2, aw;
 		var knobPosition, realKnobSize;
 		var rect, drawBounds, radius;
 		var baseRect, knobRect;
+		var center, strOri;
 		
 		Pen.use {
 			
@@ -122,16 +124,15 @@ SmoothSlider : RoundView {
 			if( orientation == \h )
 				{  drawBounds = Rect( drawBounds.top, drawBounds.left, 
 					drawBounds.height, drawBounds.width );
-				   baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
-				   //Pen.translate( drawBounds.height, 0 );
-				    Pen.rotate( 0.5pi,
-				   	(rect.left + rect.right) / 2, 
-				   	rect.left  + (rect.width / 2)  );
-				}
-				{
-				baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
+					
+				   // baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
+				   
+				   Pen.rotate( 0.5pi, (rect.left + rect.right) / 2, 
+				   					 rect.left + (rect.width / 2)  );
 				};
-				
+			
+			baseRect = drawBounds.insetBy( (1-baseWidth) * (drawBounds.width/2), 0 );
+			
 			size = drawBounds.width;
 			widthDiv2 = drawBounds.width * 0.5;
 					
@@ -151,21 +152,50 @@ SmoothSlider : RoundView {
 					Pen.stroke;
 					});
 				};
+				
 			Pen.use{	
 			color[0] !? { // base / background
 				//Pen.fillColor = color[0];
-				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );//.fill;
+				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
 				color[0].fill( baseRect );
 				};
-				};
+			
+			if( backgroundImage.notNil )
+				{ 
+				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
+				backgroundImage[0].fill( baseRect, *backgroundImage[1..] );
+				}
+			};
 			
 			Pen.use{
 			color[2] !? { // // border
 				if( border > 0 )
-					{ Pen.strokeColor = color[2];
-					  Pen.width = border;
-					  Pen.roundedRect( baseRect.insetBy( border/(-2), border/(-2) ), 
-					  	radius.min( baseRect.width/2) + (border/2) ).stroke;
+					{ 
+					
+					  if( color[2].notNil && { color[2] != Color.clear } )
+					  	{	 Pen.strokeColor = color[2];
+						  Pen.width = border;
+						  Pen.roundedRect( baseRect.insetBy( border/(-2), border/(-2) ), 
+						  	radius.min( baseRect.width/2) + (border/2) ).stroke;
+						  };
+					  if( extrude )
+					  	{ 
+					  	Pen.use{	
+						  	  Pen.rotate( (h: -0.5pi, v: 0 )[ orientation ],
+					   				(rect.left + rect.right) / 2, 
+					   				rect.left  + (rect.width / 2)  );
+					   		
+						  	  Pen.extrudedRect( 
+						  	  	baseRect.rotate((h: 0.5pi, v: 0 )[ orientation ],
+					   				(rect.left + rect.right) / 2, 
+					   				rect.left  + (rect.width / 2))
+					   					.insetBy( border.neg, border.neg ), 
+						  		(if( radius == 0 ) 
+						  			{ radius } { radius + border }).min( baseRect.width/2 ),
+						  		border, 
+						  		inverse: true )
+						  	}
+					  	};
 					};
 				};
 				};
@@ -201,8 +231,6 @@ SmoothSlider : RoundView {
 			Pen.use{
 	
 			color[3] !? {	 
-				//color[3].set; // knob
-				//Pen.width = realKnobSize;
 				knobRect =  Rect.fromPoints(
 					Point( drawBounds.left, 
 						( knobPosition - (realKnobSize / 2) ) ),
@@ -211,10 +239,76 @@ SmoothSlider : RoundView {
 				Pen.roundedRect( knobRect, radius );//.fill; 
 				
 				color[3].fill( knobRect ); // requires extGradient-fill.sc methods
+				
+				 if( extrude && ( knobRect.height >= border ) )
+					  	{ 
+					  	Pen.use{	
+						  	  Pen.rotate( (h: -0.5pi, v: 0 )[ orientation ],
+					   				(rect.left + rect.right) / 2, 
+					   				rect.left  + (rect.width / 2)  );
+					   		
+						  	  Pen.extrudedRect( 
+						  	  	knobRect.rotate((h: 0.5pi, v: 0 )[ orientation ],
+					   				(rect.left + rect.right) / 2, 
+					   				rect.left  + (rect.width / 2)), 
+						  		radius.max( border ), border * knobBorderScale)
+						  	}
+					  	};
 				};
 				
 				};
 			
+			string !? {
+				
+				var bnds;
+				
+				
+				if( stringAlignToKnob )
+					{ bnds = knobRect ?? { Rect.fromPoints(
+						Point( drawBounds.left, 
+							( knobPosition - (realKnobSize / 2) ) ),
+						Point( drawBounds.right, knobPosition + (realKnobSize / 2) ) );  }; }
+					{ bnds = drawBounds };
+				
+				stringOrientation = stringOrientation ? \h;
+								
+				Pen.use{	
+					
+					center = drawBounds.center;
+					
+					strOri = (h: 0pi, v: 0.5pi, u: -0.5pi, d: 0.5pi, up: -0.5pi, down: 0.5pi )
+							[stringOrientation] ? stringOrientation;
+					
+					strOri = strOri + (h: -0.5pi, v: 0)[ orientation ];
+					
+					if( strOri != 0 )
+					{ Pen.rotate( strOri, center.x, center.y );
+					 bnds = bnds.rotate( strOri.neg, center.x, center.y );
+					};
+						 		 
+					font !? { Pen.font = font };
+					Pen.color = color[4] ?? { Color.black; };
+					string = string.asString;
+					
+					switch( align ? \center,
+						\center, { Pen.stringCenteredIn( string, bnds ) },
+						\middle, { Pen.stringCenteredIn( string, bnds ) },
+						\left, { Pen.stringLeftJustIn( string, bnds ) },
+						\right, { Pen.stringRightJustIn( string, bnds ) } );
+					
+					font !? { Pen.font = nil; };
+					};
+				};
+			
+			if( enabled.not )
+				{
+				Pen.use {
+					Pen.fillColor = Color.white.alpha_(0.5);
+					Pen.roundedRect( 
+						baseRect.insetBy( border.neg, border.neg ), 
+						radius.min( baseRect.width/2) ).fill;
+					};
+				};
 		
 			};
 		}
@@ -234,61 +328,67 @@ SmoothSlider : RoundView {
 	
 
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
-		 hit = Point(x,y);
-			
-		hitValue = value;
-		this.mouseMove(x, y, modifiers);
+		if( enabled ) {	
+			hit = Point(x,y);
+				
+			hitValue = value;
+			this.mouseMove(x, y, modifiers);
+		};
+		
 	}
 	
 	mouseMove { arg x, y, modifiers;
 		var pt, angle, inc = 0;
-		var bounds = this.drawBounds;
-		if (modifiers != 1048576, { // we are not dragging out - apple key
-			case
-				{ mode == \move } {
-					if( orientation == \v )
-						{ if( thumbSize < bounds.height )
-							{ value = ( hitValue + ( 
-									( (hit.y - y) / this.sliderBounds.height )  
+		var bounds;
+		if( enabled ) {	
+			bounds = this.drawBounds;
+			if (modifiers != 1048576, { // we are not dragging out - apple key
+				case
+					{ mode == \move } {
+						if( orientation == \v )
+							{ if( thumbSize < bounds.height )
+								{ value = ( hitValue + ( 
+										( (hit.y - y) / this.sliderBounds.height )  
+											* this.getScale( modifiers ) ) )
+								.clip( 0.0,1.0 ); }; }
+							{ if( thumbSize < bounds.width )
+								{ value = ( hitValue + ( 
+										( (x - hit.x) / this.sliderBounds.height  ) 
 										* this.getScale( modifiers ) ) )
-							.clip( 0.0,1.0 ); }; }
-						{ if( thumbSize < bounds.width )
-							{ value = ( hitValue + ( 
-									( (x - hit.x) / this.sliderBounds.height  ) 
-									* this.getScale( modifiers ) ) )
-							.clip( 0.0,1.0 ); } };
-							
-					//hit = Point(x,y);
-					action.value(this, x, y, modifiers);
-					this.refresh;
-				}
-				{ mode == \jump } {
-					if( orientation == \v )
-						{ 
-						if( thumbSize < bounds.height )
-							{ value = ( 1 - ((y - (bounds.top + (
-									( knobSize * bounds.width )
-									.max( thumbSize.min( bounds.height ) ) / 2))) / 
-								(bounds.height - 
-									(knobSize * bounds.width )
-									.max( thumbSize )  ))
-								).clip( 0.0,1.0 );
-								};
-						 }
-						{ if( thumbSize < bounds.width )
-							{ value = ((x - (bounds.left + (
-								( knobSize * bounds.height )
-								.max( thumbSize.min( bounds.width ) ) / 2))) / 
-							(bounds.width - (knobSize * bounds.height )
-								.max( thumbSize.min( bounds.width ) ) ))
-								.clip(0.0,1.0); };
-						};
-							
-					//hit = Point(x,y);
-					action.value(this, x, y, modifiers);
-					this.refresh;
-				}
-		});
+								.clip( 0.0,1.0 ); } };
+								
+						//hit = Point(x,y);
+						action.value(this, x, y, modifiers);
+						this.refresh;
+					}
+					{ mode == \jump } {
+						if( orientation == \v )
+							{ 
+							if( thumbSize < bounds.height )
+								{ value = ( 1 - ((y - (bounds.top + (
+										( knobSize * bounds.width )
+										.max( thumbSize.min( bounds.height ) ) / 2))) / 
+									(bounds.height - 
+										(knobSize * bounds.width )
+										.max( thumbSize )  ))
+									).clip( 0.0,1.0 );
+									};
+							 }
+							{ if( thumbSize < bounds.width )
+								{ value = ((x - (bounds.left + (
+									( knobSize * bounds.height )
+									.max( thumbSize.min( bounds.width ) ) / 2))) / 
+								(bounds.width - (knobSize * bounds.height )
+									.max( thumbSize.min( bounds.width ) ) ))
+									.clip(0.0,1.0); };
+							};
+								
+						//hit = Point(x,y);
+						action.value(this, x, y, modifiers);
+						this.refresh;
+					}
+			});
+		};
 	}
 
 	value_ { arg val;
@@ -319,7 +419,17 @@ SmoothSlider : RoundView {
 		^isCentered
 	}
 	
-	orientation_ { |newOrientation| orientation = newOrientation ? orientation; this.refresh; }
+	orientation_ { |newOrientation| 
+		if( stringOrientation == orientation ) { stringOrientation = newOrientation };
+		orientation = newOrientation ? orientation; this.refresh;
+		
+		 }
+		 
+	stringOrientation_ { |newOrientation| // resets if nil
+		stringOrientation = newOrientation ? orientation;
+		this.refresh;
+		}
+	
 	knobSize_ { |newSize| knobSize = newSize ? knobSize; this.refresh; }
 	
 	increment { |zoom=1| ^this.valueAction = 

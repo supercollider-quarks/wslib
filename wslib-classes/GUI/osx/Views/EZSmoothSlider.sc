@@ -1,4 +1,9 @@
 EZSmoothSlider : EZSlider {
+
+	sliderClass { ^SmoothSlider }
+	numberBoxClass { ^SmoothNumberBox }
+	staticTextClass { ^StaticText }
+	
 	
 	init {
 		 arg parentView, bounds, label, argControlSpec, argAction, initVal, 
@@ -29,16 +34,16 @@ EZSmoothSlider : EZSlider {
 		
 		// instert the views
 		label.notNil.if{ //only add a label if desired
-			labelView = GUI.staticText.new(view, labelBounds);
+			labelView = this.staticTextClass.new(view, labelBounds);
 			labelView.string = label;
 		};
 
 		(unitWidth>0).if{ //only add a unitLabel if desired
-			unitView = GUI.staticText.new(view, unitBounds);
+			unitView = this.staticTextClass.new(view, unitBounds);
 		};
 
-		numberView = RoundNumberBox.new(view, numBounds); //.radius_( numBounds.height/4 );
-		sliderView = SmoothSlider(view, sliderBounds);
+		numberView = this.numberBoxClass.new(view, numBounds); //.radius_( numBounds.height/4 );
+		sliderView = this.sliderClass.new(view, sliderBounds);
 		
 		// set view parameters and actions
 		
@@ -103,5 +108,12 @@ EZSmoothSlider : EZSlider {
 		}
 		
 	setSliderProperty { |key ...value| sliderView.perform( (key ++ "_").asSymbol, *value ); }
+	
+	}
+
+EZRoundSlider : EZSmoothSlider {
+
+	sliderClass { ^RoundSlider }
+	numberBoxClass { ^RoundNumberBox }
 	
 	}

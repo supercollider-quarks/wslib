@@ -217,10 +217,12 @@ W. Snoei 2005
 		}
 	
 	getOctave {
-		var octave = 0;
-		octave = this.last.asString;
-		if(this.reverse[1] == $-) {octave = "-" ++ octave};
-		^octave.interpret;
+		//var octave = 0;
+		//octave = 
+		^this.extractNumbers[0] ? 3;
+		//.asString;
+		//if(this.reverse[1] == $-) {octave = "-" ++ octave};
+		//^octave.interpret;
 		}
 		
 	getNote { ^this[0].toUpper; }

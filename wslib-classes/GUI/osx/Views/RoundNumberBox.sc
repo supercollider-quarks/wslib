@@ -1,4 +1,4 @@
-SCRoundNumberBox : RoundView {
+RoundNumberBox : RoundView {
 	
 	classvar <>defaultFormatFunc, <>defaultInterpretFunc, <>defaultFont;
 	
@@ -17,7 +17,7 @@ SCRoundNumberBox : RoundView {
 	var <typingColor, <normalColor, <stringColor;
 	var <background;
 	var <>clipLo = -inf, <>clipHi = inf, hit, inc=1.0, 
-		<>scroll=true, <>shift_step=0.1, <>ctrl_step=10;
+		<>scroll=true; //, <>shift_step=0.1, <>ctrl_step=10;
 	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
 		
@@ -38,14 +38,10 @@ SCRoundNumberBox : RoundView {
 				{ ^super.doesNotUnderstand( selector, *args ) }; }
 			{ ^super.doesNotUnderstand( selector, *args ) };
 		}
+		
+	background_ { |color| background = color; this.refresh; }
 	
 	init { |parent, bounds|
-		/*
-		// now handled by RoundView
-		relativeOrigin = true;
-		super.init( parent, bounds.asRect.insetBy(-3,-3) );
-		super.focusColor = Color.clear;
-		*/
 		super.init( parent, bounds );
 		typingColor = Color.red;
 		normalColor = Color.black;
@@ -55,13 +51,7 @@ SCRoundNumberBox : RoundView {
 		interpretFunc = defaultInterpretFunc;
 		font = defaultFont;
 		}
-		
-	/*
-	drawBounds { ^this.bounds.moveTo(3,3); }
-	bounds { ^super.bounds.insetBy(3,3); }
-	bounds_ { |newBounds| super.bounds = newBounds.asRect.insetBy(-3,-3); } 
-	*/
-	
+			
 	getScale { |modifiers| 
 		^case
 			{ modifiers & 131072 == 131072 } { shift_scale }
@@ -133,9 +123,12 @@ SCRoundNumberBox : RoundView {
 		       shadeSide = Color.black.alpha_(0.5); };
 		
 		Pen.use {
-			Pen.color_( background ?? { Color.clear } );
+			//Pen.color_( background ?? { Color.clear } );
 				
-			Pen.roundedRect( rect, radius ).fill; // not swingosc compatible!!
+			background !? { 
+				Pen.roundedRect( rect, radius );
+				background.fill( rect );
+				};
 			
 			if( extrude )
 				{ Pen.extrudedRect( rect, radius, border, 0.17pi, false,
@@ -169,7 +162,7 @@ SCRoundNumberBox : RoundView {
 						
 				if( (charSelectIndex >= 0) and: { charSelectIndex < string.size } )
 					{
-					Pen.color = charSelectColor ?? { Color(0.75, 0.75, 0.875, 0.5) };
+					Pen.color = charSelectColor ?? { Color.gray(0.66) };
 					Pen.addRect( this.charSelectRect( stringRect,
 						charSelectIndex, 1 ) ).fill;
 					
@@ -184,6 +177,14 @@ SCRoundNumberBox : RoundView {
 						? \stringLeftJustIn, string, stringRect );
 						
 					});
+			
+			if( enabled.not )
+				{ Pen.use{
+					Pen.fillColor = Color.white.alpha_(0.5);
+					Pen.roundedRect( rect, radius ).fill;
+					};
+				};
+			
 			} 
 		}
 		
@@ -233,13 +234,18 @@ SCRoundNumberBox : RoundView {
 	}
 	
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
-		hit = Point(x,y);
-		if (scroll == true, { inc = this.getScale(modifiers) });			
-		mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount)
+		if( enabled )
+		{	
+			hit = Point(x,y);
+			if (scroll == true, { inc = this.getScale(modifiers) });			
+			mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);
+		};
 	}
 
 	mouseMove { arg x, y, modifiers;
 		var direction;
+		if( enabled ) {
+		
 		if (scroll == true, {
 			direction = 1.0;
 				// horizontal or vertical scrolling:
@@ -249,10 +255,12 @@ SCRoundNumberBox : RoundView {
 				{ this.valueAction = (this.value + (inc * this.scroll_step * direction)); };
 			hit = Point(x, y);
 		});
-		mouseMoveAction.value(this, x, y, modifiers);	
+		mouseMoveAction.value(this, x, y, modifiers);
+			
+		};
 	}
 	
-	mouseUp{ inc=1 }
+	mouseUp{ if( enabled ) { inc=1 }; }
 	
 	defaultKeyDownAction { arg char, modifiers, unicode;
 		var zoom = this.getScale(modifiers);
@@ -266,6 +274,7 @@ SCRoundNumberBox : RoundView {
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key
 			if (keyString.notNil,{ // no error on repeated enter
 				value = interpretFunc.value(keyString) ? value;
+				this.prClipValue;
 				keyString = nil;
 				action.value( this, value );
 				stringColor = normalColor;
@@ -297,5 +306,3 @@ SCRoundNumberBox : RoundView {
 	}
 
 	}
-	
-RoundNumberBox : SCRoundNumberBox { } // make redirect later

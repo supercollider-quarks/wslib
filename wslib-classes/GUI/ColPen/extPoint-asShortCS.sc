@@ -4,8 +4,10 @@
 + Point {
 	asShortCS {
 		if( (x.size == 0) && { x.rate == \scalar })
-			{ ^"%@%".format( x.asShortCS, 
-				if( y.sign == -1 ) { "(" ++ y.asShortCS ++ ")" } { y.asShortCS } )
+			{ ^"%@%".format( x, 
+				if( y.sign == -1 ) 
+					{ "(" ++ y ++ ")" } 
+					{ y } )
 			}
 			{ ^this.asCompileString }
 		}

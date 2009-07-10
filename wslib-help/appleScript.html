@@ -5,16 +5,18 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="949.43">
+<meta name="CocoaVersion" content="949.46">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #414141}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #535353}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 span.s1 {font: 18.0px Helvetica}
-span.s2 {color: #0021f0}
-span.s3 {color: #414141}
-span.s4 {color: #00149f}
+span.s2 {color: #0020e1}
+span.s3 {color: #535353}
+span.s4 {color: #0012b0}
+span.s5 {color: #285e08}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -32,5 +34,22 @@ span.Apple-tab-span {white-space:pre}
 <p class="p4"><span class="Apple-tab-span">	</span>reveal POSIX file %</p>
 <p class="p3"><span class="s3"><span class="Apple-converted-space"> </span>end tell"</span>.format( <span class="s4">String</span>.scDir.quote ).appleScript;</p>
 <p class="p3">)</p>
+<p class="p5"><br></p>
+<p class="p1"><b>String.asAppleScriptCmd</b></p>
+<p class="p2"><br></p>
+<p class="p1">Creates a valid unix command from an apple script.</p>
+<p class="p2"><br></p>
+<p class="p3">(</p>
+<p class="p4">"tell application \"Finder\"</p>
+<p class="p4"><span class="Apple-tab-span">	</span>activate</p>
+<p class="p4"><span class="Apple-tab-span">	</span>reveal POSIX file %</p>
+<p class="p3"><span class="s3"><span class="Apple-converted-space"> </span>end tell"</span>.format( <span class="s4">String</span>.scDir.quote ).asAppleScriptCmd.postln.unixCmd;</p>
+<p class="p3">)</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p1"><b>String.keyStroke( mod, app )</b></p>
+<p class="p2"><br></p>
+<p class="p1">Types a keystroke into an application, using an appleScript and "System Events.app". The <b>mod</b> argument adds a mod key, in the form of a String or ( <span class="s5">\shift</span>, <span class="s5">\cmd</span>, etc). The <b>app </b>argument defines the application to talk to. By default this is SuperCollider.</p>
 </body>
 </html>

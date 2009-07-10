@@ -11,7 +11,42 @@ RoundedRect : Rect {
 		^this.new( inRect.left, inRect.top, inRect.width, inRect.height, radius );
 		}
 		
-	asPenFunction { |penClass|
+	asRect {
+		^Rect( this.left, this.top, this.width, this.height );
+		}
+		
+	asPenFunction { ^{ Pen.roundedRect( this.asRect, radius ); } } 
+		
+	stroke { |penClass|
+		penClass = penClass ?? { GUI.pen };
+	 	this.asPenFunction( penClass ).value;
+	 	penClass.stroke; 
+	 	}
+	 	
+	 fill { |penClass|
+		penClass = penClass ?? { GUI.pen };
+	 	this.asPenFunction( penClass ).value;
+	 	penClass.fill; 
+	 	}
+	
+	clip { |penClass|
+		penClass = penClass ?? { GUI.pen };
+	 	this.asPenFunction( penClass ).value;
+	 	penClass.fill; 
+	 	}
+
+	drawExtruded { |penClass, border = 2, angle, inverse = false, colors|
+		^Pen.extrudedRect( radius, border, angle, inverse, colors ); 
+		}
+	
+	}
+	
+	
+
+
+/* // old asPenFunction
+		|penClass|
+	
 		// ** plots badly in SwingOSC !!
 		var rc, maxR;
 		penClass = penClass ?? { GUI.pen };
@@ -40,28 +75,9 @@ RoundedRect : Rect {
 			}
 		}
 		{^{ penClass.addRect( this ); } }
-		} 
+		*/
 		
-	stroke { |penClass|
-		penClass = penClass ?? { GUI.pen };
-	 	this.asPenFunction( penClass ).value;
-	 	penClass.stroke; 
-	 	}
-	 	
-	 fill { |penClass|
-		penClass = penClass ?? { GUI.pen };
-	 	this.asPenFunction( penClass ).value;
-	 	penClass.fill; 
-	 	}
-	
-	clip { |penClass|
-		penClass = penClass ?? { GUI.pen };
-	 	this.asPenFunction( penClass ).value;
-	 	penClass.fill; 
-	 	}
-
-	drawExtruded { |penClass, border = 2, angle, inverse = false, colors|
-	
+/* // old drawExtruded
 		var centers, rc;
 		
 		penClass = penClass ?? { GUI.pen };
@@ -135,7 +151,5 @@ RoundedRect : Rect {
 		 	{ penClass.lineTo( centers[1] + ((border.neg)@(border)) ) }; 
 		 
 		 penClass.fill; 
-
-		}
-	
-	}
+		 
+		 */

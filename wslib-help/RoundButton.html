@@ -5,29 +5,35 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="949.43">
+<meta name="CocoaVersion" content="949.46">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
-p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #535353}
-span.s1 {text-decoration: underline ; color: #0027c2}
-span.s2 {color: #000000}
-span.s3 {color: #0000bf}
-span.s4 {color: #666666}
-span.s5 {text-decoration: underline}
-span.s6 {color: #950095}
-span.s7 {color: #002cd8}
-span.s8 {color: #007300}
-span.s9 {color: #0012b0}
-span.s10 {color: #741584}
-span.s11 {color: #535353}
-span.s12 {color: #285e08}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #414141}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #666666}
+span.s1 {text-decoration: underline ; color: #0020b4}
+span.s2 {color: #0012b0}
+span.s3 {color: #535353}
+span.s4 {color: #9f1414}
+span.s5 {text-decoration: underline ; color: #0018e6}
+span.s6 {color: #741584}
+span.s7 {color: #0025cd}
+span.s8 {color: #285e08}
+span.s9 {color: #000000}
+span.s10 {color: #00149f}
+span.s11 {color: #561571}
+span.s12 {color: #0000bf}
+span.s13 {color: #950095}
+span.s14 {color: #666666}
+span.s15 {color: #007300}
+span.s16 {color: #414141}
+span.s17 {color: #294a08}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -35,82 +41,101 @@ span.Apple-tab-span {white-space:pre}
 <p class="p1"><b>RoundButton</b></p>
 <p class="p2">part of <a href="wslib.html"><span class="s1">wslib</span></a></p>
 <p class="p3"><br></p>
-<p class="p2">a <a href="SC://Pen"><span class="s1">Pen</span></a>-based replacement for <a href="SC://SCButton"><span class="s1">SCButton</span></a>, with extra styling options</p>
 <p class="p3"><br></p>
+<p class="p2">a <a href="SC://Pen"><span class="s1">Pen</span></a>-based replacement for <a href="SC://SCButton"><span class="s1">SCButton</span></a>, with extra styling options.<span class="Apple-converted-space"> </span></p>
+<p class="p4"><br></p>
+<p class="p4"><br></p>
 <p class="p2">RoundButton works the same way as SCButton.<span class="Apple-converted-space"> </span></p>
 <p class="p2">But, as the name states, it is rounded.</p>
 <p class="p3"><br></p>
-<p class="p4">(</p>
-<p class="p5"><span class="s2">w = </span><span class="s3">SCWindow</span><span class="s2">( </span><span class="s4">"RoundButton"</span><span class="s2"> ).front.decorate;<span class="Apple-converted-space">  </span></span>// decorate -&gt; <a href="wslib-shortcuts.html"><span class="s5">wslib-shortcuts</span></a></p>
-<p class="p6">b = <span class="s3">RoundButton</span>( w, <span class="s6">80</span>@<span class="s6">20 </span>).states_([[ <span class="s4">"hit me"</span> ], [ <span class="s4">"again"</span> ]] ).action_({ <span class="s4">"was hit"</span>.postln });</p>
-<p class="p4">)</p>
-<p class="p7"><br></p>
+<p class="p5">(</p>
+<p class="p5">w = <span class="s2">SCWindow</span>( <span class="s3">"RoundButton"</span> ).front.decorate;<span class="Apple-converted-space">  </span><span class="s4">// decorate -&gt; <a href="wslib-shortcuts.html"><span class="s5">wslib-shortcuts</span></a></span></p>
+<p class="p5">b = <span class="s2">RoundButton</span>( w, <span class="s6">80</span>@<span class="s6">20 </span>).states_([[ <span class="s3">"hit me"</span> ], [ <span class="s3">"again"</span> ]] ).action_({ <span class="s3">"was hit"</span>.postln });</p>
+<p class="p5">)</p>
+<p class="p3"><br></p>
 <p class="p2">If a RoundButton's bounds are a square, the button shape becomes a circle:</p>
-<p class="p8"><br></p>
-<p class="p6">c = <span class="s3">RoundButton</span>( w, <span class="s6">20</span>@<span class="s6">20 </span>).states_([[ <span class="s4">"x"</span>, <span class="s3">Color</span>.red(<span class="s6">0.5</span>), <span class="s3">Color</span>.gray(<span class="s6">0.6</span>) ]] );</p>
-<p class="p7"><br></p>
+<p class="p3"><br></p>
+<p class="p5">c = <span class="s2">RoundButton</span>( w, <span class="s6">20</span>@<span class="s6">20 </span>).states_([[ <span class="s3">"x"</span>, <span class="s2">Color</span>.red(<span class="s6">0.5</span>), <span class="s2">Color</span>.gray(<span class="s6">0.6</span>) ]] );</p>
+<p class="p3"><br></p>
 <p class="p2">RoundButton also supports icons from <a href="DrawIcon.html"><span class="s7">DrawIcon</span></a>. If the button state name is a Symbol</p>
 <p class="p2">it is replaced by an icon with that name.</p>
 <p class="p3"><br></p>
-<p class="p6">k = <span class="s3">RoundButton</span>( w, <span class="s6">80</span>@<span class="s6">20 </span>).states_([[ <span class="s8">\play</span> ]] );</p>
-<p class="p8"><br></p>
-<p class="p6">l = <span class="s3">RoundButton</span>( w, <span class="s6">20</span>@<span class="s6">20 </span>).states_([[ <span class="s8">\stop</span>, <span class="s3">Color</span>.white, <span class="s3">Color</span>.black ]] );</p>
-<p class="p7"><br></p>
+<p class="p5">k = <span class="s2">RoundButton</span>( w, <span class="s6">80</span>@<span class="s6">20 </span>).states_([[ <span class="s8">\play</span> ]] );</p>
+<p class="p3"><br></p>
+<p class="p5">l = <span class="s2">RoundButton</span>( w, <span class="s6">20</span>@<span class="s6">20 </span>).states_([[ <span class="s8">\stop</span>, <span class="s2">Color</span>.white, <span class="s2">Color</span>.black ]] );</p>
+<p class="p3"><br></p>
 <p class="p2">States can also contain instances of SCImage. They will be displayed at original size, centered in the button and not clipped.</p>
 <p class="p3"><br></p>
-<p class="p9"><span class="s2">o = </span><span class="s9">SCImage</span><span class="s2">.new(</span><span class="s9">String</span><span class="s2">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s2">);</span></p>
-<p class="p4">p = <span class="s9">RoundButton</span>(w, <span class="s10">250</span>@<span class="s10">150</span>).states_( [ [o] ] );</p>
-<p class="p7"><br></p>
-<p class="p2">The fillcolor of a state can also be a gradient.</p>
+<p class="p6"><span class="s9">o = </span><span class="s10">SCImage</span><span class="s9">.new(</span><span class="s10">String</span><span class="s9">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s9">);</span></p>
+<p class="p5">p = <span class="s10">RoundButton</span>(w, <span class="s11">250</span>@<span class="s11">150</span>).states_( [ [o] ] );</p>
 <p class="p3"><br></p>
-<p class="p4">(</p>
-<p class="p4">q = <span class="s9">RoundButton</span>(w, <span class="s10">80</span>@<span class="s10">20</span>).states_( [<span class="Apple-converted-space"> </span></p>
-<p class="p4"><span class="Apple-tab-span">	</span>[<span class="s11">"horizontal"</span>, <span class="s9">Color</span>.white, <span class="s9">Gradient</span>( <span class="s9">Color</span>.blue(<span class="s10">0.5</span>), <span class="s9">Color</span>.red )],</p>
-<p class="p4"><span class="Apple-tab-span">	</span>[<span class="s11">"vertical"</span>, <span class="s9">Color</span>.white, <span class="s9">Gradient</span>( <span class="s9">Color</span>.black, <span class="s9">Color</span>.white.alpha_(<span class="s10">0.25</span>), <span class="s12">\v</span>)]] );</p>
-<p class="p4">)</p>
+<p class="p2">Functions can also be used as a state. They will be used as drawing functions, which receive a the button, a rect and the <b>radius</b> as arguments. Drawing is always relative to the origin of the button's bounds.</p>
+<p class="p3"><br></p>
+<p class="p5">(</p>
+<p class="p7">u = <span class="s12">RoundButton</span>(w, <span class="s13">80</span>@<span class="s13">20</span>).states_( [<span class="Apple-converted-space"> </span></p>
+<p class="p8"><span class="s9"><span class="Apple-tab-span">	</span>[{ </span>|button, rect, radius|<span class="s9"><span class="Apple-converted-space"> </span></span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s12">Pen</span>.line( rect.leftBottom, rect.rightTop );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s12">Pen</span>.line( rect.rightBottom, rect.leftTop );</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s12">Pen</span>.stroke;</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>}] ] );</p>
+<p class="p5">)</p>
+<p class="p4"><br></p>
+<p class="p2">The fillcolor of a state can also be a Gradient, or a SCImage.</p>
+<p class="p3"><br></p>
+<p class="p7">(</p>
+<p class="p7">q = <span class="s12">RoundButton</span>(w, <span class="s13">80</span>@<span class="s13">20</span>).states_( [<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="Apple-tab-span">	</span>[<span class="s14">"horizontal"</span>, <span class="s12">Color</span>.white, <span class="s12">Gradient</span>( <span class="s12">Color</span>.blue(<span class="s13">0.5</span>), <span class="s12">Color</span>.red )],</p>
+<p class="p7"><span class="Apple-tab-span">	</span>[<span class="s14">"vertical"</span>, <span class="s12">Color</span>.white, <span class="s12">Gradient</span>( <span class="s12">Color</span>.black, <span class="s12">Color</span>.white.alpha_(<span class="s13">0.25</span>), <span class="s15">\v</span>)]] );</p>
+<p class="p7">)</p>
+<p class="p9"><br></p>
+<p class="p7">(</p>
+<p class="p10"><span class="s9">r = </span><span class="s12">SCImage</span><span class="s9">(</span>"/Library/Desktop Pictures/Ripples Blue.jpg"<span class="s9">);</span></p>
+<p class="p7">t = <span class="s12">RoundButton</span>(w, <span class="s13">80</span>@<span class="s13">20</span>).states_( [[<span class="s14">"image"</span>, <span class="s12">Color</span>.black, r<span class="Apple-converted-space">  </span>]] );</p>
+<p class="p7">)</p>
+<p class="p3"><br></p>
 <p class="p3"><br></p>
 <p class="p2">RoundButton has some extra features for graphic finetuning:</p>
-<p class="p3"><br></p>
+<p class="p4"><b></b><br></p>
 <p class="p2"><b>radius</b></p>
 <p class="p2">the radius of the round corners in px</p>
-<p class="p7"><br></p>
-<p class="p4">d = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"radius=0"</span>, <span class="s9">Color</span>.black, <span class="s9">Color</span>.gray(<span class="s10">0.7</span>) ]] ).radius_( <span class="s10">0 </span>);<span class="Apple-converted-space"> </span></p>
-<p class="p7"><br></p>
-<p class="p4">e = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"radius=5"</span>,<span class="s9">Color</span>.gray(<span class="s10">0.8</span>),<span class="s9">Color</span>.blue(<span class="s10">0.6</span>) ]] ).radius_( <span class="s10">5 </span>);</p>
-<p class="p7"><br></p>
-<p class="p4">f = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"radius=Array"</span> ]]).radius_( [<span class="s10">0</span>,<span class="s10">10</span>,<span class="s10">4</span>,<span class="s10">7</span>] );</p>
+<p class="p3"><br></p>
+<p class="p5">d = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"radius=0"</span>, <span class="s10">Color</span>.black, <span class="s10">Color</span>.gray(<span class="s11">0.7</span>) ]] ).radius_( <span class="s11">0 </span>);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><br></p>
+<p class="p5">e = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"radius=5"</span>,<span class="s10">Color</span>.gray(<span class="s11">0.8</span>),<span class="s10">Color</span>.blue(<span class="s11">0.6</span>) ]] ).radius_( <span class="s11">5 </span>);</p>
+<p class="p3"><br></p>
+<p class="p5">f = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"radius=Array"</span> ]]).radius_( [<span class="s11">0</span>,<span class="s11">10</span>,<span class="s11">4</span>,<span class="s11">7</span>] );</p>
 <p class="p3"><br></p>
 <p class="p2"><b>border</b></p>
 <p class="p2">border width in px (default 2)</p>
 <p class="p3"><br></p>
-<p class="p4">h = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"border=0"</span> ]] ).border_( <span class="s10">0 </span>);</p>
-<p class="p7"><br></p>
-<p class="p4">i = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"border=5"</span> ]] ).border_( <span class="s10">5 </span>);</p>
-<p class="p7"><br></p>
+<p class="p5">h = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"border=0"</span> ]] ).border_( <span class="s11">0 </span>);</p>
+<p class="p3"><br></p>
+<p class="p5">i = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"border=5"</span> ]] ).border_( <span class="s11">5 </span>);</p>
+<p class="p3"><br></p>
 <p class="p2"><b>extrude</b></p>
 <p class="p2">bevel extrusion boolean (default = true)</p>
 <p class="p3"><br></p>
-<p class="p4">j = <span class="s9">RoundButton</span>( w, <span class="s10">80</span>@<span class="s10">20 </span>).states_([[ <span class="s11">"no extrusion"</span> ]] ).extrude_( <span class="s9">false</span> );</p>
-<p class="p7"><br></p>
-<p class="p2">you can use <b>bevel </b>as well, which does the same thing.</p>
+<p class="p5">j = <span class="s10">RoundButton</span>( w, <span class="s11">80</span>@<span class="s11">20 </span>).states_([[ <span class="s16">"no extrusion"</span> ]] ).extrude_( <span class="s10">false</span> );</p>
 <p class="p3"><br></p>
-<p class="p7"><br></p>
+<p class="p2">you can use bevel as well, which does the same thing.</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
 <p class="p2"><b>moveWhenPressed</b></p>
 <p class="p2">amount of px to move the button label by when pressed</p>
 <p class="p3"><br></p>
-<p class="p4">j.moveWhenPressed_( 0 );</p>
+<p class="p5">j.moveWhenPressed_( 0 );</p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
 <p class="p2"><b>inverse</b></p>
 <p class="p2">inverse border colors</p>
-<p class="p7"><br></p>
-<p class="p4">m = <span class="s9">RoundButton</span>( w, <span class="s10">20</span>@<span class="s10">20 </span>).states_([[ <span class="s12">\speaker</span> ]] ).inverse_( <span class="s9">true</span> );</p>
-<p class="p7"><br></p>
-<p class="p4">m.inverse_( <span class="s9">false</span> );</p>
-<p class="p7"><br></p>
-<p class="p4">n = <span class="s9">RoundButton</span>( w, <span class="s10">20</span>@<span class="s10">20 </span>).states_([[ <span class="s12">\arrow</span> ]] ).extrude_(<span class="s9">false</span>).border_(<span class="s10">1</span>).inverse_( <span class="s9">true</span> );</p>
-<p class="p7"><br></p>
-<p class="p7"><br></p>
+<p class="p3"><br></p>
+<p class="p5">m = <span class="s10">RoundButton</span>( w, <span class="s11">20</span>@<span class="s11">20 </span>).states_([[ <span class="s17">\speaker</span> ]] ).inverse_( <span class="s10">true</span> );</p>
+<p class="p3"><br></p>
+<p class="p5">m.inverse_( <span class="s10">false</span> );</p>
+<p class="p3"><br></p>
+<p class="p5">n = <span class="s10">RoundButton</span>( w, <span class="s11">20</span>@<span class="s11">20 </span>).states_([[ <span class="s17">\arrow</span> ]] ).extrude_(<span class="s10">false</span>).border_(<span class="s11">1</span>).inverse_( <span class="s10">true</span> );</p>
+<p class="p3"><br></p>
+<p class="p3"><br></p>
 <p class="p3"><br></p>
 </body>
 </html>

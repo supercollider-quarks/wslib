@@ -11,7 +11,7 @@ RoundButton : RoundView {
 	var <value = 0;
 	var <font, <states;
 	var <pressed = false;
-	var <radius, <>border = 2, <>moveWhenPressed = 1;
+	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
 	var <focusColor;
@@ -22,57 +22,17 @@ RoundButton : RoundView {
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
 	*viewClass { ^SCUserView }
-	
-	/*
-	init { |parent, bounds|
-		relativeOrigin = true;
-		if( parent.isKindOf( SCLayoutView ) ) { expanded = false; };
-		super.init( parent, if( expanded ) 
-				{ bounds.asRect.insetBy(-3,-3) } 
-				{ bounds } 
-			);
-		super.focusColor = Color.clear;
-		}
-	*/
-		
-	/*
-	drawBounds { ^if( expanded ) 
-			{ this.bounds.moveTo(3,3); } 
-			{ if( shrinkForFocusRing )
-				{ this.bounds.insetBy(3,3).moveTo(3,3) }
-				{ this.bounds.moveTo(0,0); }; 
-			}
-		}
-			
-	bounds { ^if( expanded ) { super.bounds.insetBy(3,3); } { super.bounds; }; }
-	
-	bounds_ { |newBounds| 
-		if( expanded ) 
-			{ super.bounds = newBounds.asRect.insetBy(-3,-3); }
-			{ super.bounds = newBounds; } ;
-		}
-		
-	expanded_ { |bool|
-		var bnds;
-		bnds = this.bounds;
-		expanded = bool ? expanded;
-		this.bounds = bnds;
-		}
-		
-	shrinkForFocusRing_ { |bool|
-		shrinkForFocusRing = bool ? shrinkForFocusRing;
-		this.refresh;
-		}
-	*/
 		
 	mouseDown {
 		arg x, y, modifiers, buttonNumber, clickCount;
-		if( this.drawBounds.containsPoint(x@y) )
-			{ mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		       pressed = true; this.refresh; };
+		if( enabled ) {	
+			if( this.drawBounds.containsPoint(x@y) )
+				{ mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		       pressed = true; this.refresh; };
+			};
 		}
 	
 	mouseUp {arg x, y, modifiers;
-		if( pressed == true )
+		if( pressed == true ) // pressed can never be true if not enabled
 			{ mouseUpAction.value(this, x, y, modifiers);
 			  pressed = false; 
 			  this.valueAction = value + 1; };
@@ -83,8 +43,6 @@ RoundButton : RoundView {
 	
 	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
 	
-	
-	
 	draw {
 		var rect, localRadius;
 		var shadeSide, lightSide;
@@ -92,7 +50,7 @@ RoundButton : RoundView {
 		rect = this.drawBounds;
 		
 		radius = radius ?? { rect.width.min( rect.height ) / 2 };
-		
+
 		if( this.hasFocus ) // rounded focus rect
 			{
 			Pen.use({
@@ -102,7 +60,7 @@ RoundButton : RoundView {
 				Pen.stroke;
 				});
 			};
-
+			
 		if( inverse )
 			{ lightSide = Color.black.alpha_(0.5);
 		       shadeSide = Color.white.alpha_(0.5); }
@@ -165,6 +123,14 @@ RoundButton : RoundView {
 				};
 			};
 			};
+			
+		if( enabled.not )
+			{
+			Pen.use {
+				Pen.fillColor = Color.white.alpha_(0.5);
+				Pen.roundedRect( rect, radius ).fill;
+				};
+			};
 		}
 		
 	*paletteExample { arg parent, bounds;
@@ -198,6 +164,9 @@ RoundButton : RoundView {
 	// same as extrude
 	bevel { ^extrude }
 	bevel_ { |bool| extrude = bool; this.refresh; }
+	
+	border_ { |newBorder| border = newBorder; this.refresh; }
+	
 	
 	inverse_ { |bool| inverse = bool; this.refresh; }
 	

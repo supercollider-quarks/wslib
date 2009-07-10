@@ -9,6 +9,10 @@ RoundView : SCUserView {
 	var <expanded = true;
 	var <shrinkForFocusRing = false; // only when expanded == false
 	
+	var <enabled = true, couldFocus = true;
+	
+	var <backgroundImage;
+	
 	init { |parent, bounds|
 		relativeOrigin = true;
 		if( parent.isKindOf( SCLayoutView ) ) { expanded = false; };
@@ -51,4 +55,24 @@ RoundView : SCUserView {
 		this.refresh;
 		}
 		
+	canFocus_ { |bool|
+		if( enabled ) { super.canFocus = bool };
+		couldFocus = bool;
+		}
+		
+	enabled_ { |bool|
+		enabled = (bool != false); // can be anything
+		if( enabled == true )
+			{ super.canFocus = couldFocus; } 
+			{ super.canFocus = false; };
+		this.refresh;
+		}
+		
+	backgroundImage_ { arg image, tileMode=1, alpha=1.0, fromRect;
+		if( image.notNil )
+			{ backgroundImage = [ image, tileMode, alpha, fromRect ]; }
+			{ backgroundImage = nil };
+		this.refresh;
+		}
+	
 	}
