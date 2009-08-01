@@ -424,7 +424,13 @@ AvailableFonts {
 		// hence the move into a separate function
 		}
 
-	*getFonts{ fonts = GUI.font.availableFonts.sort.collect( _.asSymbol ); }
+	*getFonts{
+		fonts = if(GUI.current.isNil){
+			[] // e.g. CLI-only usage
+		}{
+			GUI.font.availableFonts.sort.collect( _.asSymbol )
+		};
+	}
 	
 	*includesName { |fontName| ^fonts.includes( fontName.asSymbol ); }
 	*includes { |font| 
