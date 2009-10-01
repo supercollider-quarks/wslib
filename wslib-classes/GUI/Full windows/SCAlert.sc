@@ -186,14 +186,18 @@ SCRequestString {
 
 	var <window, <stringView, <buttonViews, <action, <>keyDownAction;
 	
-	*new { |default="", question = "Please enter string:", action|		^super.new.init( default, question, action );
+	*new { |default="", question = "Please enter string:", action|
+		^super.new.init( default, question, action );
 			}
 	
 	init { |default="", question = "Please enter string:", func|
 		
 		//var window, buttons, buttonViews, stringView;
 		var extraLines, buttons;
+		
 		buttons =[["cancel"], ["ok"]];
+		
+		if( GUI.current == SwingGUI ) { modal = false };
 						
 		action = func ? { |inString| inString.postln };
 						
@@ -202,11 +206,11 @@ SCRequestString {
 		if( modal )
 		{	window = SCModalWindow( question, 
 				Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
-				25 + ( 6 * extraLines ) ), false );
+				27 + ( 6 * extraLines ) ), false );
 		}
-		{	window = SCWindow( question, 
-				Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
-				25 + ( 6 * extraLines ) ), false );
+		{	window = Window( question, 
+				Rect.aboutPoint( Window.screenBounds.center, 175, 
+				27 + ( 6 * extraLines ) ), false );
 			
 			window.front;
 			window.alwaysOnTop_( true );
@@ -215,7 +219,7 @@ SCRequestString {
 		window.view.decorator = FlowLayout( window.view.bounds );
 		window.alpha_( 0.9 );
 		
-		stringView = SCTextView(window, 340@(12 + ( 12 * extraLines )) )
+		stringView = TextView(window, 340@(18 + ( 12 * extraLines )) )
 			.string_( default );
 				
 		//stringView.enterInterpretsSelection_( true );
@@ -233,13 +237,13 @@ SCRequestString {
 					  };
 			 	});
 		
-		SCCompositeView( window, 170@20 ); // move buttons to right
+		CompositeView( window, 170@20 ); // move buttons to right
 			
 		buttonViews = [ 
-			SCButton(window, 80@20)
+			Button(window, 80@20)
 					.states_( [ ["cancel"] ] )
 					.action_( { |button| window.close; } ),
-			 SCButton(window, 80@20)
+			 Button(window, 80@20)
 					.states_( [ ["ok"] ] )
 					.action_( { |button|
 						action.value( stringView.string );

@@ -19,11 +19,17 @@ RoundNumberBox : RoundView {
 	var <>clipLo = -inf, <>clipHi = inf, hit, inc=1.0, 
 		<>scroll=true; //, <>shift_step=0.1, <>ctrl_step=10;
 	
+	var <>wrap = false;
+	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
 		
 	var <charSelectColor, <charSelectIndex = -1;
+	
+	var <>actionOnlyOnChange = true;
 		
 	*viewClass { ^SCUserView }
+	
+	refresh { { super.refresh }.defer }
 	
 	*initClass { 
 		defaultFormatFunc = { |value| value };
@@ -61,9 +67,12 @@ RoundNumberBox : RoundView {
 	}
 
 	valueAction_ { arg val;
+		var oldValue;
+		oldValue = value;
 		value = val;
 		this.prClipValue;
-		action.value(this);
+		if( actionOnlyOnChange nand: { (value == oldValue) } )
+			{ action.value(this, value); };
 		this.refresh;
 		}
 	
@@ -73,19 +82,28 @@ RoundNumberBox : RoundView {
 		this.refresh;
 		}
 		
-	interpret {	
+	interpret {
+		var oldValue;
+		oldValue = value;
 		value = interpretFunc.value(keyString) ? value;
 		keyString = nil;
-		action.value( this, value );
+		if( actionOnlyOnChange nand: { (value == oldValue) } )
+			{ action.value(this, value); };
 		stringColor = normalColor;
 		this.refresh;
 		}
 		
 	prClipValue {
 		if( value.respondsTo( 'clip' ) && { value.class != String } )
-			{ value = value.clip(clipLo, clipHi); };
+			{ 
+			if( wrap )
+				{ if ( (clipLo != -inf) && { clipHi != inf } )
+					{ value = value.wrap( clipLo, clipHi ) }
+				}
+				{ value = value.clip(clipLo, clipHi); };
+			};
 		}
-		
+			
 	defaultGetDrag { 
 		^value
 	}

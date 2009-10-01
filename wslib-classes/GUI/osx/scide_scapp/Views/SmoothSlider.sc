@@ -32,6 +32,8 @@ SmoothSlider : RoundView {
 			Color.black.alpha_(0.7), Color.black ];
 	}
 	
+	refresh { { super.refresh }.defer; } // no need to use defer anymore
+	
 	sliderBounds {
 		var realKnobSize, drawBounds, rect;
 		
@@ -402,12 +404,14 @@ SmoothSlider : RoundView {
 		this.refresh;
 	}
 	
+	/* // obsolete
 	safeValue_ {  // prevent crash when window is closed
 		 arg val;
 		value = val.clip(0.0, 1.0);
 		if( parent.notNil && { parent.findWindow.dataptr.notNil } )
 			{ this.refresh; }
 		}
+	*/
 	
 
 	centered_ { arg bool;

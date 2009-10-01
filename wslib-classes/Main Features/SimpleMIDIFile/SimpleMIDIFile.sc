@@ -1053,7 +1053,7 @@ SimpleMIDIFile  {
 	tempoAtTime { |time = 0|
 		var tempoMap, outTempo;
 		tempoMap = this.tempoMap;
-		tempoMap = tempoMap.select({ |item| item[1] <= time });
+		tempoMap = tempoMap.select({ |item| item[0] <= time });
 		outTempo = tempoMap.last ? [0, tempo]; // last tempo change before time
 		^outTempo[1];		
 		}

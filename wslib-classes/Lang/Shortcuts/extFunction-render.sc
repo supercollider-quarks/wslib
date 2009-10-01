@@ -5,7 +5,7 @@
 		arg path, duration = 10, fadeTime=0.02, sampleRate = 44100,
 			headerFormat = "AIFF", sampleFormat = "int24", options, inputFilePath,
 			prependScore, 
-			sfBuffer, async = true; // 1 or more buffers containing <>path information
+			sfBuffer, async = true, action; // 1 or more buffers containing <>path information
 		
 		// 24 bits AIFF as default
 			
@@ -26,7 +26,7 @@
 				
 		// get number of channels from Function
 		numChannels = this.value.asCollection.size; 
-		options = options ?? { ServerOptions.new };
+		options = options ? Score.options;
 		options.numOutputBusChannels = numChannels;
 		
 		// create one synth instance at nodeID 1000
@@ -48,22 +48,44 @@
 			
 		// render the score
 		oscFilePath = "temp_oscscore" ++ UniqueID.next;
+		path = path.standardizePath;
 		path.dirname.makeDir;
 		
 		if( async )
-		{ score.recordNRT(
+		{
+		
+		/*
+		 score.recordNRT(
 				oscFilePath, path.standardizePath, inputFilePath, sampleRate = 44100, 
 				headerFormat, sampleFormat, options, 
 				"; rm" + oscFilePath + 
 				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
-				); }
+				); 
+		*/
+			
+		score.writeOSCFile(oscFilePath, 0, duration);
+		
+		(Score.program + " -N" + oscFilePath + (inputFilePath ? "_") + "\""++path++"\""
+		 	+ sampleRate + headerFormat + sampleFormat +
+			options.asOptionsString
+			+ "; rm" + oscFilePath + 
+				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
+		).unixCmd({ |...args| // result, pid
+			"done recording file: '%'\n".postf( path ); 
+			action.value( *[path] ++ args ); });
+		//"recording file: '%'\n".postf( path );
+		^path;	
+				
+		}
 		{ score.recordNRTs(
 				oscFilePath, path.standardizePath, inputFilePath, sampleRate = 44100, 
 				headerFormat, sampleFormat, options, 
 				"; rm" + oscFilePath + 
 				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
 				); 
-		 "recorded file: '%'\n".postf( path ); };
+		 "recorded file: '%'\n".postf( path );
+		 ^path;
+		  };
 		
 		
 	

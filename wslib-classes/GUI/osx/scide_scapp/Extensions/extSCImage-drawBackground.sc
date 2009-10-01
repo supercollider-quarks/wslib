@@ -60,7 +60,84 @@
 			}; 
 		}
 		
+	penFill { |rect, alpha=1.0, fromRect, tileMode=1, operation = 'sourceOver'|		
+		^Pen.use{
+			Pen.blendModeFromKey_( operation ); // doesn't work ..
+			Pen.clip;
+			this.drawBackground( rect, tileMode, alpha, fromRect );
+			}; 
+		}
+		
 	}
+	
++ Pen {
+	*blendModeFromKey_ { |key|
+		if( key.isNumber.not )
+			{ key = (	0: 'normal',
+				1: 'multiply',
+				2: 'screen',
+				3: 'overlay',
+				4: 'darken',
+				5: 'lighten',
+				6: 'colorDodge',
+				7: 'colorBurn',
+				8: 'softLight',
+				9: 'hardLight',
+				10: 'difference',
+				11: 'exclusion',
+				12: 'hue',
+				13: 'saturation',
+				14: 'color',
+				15: 'luminosity',
+				16: 'clear',
+				17: 'copy',
+				18: 'sourceIn',
+				19: 'sourceOut',
+				20: 'sourceATop',
+				21: 'destinationOver',
+				22: 'destinationIn',
+				23: 'destinationATop',
+				24: 'xOR',
+				25: 'plusDarker',
+				26: 'plusLighter'
+			  ).findKeyForValue( key.asSymbol ).postln ? 0;
+			};
+		^Pen.blendMode_( key );
+		}
+	}
+	
+/*
+	0 - Normal
+	1 - Multiply
+	2 - Screen
+	3 - Overlay
+	4 - Darken
+	5 - Lighten
+	6 - ColorDodge
+	7 - ColorBurn
+	8 - SoftLight
+	9 - HardLight
+	10 - Difference
+	11 - Exclusion
+	12 - Hue
+	13 - Saturation
+	14 - Color
+	15 - Luminosity
+	
+	OS 10.5 and > Only
+	--------------------
+	16 - Clear
+	17 - Copy
+	18 - SourceIn
+	19 - SourceOut
+	20 - SourceATop
+	21 - DestinationOver
+	22 - DestinationIn
+	23 - DestinationATop
+	24 - XOR
+	25 - PlusDarker
+	26 - PlusLighter	
+*/
 
 /*
 	1 - fixed to left, fixed to top
@@ -79,4 +156,20 @@
 	14 - fixed to left, center
 	15 - fixed to right, center
 	16 - center, center (no scale)
+	
+     unscaled: 
+	 1 12  3
+	14 16 15
+	 7 13  9
+	
+	scaled:
+	10: fit
+	11: keep ratio
+	
+	tiled:
+	 22222
+	4 555 6
+	4 555 6
+	4 555 6
+	 88888
 */

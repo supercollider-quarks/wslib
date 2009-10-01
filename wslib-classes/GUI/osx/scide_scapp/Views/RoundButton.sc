@@ -22,6 +22,8 @@ RoundButton : RoundView {
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
 	*viewClass { ^SCUserView }
+	
+	refresh { { super.refresh }.defer }
 		
 	mouseDown {
 		arg x, y, modifiers, buttonNumber, clickCount;
@@ -37,6 +39,14 @@ RoundButton : RoundView {
 			  pressed = false; 
 			  this.valueAction = value + 1; };
 		//this.refresh;	
+		}
+	
+	mouseMove { arg x, y, modifiers, buttonNumber, clickCount;
+		if( enabled ) {	
+			if( this.drawBounds.containsPoint(x@y) )
+				{ pressed = true; this.refresh; }
+				{ pressed = false; this.refresh; };
+			};
 		}
 	
 	radius_ { |newRadius| radius = newRadius; this.refresh; }
