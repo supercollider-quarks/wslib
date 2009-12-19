@@ -14,9 +14,24 @@
 			{	
 				radius = radius.asCollection.collect({ |item| 
 					item ?? {  rect.width.min( rect.height ) / 2; }; });
+				
+				// auto scale radius if too large
+				if ( radius.size == 1 )
+					{ radius = min( radius, min( rect.width, rect.height ) / 2 ) }
+					{ if( ((radius@@0) + (radius@@3)) > rect.height )
+						{ radius = radius * ( rect.height / ((radius@@0) + (radius@@3))); };
+					 if( ((radius@@1) + (radius@@2)) > rect.height )
+						{ radius = radius * ( rect.height / ((radius@@1) + (radius@@2))); };
+					 if( ((radius@@0) + (radius@@1)) > rect.width )
+						{ radius = radius * ( rect.width / ((radius@@0) + (radius@@1))); };
+					 if( ((radius@@2) + (radius@@3)) > rect.width )
+						{ radius = radius * ( rect.width / ((radius@@2) + (radius@@3))); };
+					};
 					
-				case { GUI.pen.respondsTo( \arcTo ) }
-					 // after rev7947 (redfrik added Meta_Pen:arcTo)
+					
+				case { GUI.pen.respondsTo( \arcTo ) }						// after rev7947 (redfrik added Meta_Pen:arcTo)
+				 	// also for swingosc now
+
 					{
 					points = [rect.rightTop, rect.rightBottom,rect.leftBottom, rect.leftTop];
 					lastPoint = points.last;
@@ -72,6 +87,20 @@
 		radius = radius.collect({ |item|
 			item ?? {  rect.width.min( rect.height ) / 2; }; 
 			});
+			
+		// auto scale radius if too large
+				if ( radius.size == 1 )
+					{ radius = min( radius, min( rect.width, rect.height ) / 2 ) }
+					{ if( ((radius@@0) + (radius@@3)) > rect.height )
+						{ radius = radius * ( rect.height / ((radius@@0) + (radius@@3))); };
+					 if( ((radius@@1) + (radius@@2)) > rect.height )
+						{ radius = radius * ( rect.height / ((radius@@1) + (radius@@2))); };
+					 if( ((radius@@0) + (radius@@1)) > rect.width )
+						{ radius = radius * ( rect.width / ((radius@@0) + (radius@@1))); };
+					 if( ((radius@@2) + (radius@@3)) > rect.width )
+						{ radius = radius * ( rect.width / ((radius@@2) + (radius@@3))); };
+					};
+					
 		
 		//angle = angle.asCollection; 
 		

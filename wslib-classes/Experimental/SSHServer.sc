@@ -13,6 +13,7 @@ SSHServer : Server {
 	*new { arg name, addr, options, clientID=0, sshLogin;
 		^super.new(name, addr, options, clientID)
 			.isLocal_( true ) // act as local server
+			.remoteControlled_( true )
 			.sshLogin_( sshLogin );
 		}
 			

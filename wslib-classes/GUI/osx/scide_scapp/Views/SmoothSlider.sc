@@ -13,6 +13,8 @@ SmoothSlider : RoundView {
 	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
 	
+	var <>grid = 0;
+	
 	*viewClass { ^SCUserView }
 	
 	init { arg parent, bounds;
@@ -332,7 +334,7 @@ SmoothSlider : RoundView {
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
 		if( enabled ) {	
 			hit = Point(x,y);
-				
+			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
 			hitValue = value;
 			this.mouseMove(x, y, modifiers);
 		};

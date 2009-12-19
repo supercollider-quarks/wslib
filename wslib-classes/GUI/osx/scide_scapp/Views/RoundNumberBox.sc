@@ -13,10 +13,12 @@ RoundNumberBox : RoundView {
 	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%";
 	var <innerShadow;
 	
+	var <autoScale = false; // BETA
+	
 	var <keyString, <>step=1, <>scroll_step=1;
 	var <typingColor, <normalColor, <stringColor;
 	var <background;
-	var <>clipLo = -inf, <>clipHi = inf, hit, inc=1.0, 
+	var <>clipLo = -inf, <>clipHi = inf, hit, startHit, inc=1.0, 
 		<>scroll=true; //, <>shift_step=0.1, <>ctrl_step=10;
 	
 	var <>wrap = false;
@@ -177,6 +179,17 @@ RoundNumberBox : RoundView {
 				
 				string = keyString ?? { formatFunc.value(value).asString };
 				stringRect = this.stringRect;
+				
+				if( autoScale )
+					{ Pen.transformToRect( stringRect.insetBy(1,0), string.bounds( font ), true, 
+						move: ( left: (0@0.5), right: (1@0.5), center: (0.5@0.5), 
+							middle: (0.5@0.5) )[ align ] ? (0@0.5) );
+					  stringRect = string.bounds( font );
+					 };
+					
+				//Pen.color = Color.green.alpha_( 0.5 ); // debug
+				//Pen.fillOval( stringRect );
+					
 						
 				if( (charSelectIndex >= 0) and: { charSelectIndex < string.size } )
 					{
@@ -189,12 +202,16 @@ RoundNumberBox : RoundView {
 				Pen.font_( font );
 				Pen.color_( stringColor ? Color.black );
 				
+				if( autoScale )
+				{ Pen.stringCenteredIn( string, stringRect ); }
+				{
 				Pen.perform( 
 					( left: \stringLeftJustIn, right: \stringRightJustIn, 
 						center: \stringCenteredIn, middle: \stringCenteredIn )[ align ]
 						? \stringLeftJustIn, string, stringRect );
+				}
 						
-					});
+				});
 			
 			if( enabled.not )
 				{ Pen.use{
@@ -212,19 +229,30 @@ RoundNumberBox : RoundView {
 			
 	charSelectRect { |stringRect, start = 0, range = 1|
 		var rect, stringStart, stringWidth;
-		rect = this.drawBounds;
-		stringRect = stringRect ?? { this.stringRect; };
-		stringStart = string[..start-1].bounds( font ).width;
-		stringWidth = string[start..(start+range)-1].bounds( font ).width;
-		^Rect( switch( align,
-				\left, { (stringStart + stringRect.left) + 1 },
-				\right, { ((stringStart + stringRect.right) - string.bounds(font).width) - 2 },
-				\center, { stringStart + stringRect.left +
-							((stringRect.width - string.bounds(font).width)/2)  },
-				\middle, { stringStart + stringRect.left +
-							((stringRect.width - string.bounds(font).width)/2)
-						 }) ?? {  stringStart + stringRect.left },
-			rect.top, stringWidth + 0.5, rect.height );
+		if( autoScale )
+			{
+			stringRect = stringRect ?? { string.bounds( font ); };
+			stringStart = string[..start-1].bounds( font ).width;
+			stringWidth = string[start..(start+range)-1].bounds( font ).width;
+			^Rect( stringStart + stringRect.left + 
+				((stringRect.width - string.bounds(font).width)/2), 
+				stringRect.top, stringWidth + 0.5, stringRect.height );
+			}
+			{	
+			rect = this.drawBounds;
+			stringRect = stringRect ?? { this.stringRect; };
+			stringStart = string[..start-1].bounds( font ).width;
+			stringWidth = string[start..(start+range)-1].bounds( font ).width;
+			^Rect( switch( align,
+					\left, { (stringStart + stringRect.left) + 1 },
+					\right, {((stringStart + stringRect.right) - string.bounds(font).width)-2 },
+					\center, { stringStart + stringRect.left +
+								((stringRect.width - string.bounds(font).width)/2)  },
+					\middle, { stringStart + stringRect.left +
+								((stringRect.width - string.bounds(font).width)/2)
+							 }) ?? {  stringStart + stringRect.left },
+				rect.top, stringWidth + 0.5, rect.height );
+			};
 		}
 		
 	charIndexFromPoint { |point, exclude|
@@ -233,6 +261,12 @@ RoundNumberBox : RoundView {
 		stringRect = this.charSelectRect(nil, 0, stringSize );
 		//stringWidth = stringRect.width;
 		exclude = exclude ? [];
+		
+		if( autoScale )
+			{ point = point.transformFromRect(
+			 this.stringRect.insetBy(1,0), string.bounds( font ), true, 
+						move: ( left: (0@0.5), right: (1@0.5), center: (0.5@0.5), 
+							middle: (0.5@0.5) )[ align ] ? (0@0.5) ) };
 		if( exclude.includes(i) ) { i = i+1 };
 		while { (i < string.size) && { 
 			(stringRect.left + string[..i].bounds( font ).width) < point.x; }  }
@@ -255,6 +289,7 @@ RoundNumberBox : RoundView {
 		if( enabled )
 		{	
 			hit = Point(x,y);
+			startHit = hit;
 			if (scroll == true, { inc = this.getScale(modifiers) });			
 			mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);
 		};
@@ -262,13 +297,23 @@ RoundNumberBox : RoundView {
 
 	mouseMove { arg x, y, modifiers;
 		var direction;
+		var angle;
 		if( enabled ) {
 		
 		if (scroll == true, {
 			direction = 1.0;
 				// horizontal or vertical scrolling:
-			if ( (x - hit.x) < 0 or: { (y - hit.y) > 0 }) { direction = -1.0; };
+			//if ( (x - hit.x) < 0 or: { (y - hit.y) > 0 }) { direction = -1.0; };
 			
+			angle = ((x@y) - hit).theta.wrap(-0.75pi, 1.25pi);
+			//angle = angle = ((x@y) - startHit).theta.wrap(-0.75pi, 1.25pi);
+			direction = 
+				case { angle.inclusivelyBetween( -0.6pi, 0.1pi ) }
+					{ 1.0 }
+					{ angle.inclusivelyBetween( 0.4pi, 1.1pi )  }
+					{ -1.0 }
+					{ true }
+					{ 0.0 };
 			if( value.respondsTo( '+' ) && { value.class != String }  )
 				{ this.valueAction = (this.value + (inc * this.scroll_step * direction)); };
 			hit = Point(x, y);
