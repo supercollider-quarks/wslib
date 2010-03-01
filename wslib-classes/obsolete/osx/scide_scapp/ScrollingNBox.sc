@@ -13,7 +13,7 @@ ScrollingNBox : SCNumberBox {
 	}
 */
 	value_ { arg val;
-		keyString = nil;
+		// keyString = nil;
 		this.stringColor = normalColor;
 		object = val !? { val.clip(clipLo, clipHi) }; // ws change
 		this.string = object.asString;
