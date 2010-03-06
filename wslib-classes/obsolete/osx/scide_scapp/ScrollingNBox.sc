@@ -3,7 +3,10 @@
 // original by blackrain; mod to prevent nil error for wslib
 // now fixed in SNBox; this is still here to prevent my own code from breaking..
 
-ScrollingNBox : SCNumberBox {
+ScrollingNBox : RoundNumberBox { }
+
+/*
+ScrollingNBox : SCNumberBoxOld {
 	var <>clipLo = -inf, <>clipHi = inf, hit, inc=1.0, <>scroll=true, <>shift_step=0.1, <>ctrl_step=10;
 
 	*viewClass { ^SCNumberBox }
@@ -47,3 +50,4 @@ ScrollingNBox : SCNumberBox {
 		mouseMoveAction.value(this, x, y, modifiers);	
 	}
 }
+*/

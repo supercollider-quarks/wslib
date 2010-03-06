@@ -233,6 +233,9 @@ ScaledUserViewContainer {
 			);
 		}
 		
+	bounds { ^composite.bounds }
+	bounds_ { |newBounds| composite.bounds = newBounds; }
+		
 	scaleHEnabled_ { |bool| scaleHEnabled = bool; this.updateSliderBounds; }
 	scaleVEnabled_ { |bool| scaleVEnabled = bool; this.updateSliderBounds; }
 	
@@ -299,6 +302,13 @@ ScaledUserViewContainer {
 		userView.movePixels_( newPixelsArray, limit, refreshFlag );
 		this.updateSliders( false, updateFlag );
 		}
+		
+	viewRect_ { |rect, refreshFlag, updateFlag| // can be single value, array or point
+		updateFlag = updateFlag ? true;
+		userView.viewRect_( rect, refreshFlag );
+		this.updateSliders( updateFlag, updateFlag );
+		}
+	
 		
 	keepRatio_ { |bool = false|
 		userView.keepRatio = bool;

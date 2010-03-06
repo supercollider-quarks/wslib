@@ -2,7 +2,9 @@
 // plot multiple arrays on top of eachother
 
 // example:
-// MultiPlot( [ (-10,-9..10), (-20,-18..20).fold(-10,10), { 3.0.rand2 } ! 20 ] )
+/*
+MultiPlot( [ (-10,-9..10), (-20,-18..20).fold(-10,10), { 3.0.rand2 } ! 20 ] )
+*/
 
 MultiPlot {
 
@@ -10,7 +12,7 @@ MultiPlot {
 			linesAlpha = 0.5, discrete = false, min, max|
 		var win;
 		
-		win = SCWindow.new("MultiPlot", Rect(100,100,width,height));
+		win = Window.new("MultiPlot", Rect(100,100,width,height));
 		
 		win.drawHook = { |w|
 			var rect;

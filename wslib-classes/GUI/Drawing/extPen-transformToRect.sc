@@ -28,7 +28,7 @@
 	}
 	
 + Rect {
-	scaleCenteredIn { |toRect, keepRatio = true, ratio = 1, move = 0.5|
+	scaleCenteredIn { |toRect, keepRatio = false, ratio = 1, move = 0.5|
 		var xyr, rect, spacing;
 		
 		move = move.asPoint;
@@ -53,17 +53,26 @@
 		^rect;
 		}
 		
-	transformToRect {  |rect, fromRect, keepRatio = true, ratio = 1, move = 0.5|
+	transformToRect {  |rect, fromRect, keepRatio = false, ratio = 1, move = 0.5|
 		rect = rect ?? {Rect(0,0,400,400)};
 		fromRect = fromRect ? this;
 		^this.class.fromPoints( *[ this.leftTop, this.rightBottom ]
 			.collect( _.transformToRect( rect, fromRect, keepRatio, ratio, move ) ) );
 		}
 	
-	transformFromRect {  |rect, fromRect, keepRatio = true, ratio = 1, move = 0.5|
+	transformFromRect {  |rect, fromRect, keepRatio = false, ratio = 1, move = 0.5|
 		rect = rect ?? {Rect(0,0,400,400)};
 		fromRect = fromRect ? this;
 		^this.class.fromPoints( *[ this.leftTop, this.rightBottom ]
 			.collect( _.transformFromRect( rect, fromRect, keepRatio, ratio, move ) ) );
 		}
 	}
+	
++ Collection {
+		transformToRect {  |rect, fromRect, keepRatio = false, ratio = 1, move = 0.5|
+				^this.collect( _.transformToRect( rect, fromRect, keepRatio, ratio, move ) );		}
+				
+		transformFromRect {  |rect, fromRect, keepRatio = false, ratio = 1, move = 0.5|
+				^this.collect( _.transformFromRect( rect, fromRect, keepRatio, ratio, move ) );		}
+	
+}

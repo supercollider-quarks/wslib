@@ -9,6 +9,10 @@ SmoothSlider : RoundView {
 	var <thumbSize = 0; // compatible with old sliders
 	var <focusColor;
 	
+	var <>deltaAction, <>allwaysPerformAction = false;
+	var <>outOfBoundsAction;
+	
+	var <>clipMode = \clip; // or \wrap;
 	var <string, <font, <align, <stringOrientation = \h, <stringAlignToKnob = false;
 	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
@@ -332,79 +336,115 @@ SmoothSlider : RoundView {
 	
 
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
+		var bounds, oldValue;
 		if( enabled ) {	
+			
 			hit = Point(x,y);
 			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
+			
+			if( mode == \jump )
+				{ // move slider to mouse point
+				bounds = this.drawBounds;
+				oldValue = value;
+				
+				if( orientation == \v )
+					{ if( thumbSize < bounds.height )
+						{ value = 1 - ((y - (bounds.top + (
+							( knobSize * bounds.width )
+								.max( thumbSize.min( bounds.height ) ) / 2))) / 
+							(bounds.height - (knobSize * bounds.width )
+								.max( thumbSize )  ))
+						};
+					}
+					{ if( thumbSize < bounds.width )
+						{ value = (x - (bounds.left + (
+							( knobSize * bounds.height )
+								.max( thumbSize.min( bounds.width ) ) / 2))) / 
+							(bounds.width - (knobSize * bounds.height )
+								.max( thumbSize.min( bounds.width ) ) )
+						};
+					};
+					
+				deltaAction.value( this, value - oldValue );
+				value = value;
+				this.clipValue;
+
+				
+				if( allwaysPerformAction or: { oldValue != value } )
+					{ action.value(this, x, y, modifiers); };
+				this.refresh;
+
+				};
+			
 			hitValue = value;
-			this.mouseMove(x, y, modifiers);
+			
+			//this.mouseMove(x, y, modifiers);
 		};
 		
 	}
+
 	
 	mouseMove { arg x, y, modifiers;
 		var pt, angle, inc = 0;
-		var bounds;
+		var bounds, oldValue, delta;
 		if( enabled ) {	
 			bounds = this.drawBounds;
 			if (modifiers != 1048576, { // we are not dragging out - apple key
-				case
-					{ mode == \move } {
-						if( orientation == \v )
-							{ if( thumbSize < bounds.height )
-								{ value = ( hitValue + ( 
-										( (hit.y - y) / this.sliderBounds.height )  
-											* this.getScale( modifiers ) ) )
-								.clip( 0.0,1.0 ); }; }
-							{ if( thumbSize < bounds.width )
-								{ value = ( hitValue + ( 
-										( (x - hit.x) / this.sliderBounds.height  ) 
-										* this.getScale( modifiers ) ) )
-								.clip( 0.0,1.0 ); } };
-								
-						//hit = Point(x,y);
-						action.value(this, x, y, modifiers);
-						this.refresh;
+				oldValue = value;
+				
+				if( orientation == \v )
+					{ if( thumbSize < bounds.height )
+						{ value = ( hitValue + ( 
+									( (hit.y - y) / this.sliderBounds.height )  
+									* this.getScale( modifiers ) ) )
+						 }; 
 					}
-					{ mode == \jump } {
-						if( orientation == \v )
-							{ 
-							if( thumbSize < bounds.height )
-								{ value = ( 1 - ((y - (bounds.top + (
-										( knobSize * bounds.width )
-										.max( thumbSize.min( bounds.height ) ) / 2))) / 
-									(bounds.height - 
-										(knobSize * bounds.width )
-										.max( thumbSize )  ))
-									).clip( 0.0,1.0 );
-									};
-							 }
-							{ if( thumbSize < bounds.width )
-								{ value = ((x - (bounds.left + (
-									( knobSize * bounds.height )
-									.max( thumbSize.min( bounds.width ) ) / 2))) / 
-								(bounds.width - (knobSize * bounds.height )
-									.max( thumbSize.min( bounds.width ) ) ))
-									.clip(0.0,1.0); };
-							};
-								
-						//hit = Point(x,y);
-						action.value(this, x, y, modifiers);
-						this.refresh;
-					}
+					{ if( thumbSize < bounds.width )
+						{ value = ( hitValue + ( 
+									( (x - hit.x) / this.sliderBounds.height  ) 
+									* this.getScale( modifiers ) ) ) 
+						} 
+					};
+				
+				deltaAction.value( this, value - oldValue );
+				value = value;
+				this.clipValue;
+
+				
+				if( allwaysPerformAction or: { oldValue != value } )
+					{ action.value(this, x, y, modifiers); };
+					
+				this.refresh;
 			});
 		};
 	}
+	
+	clipValue { |active = true|
+		var newVal;
+		newVal = value.perform( clipMode, 0.0, 1.0 );
+		if( active && {newVal != value} )
+			{ outOfBoundsAction.value( this, value, newVal  ); value = newVal; }
+		}
 
 	value_ { arg val;
-		value = val.clip(0.0, 1.0);
+		value = val;
+		this.clipValue( false );
 		this.refresh;
 	}
 
 	valueAction_ { arg val;
-		value = val.clip(0.0, 1.0);
-		action.value(this);
+		var oldVal;
+		deltaAction.value( this, val - value );
+		oldVal = value;
+		value = val;
+		this.clipValue;
+		if( allwaysPerformAction or: { oldVal != value } ) { action.value(this); };
 		this.refresh;
-	}
+		}
+	
+	delta { |val = 0|
+		this.valueAction = value + val;
+		}
 	
 	/* // obsolete
 	safeValue_ {  // prevent crash when window is closed

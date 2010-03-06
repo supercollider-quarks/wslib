@@ -8,7 +8,8 @@
 
 ScaledUserView { 
 
-	classvar <>gridColor;
+	classvar <>defaultGridColor;
+	var <gridColor;
 	
 	var <view, <>fromBounds;
 	var <scaleH = 1, <scaleV = 1, <moveH = 0.5, <moveV = 0.5;
@@ -30,7 +31,7 @@ ScaledUserView {
 	var <>clipUnscaled = true; 
 	
 	var <background;
-	var <>keepRatio = false;  // experimental - handle with care..
+	var <>keepRatio = false; 
 	
 	// mouseActions arguments:
 	//  |this, scaledX, scaledY, modifier, x, y, isInside|
@@ -38,12 +39,12 @@ ScaledUserView {
 	// unscaledDrawFunc:  0@0 == leftTop of view (not window)
 	
 	*initClass { 
-		gridColor = Color.gray.alpha_(0.25); 
+		defaultGridColor = Color.gray.alpha_(0.25); 
 		}
 	
 	*new { |window, bounds, fromBounds|
-		bounds = bounds ? Rect(0,0,360, 360);
-		fromBounds = fromBounds ? bounds;
+		bounds = (bounds ? Rect(0,0,360, 360)).asRect;
+		fromBounds = (fromBounds ? bounds).asRect;
 		^super.new.fromBounds_( fromBounds ).init( window, bounds);
 		}
 		
@@ -60,6 +61,8 @@ ScaledUserView {
 		view = UserView( window, bounds );
 		//view.relativeOrigin_( false );
 		view.background = background;
+		
+		gridColor = defaultGridColor;
 		
 		if( view.respondsTo( \drawBounds ).not ) // dirty - but it does the trick..
 			{ view.addUniqueMethod( \drawBounds, { |vw| 
@@ -105,131 +108,140 @@ ScaledUserView {
 			var viewRect;
 			var scaleAmt;
 			
-			viewRect = this.viewRect;
-			
-			beforeDrawFunc.value( this );
-			
-			if( background.class == Color )
-				{ Pen.use({ 
-					Pen.color = background;
-					Pen.fillRect( v.drawBounds );
-					}); 
-				}; 
+			Pen.use({	
+				viewRect = this.viewRect;
 				
-			
+				beforeDrawFunc.value( this );
 				
-			// move to views leftTop corner (only when relativeOrigin==false) :
-			Pen.translate( v.drawBounds.left, v.drawBounds.top );
-			
-			
-			if( clip ) { // swing will need clip
-					Pen.moveTo(0@0);
-					Pen.lineTo(v.drawBounds.width@0);
-					Pen.lineTo(v.drawBounds.width@v.drawBounds.height);
-					Pen.lineTo(0@v.drawBounds.height);
-					Pen.lineTo(0@0);
-					Pen.clip;
-					};
-			
-			
-			Pen.use({
-			
-				scaleAmt = this.scaleAmt;
-				Pen.scale( *scaleAmt );
-			
-				if( GUI.scheme.id == 'swing' && {(scaleAmt[0] != scaleAmt[1])} )
-					{ Pen.translate( 0.5, 0.5 ); }; // temp correction for swingosc half-pixel bug
+				if( background.class == Color )
+					{ Pen.use({ 
+						Pen.color = background;
+						Pen.fillRect( v.drawBounds );
+						}); 
+					}; 
 					
-				Pen.translate( *this.moveAmt );
 				
-				/*
-				// clip:
-				if( clip && clipScaled ) { 
 					
-					// clip doesn't work with negative scaling
-					scaledViewBounds =
-						Rect.fromPoints( *([[0,0], 
-								[v.drawBounds.width,v.drawBounds.height]]
-							.collect({ |point| this.convertBwd( *point ).asPoint; }) ) );
-							
-					Pen.moveTo(scaledViewBounds.leftTop);
-					Pen.lineTo(scaledViewBounds.rightTop);
-					Pen.lineTo(scaledViewBounds.rightBottom);
-					Pen.lineTo(scaledViewBounds.leftBottom);
-					Pen.lineTo(scaledViewBounds.leftTop);
-					Pen.clip;
+				// move to views leftTop corner (only when relativeOrigin==false) :
+				Pen.translate( v.drawBounds.left, v.drawBounds.top );
+				
+				
+				if( clip ) { // swing will need clip
+						Pen.moveTo(0@0);
+						Pen.lineTo(v.drawBounds.width@0);
+						Pen.lineTo(v.drawBounds.width@v.drawBounds.height);
+						Pen.lineTo(0@v.drawBounds.height);
+						Pen.lineTo(0@0);
+						Pen.clip;
+						};
+				
+				
+				Pen.use({
+				
+					//scaleAmt = this.scaleAmt;
+					//Pen.scale( *scaleAmt );
 					
-					};
-				*/
+					Pen.transformToRect( v.drawBounds, fromBounds, keepRatio, 
+						scaleH@scaleV, moveH@moveV );
 				
-				// grid:
-				
-				if( (gridSpacingV != 0) && // kill grid if spacing < 2px
-						{ (viewRect.height / v.drawBounds.height) < ( gridSpacingV / 2 ) } )
-					{	if( gridMode.asCollection.wrapAt( 0 ) === 'blocks' )
-					
-							{ 	Pen.color = gridColor;
-								Pen.width = gridSpacingV;
-								
-								((0, (gridSpacingV * 2) .. fromBounds.height + gridSpacingV) 
-										+ (gridSpacingV / 2))
-									.abs
-									.do({ |item| Pen.line( 0@item, (fromBounds.width)@item ); });
-							} 
-							{  	Pen.color = Color.black.blend( gridColor, 0.5 );
-								Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleV; 
-								
-								(0, gridSpacingV .. (fromBounds.height + gridSpacingV))
-									.abs
-									.do({ |item| Pen.line( 0@item, (fromBounds.width)@item ); });
-							 };
-							
-						Pen.stroke;
-					};
-				
-				
-				if( ( gridSpacingH != 0 ) &&
-					 	{ (viewRect.width / v.drawBounds.width) < (gridSpacingH / 2 ) } )
-					{	if( gridMode.asCollection.wrapAt( 1 ) === 'blocks' )
-							{	Pen.color = gridColor;
-								Pen.width = gridSpacingH;
-								
-								((0, (gridSpacingH * 2) .. fromBounds.width + gridSpacingH) 
-										+ (gridSpacingH / 2))
-									.abs
-									.do({ |item| Pen.line( item@0, item@(fromBounds.height) ); });
-							} 
-							{  	Pen.color = Color.black.blend( gridColor, 0.5 );
-								Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleH; 
-								
-								(0, gridSpacingH .. (fromBounds.width + gridSpacingH))
-									.abs
-									.do({ |item| Pen.line( item@0, item@(fromBounds.height) ); });
-							};	
+					if( GUI.scheme.id == 'swing' && {(scaleAmt[0] != scaleAmt[1])} )
+						{ Pen.translate( 0.5, 0.5 ); }; // temp correction for swingosc half-pixel bug
 						
-						Pen.stroke;
-					};
+					// Pen.translate( *this.moveAmt );
 					
-				// drawFunc:
-				
-				// line will be 1px at current view width and scale == [1,1] 
-				Pen.width = 
-					[ (fromBounds.width / v.drawBounds.width).abs,
-					  (fromBounds.height / v.drawBounds.height).abs ].mean; 
-					 
-				Pen.color = Color.black; // back to default
-				
-				drawFunc.value( this );
+					/*
+					// clip:
+					if( clip && clipScaled ) { 
+						
+						// clip doesn't work with negative scaling
+						scaledViewBounds =
+							Rect.fromPoints( *([[0,0], 
+									[v.drawBounds.width,v.drawBounds.height]]
+								.collect({ |point| this.convertBwd( *point ).asPoint; }) ) );
+								
+						Pen.moveTo(scaledViewBounds.leftTop);
+						Pen.lineTo(scaledViewBounds.rightTop);
+						Pen.lineTo(scaledViewBounds.rightBottom);
+						Pen.lineTo(scaledViewBounds.leftBottom);
+						Pen.lineTo(scaledViewBounds.leftTop);
+						Pen.clip;
+						
+						};
+					*/
+					
+					// grid:
+					
+					Pen.use({
+					
+					Pen.translate( fromBounds.left, fromBounds.top );
+					
+					if( (gridSpacingV != 0) && // kill grid if spacing < 2px
+							{ (viewRect.height / v.drawBounds.height) < ( gridSpacingV / 2 ) } )
+						{	if( gridMode.asCollection.wrapAt( 0 ) === 'blocks' )
+						
+								{ 	Pen.color = gridColor.asCollection[0];
+									Pen.width = gridSpacingV;
+									
+									((0, (gridSpacingV * 2) .. fromBounds.height + gridSpacingV) 
+											+ (gridSpacingV / 2))
+										.abs
+										.do({ |item| Pen.line( 0@item, (fromBounds.width)@item ); });
+								} 
+								{  	Pen.color = gridColor.asCollection[0]; //Color.black.blend( gridColor, 0.5 );
+									Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleV; 
+									
+									(0, gridSpacingV .. (fromBounds.height + gridSpacingV))
+										.abs
+										.do({ |item| Pen.line( 0@item, (fromBounds.width)@item ); });
+								 };
+								
+							Pen.stroke;
+						};
+					
+					
+					if( ( gridSpacingH != 0 ) &&
+						 	{ (viewRect.width / v.drawBounds.width) < (gridSpacingH / 2 ) } )
+						{	if( gridMode.asCollection.wrapAt( 1 ) === 'blocks' )
+								{	Pen.color = gridColor.asCollection.wrapAt(1);
+									Pen.width = gridSpacingH;
+									
+									((0, (gridSpacingH * 2) .. fromBounds.width + gridSpacingH) 
+											+ (gridSpacingH / 2))
+										.abs
+										.do({ |item| Pen.line( item@0, item@(fromBounds.height) ); });
+								} 
+								{  	Pen.color =  gridColor.asCollection.wrapAt(1);
+									Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleH; 
+									
+									(0, gridSpacingH .. (fromBounds.width + gridSpacingH))
+										.abs
+										.do({ |item| Pen.line( item@0, item@(fromBounds.height) ); });
+								};	
+							
+							Pen.stroke;
+						};
+					});
+						
+					// drawFunc:
+					
+					// line will be 1px at current view width and scale == [1,1] 
+					Pen.width = 
+						[ (fromBounds.width / v.drawBounds.width).abs,
+						  (fromBounds.height / v.drawBounds.height).abs ].mean; 
+						 
+					Pen.color = Color.black; // back to default
+					
+					drawFunc.value( this );
+					});
+					
+					
+				Pen.use({
+					unscaledDrawFunc.value( this );
+					unclippedUnscaledDrawFunc.value( this ); // depricated
+					});
+					
+				 refreshAction.value( this );
 				});
-				
-				
-			Pen.use({
-				unscaledDrawFunc.value( this );
-				unclippedUnscaledDrawFunc.value( this ); // depricated
-				});
-				
-			 refreshAction.value( this );
-				
 			};
 		}
 		
@@ -240,6 +252,11 @@ ScaledUserView {
 			// refreshAction.value( this ); // won't work since this isn't the actual view
 			 }; 
 		}
+		
+	gridColor_ { |color, refreshFlag| 
+		gridColor = color; 
+		this.refresh( refreshFlag );
+	}
 
 	
 	scaleH_ { |newScaleH, refreshFlag|
@@ -366,15 +383,57 @@ ScaledUserView {
 		
 	viewRect { |inset = 0| 
 		// the currently viewed part of fromBounds
+		/*
 		var points;
 		points = [ inset@inset,  this.drawBounds.extent - (inset@inset) ];
 		points = points.collect({ |point| this.convertBwd( point.x, point.y ).asPoint; });
 		^Rect( points[0].x, points[0].y, points[1].x - points[0].x, points[1].y - points[0].y );
+		*/
+		^view.drawBounds.transformFromRect( view.drawBounds, fromBounds, keepRatio, 
+				scaleH@scaleV, moveH@moveV ).insetBy( inset, inset );
 		}
+	
+	viewRect_ { |rect, refreshFlag| 
+		var scale, move, msc;
 		
-	translateScale { |item|  
+		rect = rect.asRect;
+		
+		scale = (fromBounds.extent / rect.extent).asArray;
+		move = (rect.leftTop - fromBounds.leftTop);
+		msc = (fromBounds.extent - rect.extent).asArray;
+		
+		move = [ 
+			move.x.linlin( 0, msc[0], 0, 1 ), 
+			move.y.linlin( 0, msc[1], 0, 1 )
+			];
+			
+		if( keepRatio )
+			{ this.scale_( scale.minItem, false ); }
+			{ this.scale_( scale, false ); };
+		this.move_( move, false );
+		
+		this.refresh( refreshFlag );
+		}
+	
+	pixelScale { 
+		
+		// extent of a rect that shows up as 
+		// one pixel regardless of the scale settings
+		// example: 
+		//  Pen.width = vw.pixelScale.asArray.mean;
+
+		^(((1@1)/view.bounds.extent) * fromBounds.extent) / (scaleH@scaleV);
+
+	}
+		
+	translateScale { |item| 
+		
+		^item.transformToRect( view.drawBounds, fromBounds, keepRatio, 
+			scaleH@scaleV, moveH@moveV );
+		
 	 	// requires extRect-transformations.sc from wslib
 	 	// item should be Points, Rects or array containing Points and Rects
+	 	/*
 	 	if( item.class == Meta_Pen )
 	 		{ ^Pen.scale( *this.scaleAmt ).translate( *this.moveAmt );  }
 	 		{
@@ -383,9 +442,10 @@ ScaledUserView {
 	 				subItem.translateScale( this.moveAmt, this.scaleAmt ); }); }
 	 			{ ^item.translateScale( this.moveAmt, this.scaleAmt ); }
 			};
+		*/
 		 }
 		  
-	// scaling methods
+	// scaling methods /// OLD (not compatible with keepRatio == true)
 	convertScale { |inRect, outRect, sh = 1, sv = 1|
 		if ( keepRatio )
 			{	^( (1 / inRect.width.min(  inRect.height ) ) * 
@@ -405,21 +465,21 @@ ScaledUserView {
 			 };
 		}
 		
-	
 	// these return input values for .translate and .scale
+     /// OLD (not compatible with keepRatio == true)
 	scaleAmt { ^this.convertScale( fromBounds, view.bounds, scaleH, scaleV ); }
 	moveAmt { ^this.convertMove( fromBounds, moveH, moveV ); }
 	
 	// you can use these within drawFuncs and mouseFuncs to convert x/y values:
 	
 	convertFwd { |x = 0, y = 0| // move and scale input
-		^( [x,y] + this.convertMove( fromBounds, moveH, moveV ) )
-			* this.convertScale( fromBounds, view.bounds, scaleH, scaleV )
+		^(x@y).transformToRect( view.drawBounds, fromBounds, keepRatio,
+				scaleH@scaleV, moveH@moveV ).asArray;
 		}
 	
 	convertBwd { |x = 0, y = 0| // scale and move input backwards
-	 	^( [x,y] / this.convertScale( fromBounds, view.bounds, scaleH, scaleV ) ) 
-			- this.convertMove( fromBounds, moveH, moveV );
+		^(x@y).transformFromRect( view.drawBounds, fromBounds, keepRatio, 
+				scaleH@scaleV, moveH@moveV ).asArray;
 		}
 	
 	}

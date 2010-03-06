@@ -43,6 +43,7 @@ PlotView : SCUserView {
 				 };
 				
 			pointWidth = drawBounds.width / (value.size - 1);
+			//pointWidth = 1;
 			pointStart = drawBounds.leftTop;
 			viewHeight = drawBounds.height;
 			points = value.collect({ |item, i|
