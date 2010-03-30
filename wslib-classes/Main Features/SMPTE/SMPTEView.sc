@@ -18,32 +18,33 @@ SMPTEView { // fps = 1000
 		fontName = fontName ? "Monaco";
 		fontSize = inFontSize ? 20;
 		
-		view = SCUserView( parent, Rect( inBounds.left, inBounds.top, 
+		view = UserView( parent, Rect( inBounds.left, inBounds.top, 
 				(fontSize * 7.2) + 2, fontSize * 1.2 ) )
-			.relativeOrigin_( false )
+			//.relativeOrigin_( false )
 			//.canFocus_( false )
 			;
 		
 		view.drawFunc = { |v|
 			if( background.notNil )
-				{ background.set; Pen.fillRect( v.bounds ) };
+				{ Pen.color = background; Pen.fillRect( v.drawBounds ) };
 					
 			pos.asSMPTEString( 1000 )
-				.drawStretchedIn( v.bounds, Font( fontName, fontSize ), fontColor );
-				//.drawAtPoint( v.bounds.leftTop, Font( fontName, fontSize ), fontColor );
+				.drawStretchedIn( v.drawBounds, Font( fontName, fontSize ), fontColor );
+				//.drawAtPoint( v.drawBounds.leftTop, Font( fontName, fontSize ), fontColor );
 		
 			if( v.hasFocus && { [-1,3,6,9].includes( selected ).not } )
 				{ 
-				Color.black.set;
+				Pen.color = Color.black;
 				Pen.strokeRect( Rect( 
-					(v.bounds.left + ((11 - selected) * ((v.bounds.width) / 12)))
+					(v.drawBounds.left + ((11 - selected) * ((v.drawBounds.width) / 12)))
 						-1,
-					v.bounds.top, (v.bounds.width) / 12, v.bounds.height ) ); };
+					v.drawBounds.top, (v.drawBounds.width) / 12, v.drawBounds.height ) ); };
 				
 			};
 			
 		view.mouseDownAction = { |v, x, y, mod|
-			selected = (11 - (((x+1) - v.bounds.left) / ((v.bounds.width) / 12) ).floor).asInt;
+			selected = (11 - (((x+1) - v.drawBounds.left) /
+				((v.drawBounds.width) / 12) ).floor).asInt;
 			counterDragStart = [x@y, pos.copy];
 			mouseDownAction.value( this, x, y, mod );
 			};

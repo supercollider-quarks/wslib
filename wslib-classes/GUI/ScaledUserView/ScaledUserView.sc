@@ -72,11 +72,12 @@ ScaledUserView {
 				})
 			};
 		
-		view.mouseDownAction = { |v, x, y, m|
+		view.mouseDownAction = { |v, x, y, m, buttonNumber, clickCount|
 			var scaledX, scaledY, isInside = true;
 			x = x - v.drawBounds.left; y = y - v.drawBounds.top;
 			#scaledX, scaledY = this.convertBwd( x,y );
-			mouseDownAction.value( this, scaledX, scaledY, m, x, y, isInside );
+			mouseDownAction.value( this, scaledX, scaledY, m, x, y, isInside, 
+				buttonNumber, clickCount);
 			this.refresh( autoRefreshMouseActions );
 			};
 			

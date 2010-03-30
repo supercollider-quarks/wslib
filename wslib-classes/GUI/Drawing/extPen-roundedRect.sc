@@ -159,10 +159,12 @@
 		{ sidesFunc.( points, 2 ); };
 	//Pen.fill;
 	
+	
 	Pen.fillAxialGradient( 
 		(rect.right - (radius@@1).max( width ))@(rect.top + width.min(radius@@1)),
 		(rect.right - width.min(radius@@1))@(rect.top + (radius@@1).max( width )),
-		colors[0], colors[1] );  
+		colors[0], colors[1] ); 
+	
 	
 	// dark side
 	

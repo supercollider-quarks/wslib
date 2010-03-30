@@ -125,12 +125,17 @@
 			{ subStrings = this.split( $\n );
 			  wd = inRect.asRect.height / subStrings.size;
 			  subStrings.do({ |string, i|
-			  		string.drawStretchedIn( Rect( inRect.left, inRect.top + (i * wd), inRect.width, wd ), font, color );
+			  		string.drawStretchedIn( 
+			  			Rect( inRect.left, inRect.top + (i * wd), inRect.width, wd ), 
+			  			font, color );
 			  		});
-			   }
+			}
 			{ wd = inRect.asRect.width / this.size;
+			Pen.font = font;
+			Pen.color = color;
 			this.do({ |char,i|
-				char.asString.drawCenteredIn( Rect( inRect.left + (i * wd), inRect.top, wd, inRect.height ),font, color);
+				Pen.stringCenteredIn( char.asString, 
+					Rect( inRect.left + (i * wd), inRect.top, wd, inRect.height ));
 				});
 			}
 		}

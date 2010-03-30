@@ -15,13 +15,13 @@ WaitView : SCUserView {
 	init { |parent, bounds|
 		super.init( parent, bounds );
 		color = Color.gray(0.25);
-		this.relativeOrigin = false;
+		//this.relativeOrigin = false;
 		}
 	
 	draw {
 		var radius, center;		
-		radius = this.absoluteBounds.width.min( this.bounds.height ) / 2;
-		center = this.absoluteBounds.center;
+		radius = this.bounds.width.min( this.bounds.height ) / 2;
+		center = this.drawBounds.center;
 		if( active or: { alphaWhenStopped != 0 } )
 			{ Array.series( numLines + 1, -0.5pi, 2pi/numLines)[1..] 
 				.do({ |val, i|
