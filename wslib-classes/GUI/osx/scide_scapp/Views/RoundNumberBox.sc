@@ -84,6 +84,8 @@ RoundNumberBox : RoundView {
 		this.refresh;
 		}
 		
+	steps_ { |newStep| step = scroll_step = newStep ? step }
+		
 	interpret {
 		var oldValue;
 		oldValue = value;
