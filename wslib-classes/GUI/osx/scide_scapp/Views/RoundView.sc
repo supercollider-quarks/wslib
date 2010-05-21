@@ -14,7 +14,7 @@ RoundView : SCUserView {
 	var <backgroundImage;
 	
 	init { |parent, bounds|
-		relativeOrigin = true;
+		//relativeOrigin = true;
 		if( parent.isKindOf( SCLayoutView ) ) { expanded = false; };
 		super.init( parent, if( expanded ) 
 				{ bounds.asRect.insetBy(focusRingSize.neg,focusRingSize.neg) } 
