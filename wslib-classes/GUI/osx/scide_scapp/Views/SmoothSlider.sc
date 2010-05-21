@@ -1,7 +1,7 @@
 // wslib 2006
 // slider based on blackrain's knob
 
-SmoothSlider : RoundView {
+SmoothSlider : RoundView2 {
 	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false;
 	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
 	var <knobSize = 0.25, hitValue = 0;
@@ -26,7 +26,7 @@ SmoothSlider : RoundView {
 		if( bounds.width > bounds.height )
 			{ orientation = \h };
 					
-		super.init( parent, bounds );
+		//super.init( parent, bounds );
 				
 		mode = \jump;  // \jump or \move
 		keystep = 0.01;
@@ -504,13 +504,13 @@ SmoothSlider : RoundView {
 	}
 
 	defaultReceiveDrag {
-		this.valueAction_(SCView.currentDrag);
+		this.valueAction_(View.currentDrag);
 	}
 	defaultGetDrag { 
 		^value
 	}
 	defaultCanReceiveDrag {
-		^currentDrag.isFloat;
+		^View.currentDrag.isFloat;
 	}
 }
 

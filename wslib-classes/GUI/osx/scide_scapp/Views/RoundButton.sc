@@ -4,7 +4,7 @@
 
 // SCv3.3.1 revision
 
-RoundButton : RoundView { 
+RoundButton : RoundView2 { 
 	
 	// requires a version of SuperCollider where String:prBounds is working (after april 2007?)
 	
@@ -91,7 +91,7 @@ RoundButton : RoundView {
 				if( extrude )
 					{ Pen.extrudedRect( rect, radius, border, 0.17pi, pressed,
 						[ lightSide, shadeSide ] ); }
-					{   if( pressed, { lightSide.set }, { shadeSide.set } ); 
+					{   if( pressed, { Pen.color = lightSide }, { Pen.color = shadeSide } ); 
 					   Pen.width = border;
 					   Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
 					   	(border/2)  ).stroke; 
@@ -99,13 +99,14 @@ RoundButton : RoundView {
 			};
 			
 		case { states[value][0].isString }
-			{
-				states[value][0].drawCenteredIn( 
+			{	
+				Pen.font = font ? Font.default;
+				Pen.color = states[value][1] ? Color.black;
+				Pen.stringCenteredIn( states[value][0], 
 					rect  + ( if( pressed ) 
 						{ Rect( moveWhenPressed, moveWhenPressed, 0, 0 ) } 
-						{ Rect(0,0,0,0) } ),
-					font,
-					states[value][1] ? Color.black)
+						{ Rect(0,0,0,0) } )
+					);
 				
 			} 
 			{ states[value][0].class == Symbol }
@@ -122,6 +123,14 @@ RoundButton : RoundView {
 				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				states[ value ][0].drawAtPoint( rect.center - 
 					((states[ value ][0].width/2)@(states[ value ][0].height/2)) );
+				};
+			 }
+			 { states[value][0].class == JSCImage }
+			{
+			Pen.use {
+				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
+				Pen.imageAtPoint( states[ value ][0],
+					rect.center - ((states[ value ][0].width/2)@(states[ value ][0].height/2)) );
 				};
 			 }
 			{ true }
@@ -197,14 +206,15 @@ RoundButton : RoundView {
 	defaultGetDrag { 
 		^this.value
 	}
+	
 	defaultCanReceiveDrag {
-		^currentDrag.isNumber or: { currentDrag.isKindOf(Function) };
+		^View.currentDrag.isNumber or: { View.currentDrag.isKindOf(Function) };
 	}
 	defaultReceiveDrag {
-		if (currentDrag.isNumber) {
-			this.valueAction = currentDrag;
+		if (View.currentDrag.isNumber) {
+			this.valueAction = View.currentDrag;
 		}{
-			this.action = currentDrag;
+			this.action = View.currentDrag;
 		};
 	}
 }

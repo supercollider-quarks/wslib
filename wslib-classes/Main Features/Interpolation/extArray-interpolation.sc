@@ -3,6 +3,8 @@
 	// Basic interpolation functions 
 	// part of wslib
 	// v#20/7/05
+	
+	// 3/5/10 changed for compat with points
 	 
 	linearInt { arg i, step = 0; // uses array of 2 input values
 		i = i.round(step);
@@ -39,7 +41,7 @@
 		#y0, y1, y2, y3 = this;
 		if(amt.isNil, {amt = 0.75 / ((1.9)**0.5) }); //circle approx.
 		amt = amt/2;
-		^[ y1 - (amt * (y0 - y2)), y2 - (amt * (y3 - y1)) ];
+		^[ y1 - ((y0 - y2) * amt ), y2 - ((y3 - y1) * amt) ];
 		}
 
 	
@@ -52,9 +54,9 @@
 		var c3, c2, c1; // c0;
 		#y1, y2 = this;
 										// c0 = y1; -> use y1 instead
-		c1 = 3 * (x1 - y1);				// c1 = (3 * x1) - (3 * y1);
-		c2 = 3 * (x2 - (2*x1) + y1);		// c2 = (3 * x2) - (6 * x1) + (3 * y1);  
-		c3 = (y2 - y1) - (3 * (x2 - x1)); 	// c3 = y2 - (3 * x2) + (3 * x1) - y1; 
+		c1 = (x1 - y1) * 3 ;				// c1 = (3 * x1) - (3 * y1);
+		c2 = (x2 - (x1*2) + y1) * 3;		// c2 = (3 * x2) - (6 * x1) + (3 * y1);  
+		c3 = (y2 - y1) - ((x2 - x1) * 3); 	// c3 = y2 - (3 * x2) + (3 * x1) - y1; 
 		^[ y1, c1, c2, c3 ]; 
 		}
 		
@@ -92,9 +94,9 @@
 		var y0, y1, y2, y3;
 		#y0, y1, y2, y3 = this;
 		c0 = y1;
-		c1 = 0.5 * (y2 - y0);
-		c2 = y0 - (2.5 * y1) + (2.0 * y2) - (0.5 * y3);
-		c3 = (0.5 * (y3 - y0)) + (1.5 * (y1 - y2));
+		c1 = (y2 - y0) * 0.5;
+		c2 = y0 - (y1 * 2.5) + (y2 * 2.0) - (y3 * 0.5);
+		c3 = ((y3 - y0) * 0.5) + ((y1 - y2) * 1.5);
 		^((c3 * i + c2) * i + c1) * i + c0;
 	}
 	
@@ -107,16 +109,18 @@
 		n = this.size;
 		#b, a, d = { ( 0 ! n ) } ! 3;
 		 
-		b[1] = -1/amt; //(-0.25);
-		a[1] = (this[2] - this[0] - d[0])/4;
+		b[1] = -1/amt; // (-0.25);
+		a[1] = (this[2] - this[0])/amt;
 		
-		( 2, 3 .. (n-1) ).copy.do { |i|
-			b[i] = -1/(amt + b[i-1]);
-		   	a[i] = (this.clipAt(i+1) - this[i-1] - a[i-1]).neg * b[i];
+		( 2 .. (n-1) ).do { |i|
+			b[i] = -1/(b[i-1] + amt);
+		   	a[i] = ((this.clipAt(i+1) - this[i-1] - a[i-1]) * -1) * b[i];
 		  	};
-		
-		( (n-2), (n-3) .. 0 ).copy.do { |i|
-		   d[i] = a[i] + (d[i+1]*b[i]); 
+		  	
+		( (n-2) .. 0 ).do { |i|
+		   if( a[i] != 0 )
+		  	{ d[i] = a[i] + (d[i+1]*b[i]); }
+		  	{ d[i] = (d[i+1]*b[i]); }
 		 };
 	   ^d;
    	}
