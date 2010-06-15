@@ -3,6 +3,9 @@
 	p { |inst, amp = 0.2| // amp: amp when velo == 127
 		var thisFile;
 		inst = ( inst ? 'default' ).asCollection;
+		
+		// todo: create multi-note events from chords, detect rests
+		
 		if( timeMode == 'seconds' )
 			{ thisFile = this }
 			{ thisFile = this.copy.timeMode_( 'seconds' ); };
@@ -26,12 +29,23 @@
 				}!this.tracks).select({ |item| item.notNil })
 			);
 		}
+	
+	play { |clock, protoEvent, quant, inst,  amp = 0.2|  
+			^this.p( inst, amp ).play( clock, protoEvent, quant );
+	}
+		
+	*fromPattern { |pattern, maxEvents = 200, maxAmp = 0.2, startTime = 0, 
+			inTracks = 2, inTempo = 120, timeSignature|
+		var mf;
+		mf = this.new( "~/Desktop/fromPattern.mid" ).init1( inTracks, inTempo, timeSignature );
+		^mf.fromPattern( pattern );
+	}
 		
 	fromPattern {	|pattern, maxEvents = 200, maxAmp = 0.2, startTime = 0|
 		var stream, time, count = 0, event, tmode;
 		var defaultEvent, instruments = [];
 		
-		// todo: key information ?
+		// todo: add key information
 		
 		time = startTime ? 0;
 		if( this.timeMode != \seconds ) 
@@ -40,21 +54,30 @@
 		
 		stream = pattern.asStream;
 		
-		defaultEvent = Event.default.copy;
+		defaultEvent = Event.default;
 		defaultEvent[ \velocity ] = { ~amp.value.linlin(0,maxAmp,1,127,\minmax) };
-		defaultEvent[ \midinote2 ] = { if( ~freq.isNumber ) { ~freq.cpsmidi } { ~midinote.value } };
+		defaultEvent[ \midinote2 ] = { 
+				if( ~freq.isFunction.not )
+					{ ~freq.cpsmidi } 
+					{ ~midinote.value } 
+			};
 		
 		if( format > 0 )
 			{
 			defaultEvent[ \track ] = { // auto recognize tracks by instrument
-					var track;
-					track = instruments.indexOf( ~instrument.value.asSymbol );
-					if( track.notNil )
-						{ track + 1 }
-						{ instruments = instruments.add( ~instrument.value.asSymbol );
-						  track = instruments.size;
-						  track;
-						};
+					if( ~instrument.value.isString,
+							{ [ ~instrument.value ] },
+							{ ~instrument.value.asCollection })
+						.collect({ |inst|
+							var track;
+							track = instruments.indexOf( inst.asSymbol );
+							if( track.notNil )
+								{ track + 1 }
+								{ instruments = instruments.add( inst.asSymbol );
+								  track = instruments.size;
+								  track;
+								};
+							 });
 				};
 			};
 		
@@ -63,17 +86,17 @@
 					{ (count = count + 1) <= maxEvents } } 
 			{ event.use({
 				if( event.freq.isKindOf(Symbol).not ) // not a \rest
-					{ 
-						this.addNote(
-							noteNumber: event.midinote2,
-							velo: event.velocity,
-							startTime: time,
-							dur: event.sustain,
-							upVelo: event.upVelo, // addNote copies noteNumber if nil
-							channel: event.channel ? 0,
-							track: event.track ?? {format.min(1)}, // format 0; track 0, format 1 or 2: track 1
-							sort: false
-						);
+					{ 	[	
+							event.midinote2,
+						 	event.velocity,
+						 	time,
+						 	event.sustain,
+						 	event.upVelo, // addNote copies noteNumber if nil
+						 	event.channel ? 0,
+						 	event.track ?? {format.min(1)}, // format 0: all in track 0
+						 	false // don't sort (yet)
+						].multiChannelExpand // allow multi-note events
+							.do({ |array| this.addNote( *array ); });
 						
 				};
 				time = time + event.delta;
