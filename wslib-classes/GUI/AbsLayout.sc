@@ -41,7 +41,7 @@ AbsLayout {
 			{ if( this.decorator.class != FlowLayout ) // prevent flowlayout removal
 				{ if( bool == false )
 					{ this.decorator = AbsLayout( this ); }
-					{ this.decorator = nil; } // remove if true
+					{ /* this.decorator = nil; */ } // remove if true
 				};
 			};
 	}

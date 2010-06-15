@@ -768,7 +768,8 @@ SimpleMIDIFile  {
 				{ if( track.notNil ) { item[0] == track } { true } } });
 		}
 	
-	length { ^this.endOfTrack.sort({ |a, b| a[1] <= b[1] }).last[1]; } // based on endOfTrack info
+	length { ^(this.endOfTrack.sort({ |a, b| a[1] <= b[1] }).last ? [nil,0])[1]; }
+	 // based on endOfTrack info
 		
 		
 	tempoEvents {  ^metaEvents.select({ |item| item[2] == \tempo; });

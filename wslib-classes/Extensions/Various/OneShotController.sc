@@ -1,3 +1,5 @@
+// wslib 2009
+
 OneShotController : SimpleController {
 	
 	update { arg theChanger, what ... moreArgs;
