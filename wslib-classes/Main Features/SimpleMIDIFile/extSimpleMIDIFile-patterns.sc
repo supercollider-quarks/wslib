@@ -161,12 +161,13 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 			});
 			
 			trackEvents.do({|event, i|
+				var diff;
 				if (i==0,Ê
 					{	
 						seq.add([event.note, event.dur]);
 					},
 					{
-						var diff = event.startPos - trackEvents[i-1].endPos;
+						diff = event.startPos - trackEvents[i-1].endPos;
 						if (diff > 0,
 							{
 								seq.add([\rest, diff]);

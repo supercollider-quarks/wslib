@@ -120,11 +120,11 @@ TransportWindow {
 	
 	window { ^window2 }
 	
-	play { { play.doAction; }.defer; }
+	play { play.valueAction = 1; }
 		
-	stop { { stop.doAction; }.defer; }
+	stop { stop.valueAction = 0; }
 		
-	return  { { return.doAction; }.defer; }		
+	return  { return.valueAction = 0; }		
 		
 	
 	}
