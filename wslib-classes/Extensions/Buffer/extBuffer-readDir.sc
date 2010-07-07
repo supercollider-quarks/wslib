@@ -40,7 +40,7 @@
 		^buffers;
 		}
 		
-	*readDir { |path, bufnumOffset=0, ext ="wav", server, notify = true, nlevels = inf, action|
+	*readDir { |path, bufnumOffset, ext ="wav", server, notify = true, nlevels = inf, action|
 		var names;
 		path = path.standardizePath.withTrailingSlash;
 		names = path.getPathsInDirectory(ext.removeItems("."), nlevels);

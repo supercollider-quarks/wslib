@@ -43,7 +43,20 @@
 		amt = amt/2;
 		^[ y1 - ((y0 - y2) * amt ), y2 - ((y3 - y1) * amt) ];
 		}
+		
+	modeAt { |index, mode = 'wrap'|
+		^switch( mode,
+				'wrap', { this.wrapAt( index ) },
+				'clip', { this.clipAt( index ) },
+				'fold', { this.foldAt( index ) }
+			);
+	}
 
+	allSplineIntControls { |amt, clipMode = 'wrap'|
+		^this.size.collect({ |i|
+			this.modeAt( (-1..2) + i, clipMode ).splineIntControls( amt );
+		}).flop;
+	}
 	
 	splineIntFunction { |i, x1, x2|
 		^this.splineIntPart1( x1, x2 ).splineIntPart2( i );
