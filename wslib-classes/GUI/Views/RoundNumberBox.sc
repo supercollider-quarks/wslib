@@ -1,6 +1,6 @@
-RoundNumberBox : RoundView {
+RoundNumberBox : RoundView2 {
 	
-	classvar <>defaultFormatFunc, <>defaultInterpretFunc, <>defaultFont;
+	classvar <>defaultFormatFunc, <>defaultInterpretFunc, <>defaultFontFace, <>defaultFontSize;
 	
 	var <value = 0; // from roundbutton
 	var <string;
@@ -29,15 +29,19 @@ RoundNumberBox : RoundView {
 	
 	var <>actionOnlyOnChange = true;
 		
-	*viewClass { ^SCUserView }
+	// *viewClass { ^SCUserView }
 	
 	refresh { { super.refresh }.defer }
 	
 	*initClass { 
 		defaultFormatFunc = { |value| value };
-		defaultFont = Font( "Helvetica", 12 );
+		StartUp.add({ defaultFontFace = Font.defaultSansFace; }); // linux compatible?
+		defaultFontSize = 12;
 		defaultInterpretFunc = { |string| string.interpret };
 		 }
+		 
+	*defaultFont { ^Font( defaultFontFace, defaultFontSize ) }
+	*defaultFont_ { |font| defaultFontFace = font.name; defaultFontSize = font.size }
 	
 	doesNotUnderstand { |selector ... args| // dirty maybe, but any reason not to do this?
 		if( selector.isSetter )
@@ -57,7 +61,7 @@ RoundNumberBox : RoundView {
 		stringColor = normalColor;
 		formatFunc = defaultFormatFunc;
 		interpretFunc = defaultInterpretFunc;
-		font = defaultFont;
+		font = Font( defaultFontFace, defaultFontSize );
 		}
 			
 	getScale { |modifiers| 
@@ -113,12 +117,12 @@ RoundNumberBox : RoundView {
 	}
 	
 	defaultCanReceiveDrag {
-		^(currentDrag.isNumber) or: { currentDrag.class == String };
+		^(this.currentDrag.isNumber) or: { this.currentDrag.class == String };
 	}
 	defaultReceiveDrag {
-		if( currentDrag.class == String )
-			{ this.valueAction = currentDrag.interpret ? value; }
-			{ this.valueAction = currentDrag;  }	
+		if( this.currentDrag.class == String )
+			{ this.valueAction = this.currentDrag.interpret ? value; }
+			{ this.valueAction = this.currentDrag;  }	
 	}
 	
 	draw {
@@ -327,7 +331,7 @@ RoundNumberBox : RoundView {
 	
 	mouseUp{ if( enabled ) { inc=1 }; }
 	
-	defaultKeyDownAction { arg char, modifiers, unicode;
+	keyDown { arg char, modifiers, unicode;
 		var zoom = this.getScale(modifiers);
 		
 		// standard chardown
