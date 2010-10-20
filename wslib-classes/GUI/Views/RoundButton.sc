@@ -21,7 +21,7 @@ RoundButton : RoundView2 {
 	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
-	*viewClass { ^SCUserView }
+	// *viewClass { ^SCUserView }
 	
 	refresh { { super.refresh }.defer }
 		
@@ -117,20 +117,12 @@ RoundButton : RoundView2 {
 				DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
 				};
 			 }
-			{ states[value][0].class == SCImage }
+			{ states[value][0].class.name == Image.implClass.name }
 			{
 			Pen.use {
 				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				states[ value ][0].drawAtPoint( rect.center - 
 					((states[ value ][0].width/2)@(states[ value ][0].height/2)) );
-				};
-			 }
-			 { states[value][0].class == JSCImage }
-			{
-			Pen.use {
-				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
-				Pen.imageAtPoint( states[ value ][0],
-					rect.center - ((states[ value ][0].width/2)@(states[ value ][0].height/2)) );
 				};
 			 }
 			{ true }
@@ -196,10 +188,14 @@ RoundButton : RoundView2 {
 	}
 	
 	defaultKeyDownAction { arg char, modifiers, unicode;
-		if (char == $ , { this.valueAction = this.value + 1; ^this });
-		if (char == $\r, { this.valueAction = this.value + 1; ^this });
-		if (char == $\n, { this.valueAction = this.value + 1; ^this });
+		if( [ $ , $\r, $\n, 3.asAscii ].includes( char ) )
+			{ this.value = this.value + 1; this.doAction; ^this }; // also trigger single-state
+		/*
+		if (char == $ , { this.value = this.value + 1; this.doAction; ^this });
+		if (char == $\r, { this.value = this.value + 1; this.doAction; ^this });
+		if (char == $\n, { this.value = this.value + 1; this.doAction; ^this });
 		if (char == 3.asAscii, { this.valueAction = this.value + 1; ^this });
+		*/
 		^nil		// bubble if it's an invalid key
 	}
 	
@@ -218,3 +214,15 @@ RoundButton : RoundView2 {
 		};
 	}
 }
+
+
+	
+SmoothButton : RoundButton {
+	
+	init { |parent, bounds|
+		super.init( parent, bounds );
+		extrude = false;
+		moveWhenPressed = 0;
+		}
+	
+	}

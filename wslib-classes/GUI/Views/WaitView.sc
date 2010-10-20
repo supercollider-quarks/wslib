@@ -1,6 +1,6 @@
 // W. Snoei 2006
 
-WaitView : SCUserView { 
+WaitView : UserViewHolder { 
 
 	// OSX alike wait sign (spinning stripes)
 
@@ -9,8 +9,6 @@ WaitView : SCUserView {
 	var <>active = false, <>alphaWhenStopped = 0.5;
 	var <>color;
 	var <>startAction, <>stopAction;
-	
-	*viewClass { ^SCUserView }
 	
 	init { |parent, bounds|
 		super.init( parent, bounds );

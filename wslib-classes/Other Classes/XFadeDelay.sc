@@ -11,7 +11,7 @@ XFadeDelay {
 		trigger = trigger ?? { Impulse.kr( 1/fadeTime ) }; // auto trigger if no external trigger
 		delay = Latch.kr( delay, trigger );
 		
-		dChange = Trig.kr( Slope.kr( delay ).abs, fadeTime ); // only change at actual change
+		dChange = Trig.kr( HPZ1.kr( delay ).abs, fadeTime ); // only change at actual change
 		dChange = ToggleFF.kr( dChange );
 		
 		dTime = Latch.kr( delay, [ 1-dChange, dChange ] );

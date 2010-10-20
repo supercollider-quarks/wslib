@@ -55,8 +55,8 @@
 		if(this.class != Event) { ^().putAll(this) } { ^this } }
 		
 	asArgsArray { |check = false|
-		var argsArray = [];
-		this.keysValuesDo( { |key, value| argsArray = argsArray ++ [key, value] });
+		var argsArray = this.asKeyValuePairs;
+		//this.keysValuesDo( { |key, value| argsArray = argsArray ++ [key, value] });
 		if( check && { argsArray.isArgsArray.not } ) 
 			{  "Dictionary-asArgsArray:\ninput is not a valid argsDict".warn; };
 		^argsArray;

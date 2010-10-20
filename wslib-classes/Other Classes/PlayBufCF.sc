@@ -1,23 +1,45 @@
 PlayBufCF {
 	// dual play buf which crosses from 1 to the other at trigger
 		
-	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, lag = 0.1;
+	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, 
+			lag = 0.1, safeMode = true;
 		var ffp, slew;
-		case { trigger.rate == \audio }
-			{ ffp = ToggleFF.ar( trigger ).linlin(0,1,-1,1);
-			 slew = Slew.ar( ffp + 1, 2/lag, 2/lag ) - 1;  }
-			{ trigger.rate == \control }
-			{ ffp = ToggleFF.kr( trigger ).linlin(0,1,-1,1);
-			slew = Slew.kr( ffp + 1, 2/lag, 2/lag ) - 1;  }
-			{ true }
-			{ ffp = 1; slew = 1};
+		
+		
+		switch ( trigger.rate,
+			 \audio, {
+				if( safeMode.booleanValue ) // eat triggers faster then lagtime
+					{ trigger = Trig.ar( trigger, lag - SampleDur.ir ); };
+				ffp = ToggleFF.ar( trigger ).linlin(0,1,-1,1);
+			 	slew = Slew.ar( ffp + 1, 2/lag, 2/lag ) - 1;  
+			 },
+			 \control, { 
+				if( safeMode.booleanValue ) // eat triggers faster then lagtime
+					{ trigger = Trig.kr( trigger, lag - ControlDur.ir ); };
+				ffp = ToggleFF.kr( trigger ).linlin(0,1,-1,1);
+				slew = Slew.kr( ffp + 1, 2/lag, 2/lag ) - 1;  
+			},
+			\demand, {
+				trigger = TDuty.ar( trigger );
+				if( safeMode.booleanValue ) // eat triggers faster then lagtime
+					{ trigger = Trig.ar( trigger, lag - SampleDur.ir ); };
+				ffp = ToggleFF.ar( trigger ).linlin(0,1,-1,1);
+			 	slew = Slew.ar( ffp + 1, 2/lag, 2/lag ) - 1;  
+			},
+			{ ^PlayBuf.ar( numChannels, bufnum, rate, trigger, startPos, loop ); } // bypass
+		);
+		
 		rate = rate.asCollection;
+		if( startPos.rate == \demand ) { startPos = Demand.perform( 
+				UGen.methodSelectorForRate(trigger.rate),
+				trigger, 0, startPos ) };
 		
 		^XFade2.ar( 
 			PlayBuf.ar( numChannels, bufnum, rate.wrapAt(1), ffp * -1, startPos, loop ),
 			PlayBuf.ar( numChannels, bufnum, rate.wrapAt(0), ffp, startPos, loop ),
 			slew );
 		}
+		
 	}
 	
 PlayBufAlt {

@@ -12,6 +12,8 @@
 			.asPoint;
 	}
 	
+	angle { ^this.theta }
+	
 	// unary ops
 	neg { ^this.performOnEach( thisMethod.name ) }
 	ceil { ^this.performOnEach( thisMethod.name ) }
@@ -45,7 +47,6 @@
 	
 	distort { ^this.performOnEach( thisMethod.name ) }
 	softclip { ^this.performOnEach( thisMethod.name ) }
-
 	
 	// binary ops
 	pow { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
@@ -92,5 +93,12 @@
 	biexp { arg inCenter, inMin, inMax, outCenter, outMin, outMax, clip=\minmax;
 		^this.performOnEach( \biexp, inMin, inMax, outCenter, outMin, outMax, clip) 
 	}
+	
+	// hmmm... dubious... (works for ControlSpec though)
+	< { arg that, adverb;  ^this.rho.perform( thisMethod.name, that.asPoint.rho, adverb ) }
+	> { arg that, adverb;  ^this.rho.perform( thisMethod.name, that.asPoint.rho, adverb ) }
+	<= { arg that, adverb; ^this.rho.perform( thisMethod.name, that.asPoint.rho, adverb ) }
+	>= { arg that, adverb; ^this.rho.perform( thisMethod.name, that.asPoint.rho, adverb ) }
+
 	
 }

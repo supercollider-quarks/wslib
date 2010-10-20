@@ -371,3 +371,15 @@ RoundNumberBox : RoundView {
 	}
 
 	}
+	
+SmoothNumberBox : RoundNumberBox {
+	
+	init { |parent, bounds|
+		super.init( parent, bounds );
+		extrude = false;
+		border = 0;
+		background = Color.white.alpha_(0.5);
+		typingColor = Color.red(0.5).alpha_(0.75);
+		}
+	
+	}

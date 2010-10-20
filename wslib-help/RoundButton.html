@@ -12,25 +12,25 @@ p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #303030}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0012b0}
-p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #535353}
-span.s1 {text-decoration: underline ; color: #001ba4}
-span.s2 {color: #00149f}
-span.s3 {color: #414141}
-span.s4 {color: #561571}
-span.s5 {color: #0020c0}
-span.s6 {color: #294a08}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #9f1414}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #212121}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #00149f}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #414141}
+span.s1 {text-decoration: underline ; color: #001792}
+span.s2 {color: #00138d}
+span.s3 {color: #303030}
+span.s4 {color: #3b125d}
+span.s5 {color: #001cb1}
+span.s6 {color: #233707}
 span.s7 {color: #000000}
-span.s8 {color: #00138d}
-span.s9 {color: #3b125d}
-span.s10 {color: #0012b0}
-span.s11 {color: #741584}
-span.s12 {color: #535353}
-span.s13 {color: #285e08}
-span.s14 {color: #303030}
-span.s15 {color: #233707}
+span.s8 {color: #00117a}
+span.s9 {color: #250e49}
+span.s10 {color: #00149f}
+span.s11 {color: #561571}
+span.s12 {color: #414141}
+span.s13 {color: #294a08}
+span.s14 {color: #212121}
+span.s15 {color: #1b2705}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -65,7 +65,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2">States can also contain instances of SCImage. They will be displayed at original size, centered in the button and not clipped.</p>
 <p class="p3"><br></p>
 <p class="p6">// osx only until JSCImage answers to .width and .height</p>
-<p class="p7"><span class="s7">o = </span><span class="s8">SCImage</span><span class="s7">.open(</span><span class="s8">String</span><span class="s7">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s7">);</span></p>
+<p class="p7"><span class="s7">o = </span><span class="s8">Image</span><span class="s7">.open(</span><span class="s8">String</span><span class="s7">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s7">);</span></p>
 <p class="p5">p = <span class="s8">RoundButton</span>(w, <span class="s9">250</span>@<span class="s9">150</span>).states_( [ [o] ] );</p>
 <p class="p3"><br></p>
 <p class="p2">Functions can also be used as a state. They will be used as drawing functions, which receive a the button, a rect and the <b>radius</b> as arguments. Drawing is always relative to the origin of the button's bounds.</p>

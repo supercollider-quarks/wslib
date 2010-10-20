@@ -515,3 +515,23 @@ SmoothSlider : RoundView2 {
 }
 
 
+RoundSlider : SmoothSlider {
+
+	// a SmoothSlider with different default styling
+	// matches with RoundButton and RoundNumberBox
+	
+	init { arg parent, bounds;
+		super.init( parent, bounds );
+		
+		// background, hilightColor, borderColor, knobColor, stringColor
+		color = [ nil, nil, Color.clear, Color.clear, Color.black ];
+		extrude = true;
+		border = 1;
+		knobSize = 0.5;
+		thumbSize = 12;
+		
+		}
+	
+	}
+
+
