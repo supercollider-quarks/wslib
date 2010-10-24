@@ -5,35 +5,35 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="949.46">
+<meta name="CocoaVersion" content="949.54">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #303030}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0012b0}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #535353}
-span.s1 {text-decoration: underline ; color: #001ba4}
-span.s2 {color: #001afb}
-span.s3 {color: #0000ff}
-span.s4 {color: #00149f}
-span.s5 {color: #414141}
-span.s6 {color: #7f1514}
-span.s7 {text-decoration: underline ; color: #001cdd}
-span.s8 {color: #561571}
-span.s9 {color: #0020c0}
-span.s10 {color: #294a08}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #212121}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #00149f}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #414141}
+span.s1 {text-decoration: underline ; color: #001792}
+span.s2 {color: #001ff6}
+span.s3 {color: #001afb}
+span.s4 {color: #00138d}
+span.s5 {color: #303030}
+span.s6 {color: #611211}
+span.s7 {text-decoration: underline ; color: #001dd3}
+span.s8 {color: #3b125d}
+span.s9 {color: #001cb1}
+span.s10 {color: #233707}
 span.s11 {color: #000000}
-span.s12 {color: #00138d}
-span.s13 {color: #3b125d}
-span.s14 {color: #0012b0}
-span.s15 {color: #741584}
-span.s16 {color: #535353}
-span.s17 {color: #285e08}
-span.s18 {color: #303030}
-span.s19 {color: #233707}
+span.s12 {color: #00117a}
+span.s13 {color: #250e49}
+span.s14 {color: #00149f}
+span.s15 {color: #561571}
+span.s16 {color: #414141}
+span.s17 {color: #294a08}
+span.s18 {color: #212121}
+span.s19 {color: #1b2705}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -48,7 +48,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2">SmoothButton works the same way as SCButton. But, as the name states, it is smooth. SmoothButton is a subclass of <a href="RoundButton.html"><span class="s2">RoundButton</span></a><span class="s2"> </span>and shares all of its functionality. The difference is that SmoothButton has no bevel by default. SmoothButton was designed to be used alongside <a href="SmoothSlider.html"><span class="s2">SmoothSlider</span></a> and <a href="SmoothNumberBox.html"><span class="s3">SmoothNumberBox</span></a>.</p>
 <p class="p3"><br></p>
 <p class="p5">(</p>
-<p class="p5">w = <span class="s4">SCWindow</span>( <span class="s5">"SmoothButton"</span> ).front.decorate;<span class="Apple-converted-space">  </span><span class="s6">// decorate -&gt; <a href="wslib-shortcuts.html"><span class="s7">wslib-shortcuts</span></a></span></p>
+<p class="p5">w = <span class="s4">Window</span>( <span class="s5">"SmoothButton"</span> ).front.decorate;<span class="Apple-converted-space">  </span><span class="s6">// decorate -&gt; <a href="wslib-shortcuts.html"><span class="s7">wslib-shortcuts</span></a></span></p>
 <p class="p5">b = <span class="s4">SmoothButton</span>( w, <span class="s8">80</span>@<span class="s8">20 </span>).states_([[ <span class="s5">"hit me"</span> ], [ <span class="s5">"again"</span> ]] ).action_({ <span class="s5">"was hit"</span>.postln });</p>
 <p class="p5">)</p>
 <p class="p3"><br></p>
@@ -65,7 +65,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p3"><br></p>
 <p class="p2">States can also contain instances of SCImage. They will be displayed at original size, centered in the button and not clipped.</p>
 <p class="p3"><br></p>
-<p class="p6"><span class="s11">o = </span><span class="s12">SCImage</span><span class="s11">.new(</span><span class="s12">String</span><span class="s11">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s11">);</span></p>
+<p class="p6"><span class="s11">o = </span><span class="s12">Image</span><span class="s11">.open(</span><span class="s12">String</span><span class="s11">.scDir ++ </span>"/SuperCollider.app/Contents/Resources/SCcube.icns"<span class="s11">);</span></p>
 <p class="p5">p = <span class="s12">SmoothButton</span>(w, <span class="s13">250</span>@<span class="s13">150</span>).states_( [ [o] ] );</p>
 <p class="p3"><br></p>
 <p class="p2">Functions can also be used as a state. They will be used as drawing functions, which receive a the button, a rect and the <b>radius</b> as arguments. Drawing is always relative to the origin of the button's bounds.</p>
@@ -88,7 +88,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5">)</p>
 <p class="p3"><br></p>
 <p class="p5">(</p>
-<p class="p8"><span class="s11">r = </span><span class="s14">SCImage</span><span class="s11">(</span>"/Library/Desktop Pictures/Ripples Blue.jpg"<span class="s11">);</span></p>
+<p class="p8"><span class="s11">r = </span><span class="s14">Image.open</span><span class="s11">(</span>"/Library/Desktop Pictures/Ripples Blue.jpg"<span class="s11">);</span></p>
 <p class="p5">t = <span class="s14">SmoothButton</span>(w, <span class="s15">80</span>@<span class="s15">20</span>).states_( [[<span class="s16">"image"</span>, <span class="s14">Color</span>.black, r<span class="Apple-converted-space">  </span>]] );</p>
 <p class="p5">)</p>
 <p class="p3"><br></p>

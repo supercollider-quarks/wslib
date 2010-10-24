@@ -1,6 +1,6 @@
 // wslib 2010
 //
-// the lang-side counterpart of SendTrig
+// the lang-side counterpart of SendTrig and SendReply
 //
 
 /* 
@@ -11,7 +11,6 @@ x = { SendTrig.kr( Impulse.kr(1), 10, WhiteNoise.kr ) }.play;
 ReceiveTrig( x, _.postln );
 
 x.free; // automatic removal
-
 
 // example 2:
 
@@ -29,53 +28,78 @@ r.remove; // stop receiving (or cmd-.)
 
 y = { SendTrig.kr( Impulse.kr(1), 10, WhiteNoise.kr ) }.play;
 
-y.onTrig_( _.postln ); // adds a ReceiveTrig
+y.onTrig_( _.postln ); // adds a ReceiveTrig to the Synth
 
 y.free; // also removes the ReceiveTrig
 
+
+// example 4: ReceiveReply
+
+y = { SendReply.kr( Impulse.kr(1), 'noise', WhiteNoise.kr(1.dup) ) }.play;
+
+y.onReply_( _.postln, 'noise' ); // adds a ReceiveReply to the Synth
+
+y.free; // also removes the ReceiveReply
+
+
+// example 5: even shorter
+
+y = { SendTrig.kr( Impulse.kr(1), 10, WhiteNoise.kr(1) ) }.play.onTrig_( _.postln );
+
+y.free;
+
 */
 
-ReceiveTrig {
+ReceiveReply {
 	classvar <all;
 	
 	var <source;
 	var <responder, <>action, <>id, <value = 0, <>removeAtReceive = false;
 	var <endResponder;
+	var <cmdName;
+	
+	*defaultCmdName { ^'/reply' }
 	
 	*initClass { CmdPeriod.add( this ); }
 	
-	*new { |source, action, id|
-		^super.new.init( source )
+	*new { |source, action, cmdName, id|
+		^super.new.init( source, cmdName )
 			.id_( id )
 			.action_( action ? { |value, time, responder, msg| value.postln; } )
 			.addToAll
 		}
 		
-	init { |inSource|
+	init { |inSource, inCmdName|
 		source = inSource;
-		case { (inSource.class == Synth) or: { inSource.isNumber } } // Synth or nodeID
-			{ responder = OSCresponderNode( inSource.server.addr, '/tr', 
+		cmdName = inCmdName ? this.class.defaultCmdName;
+		this.startResponders;
+	}
+	
+	startResponders {
+		
+		case { (source.class == Synth) or: { source.isNumber } } // Synth or nodeID
+			{ responder = OSCresponderNode( source.server.addr, cmdName, 
 				{ arg time, responder, msg;
-					if( msg[1] == inSource.nodeID ) { this.doAction( time, responder, msg ) }
+					if( msg[1] == source.nodeID ) { this.doAction( time, responder, msg ) }
 				}).add;
 					
-			 endResponder = OSCresponderNode( inSource.server.addr, '/n_end', // remove on end
+			 endResponder = OSCresponderNode( source.server.addr, '/n_end', // remove on end
 			 	 { arg time, responder, msg;
-				 	 if( msg[1] == inSource.nodeID ) { this.remove };
+				 	 if( msg[1] == source.nodeID ) { this.remove };
 			 	 }).add; 
 			}
-			{ inSource.respondsTo( \addr ) } // a Server
-			{ responder = OSCresponderNode(inSource.addr, '/tr', 
+			{ source.respondsTo( \addr ) } // a Server
+			{ responder = OSCresponderNode(source.addr, cmdName, 
 				{ arg time, responder, msg; 
 					this.doAction( time, responder, msg ) 				}).add;
 			}
-			{ inSource.class == NetAddr } // a NetAddr
-			{ responder = OSCresponderNode(inSource, '/tr', 
+			{ source.class == NetAddr } // a NetAddr
+			{ responder = OSCresponderNode(source, cmdName, 
 				{ arg time, responder, msg; 
 					this.doAction( time, responder, msg ) 				}).add;
 			}
 			{ true } // anything else (including nil)
-			{ responder = OSCresponderNode( nil, '/tr', 
+			{ responder = OSCresponderNode( nil, cmdName, 
 				{ arg time, responder, msg; 
 					this.doAction( time, responder, msg ) 
 				}).add;
@@ -84,10 +108,11 @@ ReceiveTrig {
 		
 	doAction { |time, responder, msg|
 		if( id.isNil or: { msg[2] == id } )
-			{ action.value( msg[3], time, responder, msg );
-			  value =  msg[3];
-			  if( removeAtReceive ) { this.remove };
-			};					
+			{ value =  msg[3..];
+			if( value.size == 1 ) { value = value[0]; }; 
+			action.value( value, time, responder, msg );
+			if( removeAtReceive ) { this.remove };
+		};					
 	}
 		
 	addToAll { all = all.asCollection ++ [ this ] }
@@ -98,13 +123,45 @@ ReceiveTrig {
 	*cmdPeriod { this.remove; }
 	
 	oneShot { removeAtReceive = true; }
-	*oneShot { |source, action, id| ^this.new( source, action, id ).oneShot; }
+	*oneShot { |source, action, cmdName, id| ^this.new( source, action, cmdName, id ).oneShot; }
 	
 	}
+	
+ReceiveTrig : ReceiveReply {
+	
+	*defaultCmdName { ^'/tr' }
+	
+	*new { |source, action, id|
+		^super.new( source, action, this.defaultCmdName, id );
+		}
+		
+	// more optimized; SendTrig doesn't do multichannel expansion
+	doAction { |time, responder, msg|
+		if( id.isNil or: { msg[2] == id } )
+			{ value = msg[3];
+			action.value( value, time, responder, msg );
+			if( removeAtReceive ) { this.remove };
+			};					
+	}
+	
+} 
 	
 // Node support
 
 + Node {
+	
+	onReply_ { |action, cmdName, id|
+			var rt; 
+			if( ( rt = this.onReply( cmdName ) ).notNil )
+				{ rt.id = id; rt.action = action; }
+				{ ReceiveReply( this, action, cmdName, id ); };
+	}
+	
+	onReply { |cmdName| 
+		cmdName = cmdName ? '/reply';
+		^ReceiveReply.all.detect({ |item| 
+			item.source == this && { item.cmdName = cmdName }; }); 
+		}
 	
 	onTrig_ { |action, id|
 			var rt; 
@@ -113,6 +170,8 @@ ReceiveTrig {
 				{ ReceiveTrig( this, action, id ); };
 	}
 	
-	onTrig { ^ReceiveTrig.all.detect({ |item| item.source == this }); }
+	onTrig { ^ReceiveTrig.all.detect({ |item|
+		 item.source == this && { item.cmdName == '/tr' }; }); 
+		 }
 	
 }

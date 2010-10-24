@@ -6,10 +6,11 @@
 
 + Env { 
 		
-	kr { |doneAction = 0, gate = 1.0, mul = 1, add = 0, timeScale = 1.0 |
-		^(EnvGen.kr(this, gate, timeScale: timeScale, doneAction: doneAction) * mul) + add; }
-	ar { |doneAction = 0, gate = 1.0, mul = 1, add = 0,  timeScale = 1.0 |
-		^(EnvGen.ar(this, gate, timeScale: timeScale, doneAction: doneAction) * mul) + add; }
+	kr { |doneAction = 0, gate = 1.0, timeScale = 1.0, mul = 1, add = 0 |
+		^EnvGen.kr(this, gate, mul, add, timeScale, doneAction); }
+	
+	ar { |doneAction = 0, gate = 1.0, timeScale = 1.0, mul = 1, add = 0 |
+		^EnvGen.ar(this, gate, mul, add, timeScale, doneAction); }
 		
 	arrayFill { |size = 10, keepSize = true|
 		var envLength = times.sum;

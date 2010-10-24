@@ -74,7 +74,7 @@ ScaledUserView {
 		
 		view.mouseDownAction = { |v, x, y, m, buttonNumber, clickCount|
 			var scaledX, scaledY, isInside = true;
-			x = x - v.drawBounds.left; y = y - v.drawBounds.top;
+			x = x - this.drawBounds.left; y = y - this.drawBounds.top;
 			#scaledX, scaledY = this.convertBwd( x,y );
 			mouseDownAction.value( this, scaledX, scaledY, m, x, y, isInside, 
 				buttonNumber, clickCount);
@@ -83,8 +83,8 @@ ScaledUserView {
 			
 		view.mouseMoveAction = { |v, x, y, m|
 			var scaledX, scaledY, isInside;
-			isInside = v.drawBounds.containsPoint( x@y );
-			x = x - v.drawBounds.left; y = y - v.drawBounds.top;
+			isInside = this.drawBounds.containsPoint( x@y );
+			x = x - this.drawBounds.left; y = y - this.drawBounds.top;
 			#scaledX, scaledY = this.convertBwd( x,y );
 			mouseMoveAction.value( this, scaledX, scaledY, m, x, y, isInside );
 			if( isInside.not )
@@ -94,8 +94,8 @@ ScaledUserView {
 		
 		view.mouseUpAction = { |v, x, y, m|
 			var scaledX, scaledY, isInside;
-			isInside = v.drawBounds.containsPoint( x@y );
-			x = x - v.drawBounds.left; y = y - v.drawBounds.top;
+			isInside = this.drawBounds.containsPoint( x@y );
+			x = x - this.drawBounds.left; y = y - this.drawBounds.top;
 			#scaledX, scaledY = this.convertBwd( x,y );
 			mouseUpAction.value( this, scaledX, scaledY, m, x, y, isInside );
 			if( isInside.not )
@@ -103,35 +103,34 @@ ScaledUserView {
 			this.refresh( autoRefreshMouseActions );
 			};
 		
+		
 		view.drawFunc = { |v|
 			
 			var scaledViewBounds;
 			var viewRect;
 			var scaleAmt;
 			
-			Pen.use({	
+			Pen.use({
 				viewRect = this.viewRect;
-				
+		
 				beforeDrawFunc.value( this );
 				
 				if( background.class == Color )
 					{ Pen.use({ 
 						Pen.color = background;
-						Pen.fillRect( v.drawBounds );
+						Pen.fillRect( this.drawBounds );
 						}); 
 					}; 
 					
-				
-					
 				// move to views leftTop corner (only when relativeOrigin==false) :
-				Pen.translate( v.drawBounds.left, v.drawBounds.top );
+				Pen.translate( this.drawBounds.left, this.drawBounds.top );
 				
 				
 				if( clip ) { // swing will need clip
 						Pen.moveTo(0@0);
-						Pen.lineTo(v.drawBounds.width@0);
-						Pen.lineTo(v.drawBounds.width@v.drawBounds.height);
-						Pen.lineTo(0@v.drawBounds.height);
+						Pen.lineTo(this.drawBounds.width@0);
+						Pen.lineTo(this.drawBounds.width@this.drawBounds.height);
+						Pen.lineTo(0@this.drawBounds.height);
 						Pen.lineTo(0@0);
 						Pen.clip;
 						};
@@ -142,33 +141,13 @@ ScaledUserView {
 					//scaleAmt = this.scaleAmt;
 					//Pen.scale( *scaleAmt );
 					
-					Pen.transformToRect( v.drawBounds, fromBounds, keepRatio, 
+					Pen.transformToRect( this.drawBounds, fromBounds, keepRatio, 
 						scaleH@scaleV, moveH@moveV );
 				
-					if( GUI.scheme.id == 'swing' && {(scaleAmt[0] != scaleAmt[1])} )
-						{ Pen.translate( 0.5, 0.5 ); }; // temp correction for swingosc half-pixel bug
+					//if( GUI.scheme.id == 'swing' && {(scaleAmt[0] != scaleAmt[1])} )
+					//	{ Pen.translate( 0.5, 0.5 ); }; // temp correction for swingosc half-pixel bug
 						
 					// Pen.translate( *this.moveAmt );
-					
-					/*
-					// clip:
-					if( clip && clipScaled ) { 
-						
-						// clip doesn't work with negative scaling
-						scaledViewBounds =
-							Rect.fromPoints( *([[0,0], 
-									[v.drawBounds.width,v.drawBounds.height]]
-								.collect({ |point| this.convertBwd( *point ).asPoint; }) ) );
-								
-						Pen.moveTo(scaledViewBounds.leftTop);
-						Pen.lineTo(scaledViewBounds.rightTop);
-						Pen.lineTo(scaledViewBounds.rightBottom);
-						Pen.lineTo(scaledViewBounds.leftBottom);
-						Pen.lineTo(scaledViewBounds.leftTop);
-						Pen.clip;
-						
-						};
-					*/
 					
 					// grid:
 					
@@ -177,7 +156,7 @@ ScaledUserView {
 					Pen.translate( fromBounds.left, fromBounds.top );
 					
 					if( (gridSpacingV != 0) && // kill grid if spacing < 2px
-							{ (viewRect.height / v.drawBounds.height) < ( gridSpacingV / 2 ) } )
+							{ (viewRect.height / this.drawBounds.height) < ( gridSpacingV / 2 ) } )
 						{	if( gridMode.asCollection.wrapAt( 0 ) === 'blocks' )
 						
 								{ 	Pen.color = gridColor.asCollection[0];
@@ -189,7 +168,7 @@ ScaledUserView {
 										.do({ |item| Pen.line( 0@item, (fromBounds.width)@item ); });
 								} 
 								{  	Pen.color = gridColor.asCollection[0]; //Color.black.blend( gridColor, 0.5 );
-									Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleV; 
+									Pen.width = (fromBounds.width / this.drawBounds.width).abs / scaleV; 
 									
 									(0, gridSpacingV .. (fromBounds.height + gridSpacingV))
 										.abs
@@ -201,7 +180,7 @@ ScaledUserView {
 					
 					
 					if( ( gridSpacingH != 0 ) &&
-						 	{ (viewRect.width / v.drawBounds.width) < (gridSpacingH / 2 ) } )
+						 	{ (viewRect.width / this.drawBounds.width) < (gridSpacingH / 2 ) } )
 						{	if( gridMode.asCollection.wrapAt( 1 ) === 'blocks' )
 								{	Pen.color = gridColor.asCollection.wrapAt(1);
 									Pen.width = gridSpacingH;
@@ -212,7 +191,7 @@ ScaledUserView {
 										.do({ |item| Pen.line( item@0, item@(fromBounds.height) ); });
 								} 
 								{  	Pen.color =  gridColor.asCollection.wrapAt(1);
-									Pen.width = (fromBounds.width / v.drawBounds.width).abs / scaleH; 
+									Pen.width = (fromBounds.width / this.drawBounds.width).abs / scaleH; 
 									
 									(0, gridSpacingH .. (fromBounds.width + gridSpacingH))
 										.abs
@@ -227,8 +206,8 @@ ScaledUserView {
 					
 					// line will be 1px at current view width and scale == [1,1] 
 					Pen.width = 
-						[ (fromBounds.width / v.drawBounds.width).abs,
-						  (fromBounds.height / v.drawBounds.height).abs ].mean; 
+						[ (fromBounds.width / this.drawBounds.width).abs,
+						  (fromBounds.height / this.drawBounds.height).abs ].mean; 
 						 
 					Pen.color = Color.black; // back to default
 					
@@ -244,6 +223,7 @@ ScaledUserView {
 				 refreshAction.value( this );
 				});
 			};
+			
 		}
 		
 	refresh { |flag = true| 
@@ -375,7 +355,10 @@ ScaledUserView {
 		
 	bounds { ^view.bounds }
 	
-	drawBounds { ^view.drawBounds }
+	drawBounds { ^if( view.respondsTo( \drawBounds ) )
+			{ view.drawBounds }
+			{ view.bounds.moveTo(0,0) };
+	}
 	
 	bounds_ { |newBounds|
 		newBounds = (newBounds ? view.bounds).asRect;
@@ -390,7 +373,7 @@ ScaledUserView {
 		points = points.collect({ |point| this.convertBwd( point.x, point.y ).asPoint; });
 		^Rect( points[0].x, points[0].y, points[1].x - points[0].x, points[1].y - points[0].y );
 		*/
-		^view.drawBounds.transformFromRect( view.drawBounds, fromBounds, keepRatio, 
+		^this.drawBounds.transformFromRect( this.drawBounds, fromBounds, keepRatio, 
 				scaleH@scaleV, moveH@moveV ).insetBy( inset, inset );
 		}
 	
@@ -429,7 +412,7 @@ ScaledUserView {
 		
 	translateScale { |item| 
 		
-		^item.transformToRect( view.drawBounds, fromBounds, keepRatio, 
+		^item.transformToRect( this.drawBounds, fromBounds, keepRatio, 
 			scaleH@scaleV, moveH@moveV );
 		
 	 	// requires extRect-transformations.sc from wslib
@@ -474,12 +457,12 @@ ScaledUserView {
 	// you can use these within drawFuncs and mouseFuncs to convert x/y values:
 	
 	convertFwd { |x = 0, y = 0| // move and scale input
-		^(x@y).transformToRect( view.drawBounds, fromBounds, keepRatio,
+		^(x@y).transformToRect( this.drawBounds, fromBounds, keepRatio,
 				scaleH@scaleV, moveH@moveV ).asArray;
 		}
 	
 	convertBwd { |x = 0, y = 0| // scale and move input backwards
-		^(x@y).transformFromRect( view.drawBounds, fromBounds, keepRatio, 
+		^(x@y).transformFromRect( this.drawBounds, fromBounds, keepRatio, 
 				scaleH@scaleV, moveH@moveV ).asArray;
 		}
 	

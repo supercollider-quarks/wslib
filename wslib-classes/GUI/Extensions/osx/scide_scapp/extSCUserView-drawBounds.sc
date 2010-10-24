@@ -1,4 +1,4 @@
-+ SCUserView {
++ Object {
 	drawBounds { 
 		
 		// future proof version

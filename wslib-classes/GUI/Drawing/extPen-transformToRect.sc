@@ -5,8 +5,18 @@
 		fromRect = fromRect ? rect;
 		rect = fromRect.scaleCenteredIn( rect, keepRatio, scale, move );
 		scaleAmt = (rect.extent/fromRect.extent).asArray;
+						
 		Pen.translate( *(fromRect.origin.asArray.neg * scaleAmt) + rect.origin.asArray );
-		^Pen.scale( *scaleAmt );
+	
+		Pen.scale( *scaleAmt );	
+		
+		/*
+		if( GUI.scheme.id == 'swing' && {(scaleAmt[0] != scaleAmt[1])} )
+						{ Pen.translate( 0.5, 0.5 ); }; 
+				// temp correction for swingosc half-pixel bug
+		*/
+		
+		^Pen;
 		}
 	}
 	

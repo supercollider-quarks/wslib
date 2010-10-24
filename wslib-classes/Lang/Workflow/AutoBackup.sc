@@ -2,6 +2,7 @@ AutoBackup {
 	
 	classvar <currentDocuments, <>backupFolder =  "~/Documents/SuperCollider/_Backup/";
 	classvar <active = false;
+	classvar <>extension = "scd";
 	
 	// keeps a backup of all opened and edited files 
 	// this will save your every move and keep them when sc freezes or unexpectedly quits
@@ -16,14 +17,16 @@ AutoBackup {
 			  
 		Document.globalKeyUpAction = { |doc|
 			var file;
-			file = File((backupFolder ++ doc.title.basename ++ ".sc").standardizePath, "w");
+			file = File((backupFolder ++ doc.title.basename ++ "." ++ extension)
+					.standardizePath, "w");
 			file.write( doc.string );
 			file.close;
 			if( currentDocuments.includes( doc ).not )
 				{ currentDocuments = currentDocuments.add( doc ); };
 			 
 			doc.onClose = doc.onClose ? { 
-				(backupFolder ++ doc.title.basename ++ ".sc").removeFile( false, false, true );
+				(backupFolder ++ doc.title.basename ++ "." ++ extension)
+					.removeFile( false, false, true );
 				currentDocuments.remove( doc );
 				};
 			}; 
@@ -45,12 +48,13 @@ AutoBackup {
 	
 	*deleteBackups {
 		currentDocuments.do({ |doc|
-			(backupFolder ++ doc.title.basename ++ ".sc").removeFile( false, false, true );
+			(backupFolder ++ doc.title.basename ++ "." ++ extension)
+				.removeFile( false, false, true );
 			});
 		}
 	
 	*cleanBackupFolder {
-		(backupFolder.standardizePath ++ "/*.sc").pathMatch.do({ |path|
+		(backupFolder.standardizePath ++ "/*." ++ extension).pathMatch.do({ |path|
 			path.removeFile( false, false, true ); });
 		}
 		
