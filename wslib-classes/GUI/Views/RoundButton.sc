@@ -163,7 +163,7 @@ RoundButton : RoundView2 {
 	valueAction_ { arg val; // changed 08/03/08
 		if( val.round(1) != value )
 			{ value = val % states.size;
-				action.value(this);
+				this.doAction;
 				this.refresh;
 			};
 	}	
@@ -182,9 +182,10 @@ RoundButton : RoundView2 {
 	inverse_ { |bool| inverse = bool; this.refresh; }
 	
 	
-	// from SCButton:
-	doAction { arg modifiers;
-		action.value(this, modifiers);
+	doAction {
+		if( action.size > 0 ) // if action is in fact an array; couple states to actions
+			{ action.wrapAt( this.value.asInt ).value( this ); }
+			{ action.value( this ); };
 	}
 	
 	defaultKeyDownAction { arg char, modifiers, unicode;

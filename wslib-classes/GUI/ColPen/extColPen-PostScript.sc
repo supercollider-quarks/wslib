@@ -168,7 +168,8 @@
 							 "\n(" ++ cmd[1].tr( $(, "\\(" ).tr( $), "\\)" ) ++
 							 ")", "show\ngrestore" ] }
 							 
-						/* more string: to do */
+						/* " (<- correct syntax colorization) 
+							more string: to do */
 					
 					);
 				if( array.notNil ) { string = string ++ array.join( " " ) ++ "\n" };
