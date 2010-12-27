@@ -23,3 +23,20 @@ XFadeDelay {
 				.madd( mul, add );
 	}
 }
+
+SoftSwitchIn {
+	*ar { |bus = 0, numChannels = 1, fadeTime = 0.1, trigger|
+		var changed, buses, delayed;
+		
+		trigger = trigger ?? { Impulse.kr( 1/fadeTime ) }; // auto trigger if no external trigger
+		bus = Latch.kr( bus, trigger );
+		
+		changed = Trig.kr( HPZ1.kr( bus ).abs, fadeTime ); // only change at actual change
+		changed = ToggleFF.kr( changed );
+		
+		buses = In.ar( Latch.kr( bus, [1-changed, changed] ), numChannels );
+		
+		^XFade2.ar( buses[0], buses[1], 
+			Delay1.kr( Slew.kr( changed, 1/fadeTime, 1/fadeTime ) ).linlin(0,1,-1,1) );
+	}
+}

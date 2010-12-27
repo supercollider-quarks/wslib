@@ -20,7 +20,7 @@ RoundView2 : UserViewHolder {
 	}
 	
 	*prShouldExpand { arg v;
-		^( GUI.id == \cocoa and: { v.isKindOf( GUI.hLayoutView ).not && 
+		^( [ \cocoa, \qt ].includes( GUI.id ) and: { v.isKindOf( GUI.hLayoutView ).not && 
 			{ v.isKindOf( GUI.vLayoutView ).not }  } );
 	}
 	

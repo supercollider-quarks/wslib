@@ -79,6 +79,7 @@
 		#b1, b2, b3, b4, b5     = ar ++ [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
 		
 		^freqs.collect({ arg freq;
+			var complex;
 			pfreq	= freq * radPerSmp;
 			cos1	= cos( pfreq );
 			cos2	= cos( pfreq * 2 );
@@ -104,4 +105,5 @@
 			sqrt( nom / denom );
 		});
 	}
+	
 }

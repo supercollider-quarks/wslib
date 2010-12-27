@@ -93,10 +93,21 @@ MultiServer {
 		
 	at { |index| ^servers.wrapAt( index ); }
 		
-	boot { 
-		if( servers[0].addr.ip.asSymbol == '127.0.0.1' )
-			{ servers.do( _.boot ) };
-		}
+	boot { |delay = 0|
+		if( servers[0].addr.ip.asSymbol == '127.0.0.1' ) {
+			if(delay>0){ 
+				Routine({
+					servers.do{ |server| 
+						server.boot;
+						delay.wait;
+					}
+				}).play
+			}{
+				servers.do(_.boot)
+			}
+ 		}
+	}
+	
 	quit {
 		if( servers[0].addr.ip.asSymbol == '127.0.0.1' )
 			{ servers.do( _.quit ) };

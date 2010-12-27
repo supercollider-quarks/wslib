@@ -629,6 +629,7 @@ MIDICinetixWindow {
 	classvar <updateFaders = true, <>updateBusses = true, <>useFaders = true;
 	classvar <>action = nil;
 	classvar <>sliders = nil;
+	classvar <>port = nil; // set to uid for specific port
 	
 	*close { var func; if(window.notNil) { func = window.onClose; window.close;  
 		func.value;
@@ -641,7 +642,7 @@ MIDICinetixWindow {
 	
 	*new { arg channels = 4 , busOffset = 32, reverse, inAction;
 var busMessage = { |chan, val| Server.default.sendMsg("/c_set", chan + busOffset, val) };
-var sliders, routine, routineButton;
+var routine, routineButton;
 var values;
 if(channels.size == 0) { channels = (_.asInt)!channels };
 values = channels.collect({0.0});
@@ -661,6 +662,7 @@ sliders = Array.fill(channels.size, { | i |
 	SmoothSlider(window, Rect(20 + (i * 40), 40, 30, window.view.bounds.height - 50))
 		.value_(values[i])
 		.canFocus_( false )
+		.clipMode_( \wrap )
 		.action_({ |slider|
 			action.value( i, slider.value); 
 			if(useFaders && updateBusses)
@@ -671,7 +673,7 @@ sliders = Array.fill(channels.size, { | i |
 routine = Routine({
 	var event, val, slNum;
 	loop {   // event: b=num, c=vel
-		event = MIDIIn.waitNoteOn;
+		event = MIDIIn.waitNoteOn( port );
 		//slNum =  (1: 1, 2: 2, 4: 0, 5: 3).at(event.b.wrap(0,15));
 		slNum = channels.indexOf(event.b.wrap(0,15));
 		if (slNum.notNil)

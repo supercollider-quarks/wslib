@@ -160,7 +160,7 @@ ReceiveTrig : ReceiveReply {
 	onReply { |cmdName| 
 		cmdName = cmdName ? '/reply';
 		^ReceiveReply.all.detect({ |item| 
-			item.source == this && { item.cmdName = cmdName }; }); 
+			item.source == this && { item.cmdName == cmdName }; }); 
 		}
 	
 	onTrig_ { |action, id|

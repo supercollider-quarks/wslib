@@ -18,6 +18,7 @@ MIDIWindow {
 		var nSources, noMidi = false;
 		var getSourceNames;
 		var font;
+		var connectAllButton;
 		// only one port so far
 				
 		/* if(MIDIClient.initialized.not)
@@ -62,7 +63,7 @@ MIDIWindow {
 		window.addFlowLayout;
 		
 		
-		clientPopUp = SCPopUpMenu(window, Rect(10, 10, 192, 18))
+		clientPopUp = PopUpMenu(window, Rect(10, 10, 192, 18))
 			.items_( sourceNames )
 			.font_( font )
 			.value_(currentDevice)
@@ -78,13 +79,15 @@ MIDIWindow {
 			.stringColor_(Color.black)
 			.background_(Color.clear);
 			
+		/*
 		StaticText(window, Rect(95, 30, 55, 18))
 				.string_( "MIDIIn port: " )
 				.font_( font );
+		*/
 			
-		clientConnectInButton = Button(window, Rect(10, 30, 18, 18))
-			.states_([[ toPort.asString ],
-				[ toPort.asString, Color.black, Color.green.alpha_(0.2) ]])
+		clientConnectInButton = Button(window, Rect(10, 30, 61, 18))
+			.states_([[ "Connect" ],
+				[ "Connect", Color.black, Color.green.alpha_(0.2) ]])
 			.font_( font )
 			.value_(inIsOn[currentDevice].binaryValue)
 			.action_({ |button|
@@ -100,15 +103,41 @@ MIDIWindow {
 						clientPopUp.action.value(clientPopUp);}
 				});
 				
+		connectAllButton = Button(window, Rect(10, 30, 61, 18))
+			.states_([[ "All" ],
+				[ "All", Color.black, Color.green.alpha_(0.2) ]])
+			.font_( font )
+			.value_(inIsOn[currentDevice].binaryValue)
+			.action_({ |button|
+				switch( button.value,
+					1, { MIDIClient.sources({ |item, i|
+							if( inIsOn[i] != true )
+								{ MIDIIn.connect( toPort, item );
+								  inIsOn[i] = true }; 
+							});
+ 					  clientPopUp.action.value(clientPopUp);
+					  },
+					0, { MIDIClient.sources({ |item, i|
+							if( inIsOn[i] != false )
+								{ MIDIIn.disconnect( toPort, item );
+								  inIsOn[i] = false
+								}; 
+							});
+						clientPopUp.action.value(clientPopUp);
+					});
+				});
+				
+		/*
 		StaticText(window, Rect(95, 30, 61, 18))
 				.string_("")
 				//.background_( Color.green )
 				.font_( font );
+		*/
 				
 		if(noMidi) {clientConnectInButton.enabled=false; clientPopUp.enabled=false; }
 			{ clientPopUp.action.value(clientPopUp);};
 			
-		Button(window, Rect(10, 50, 45, 18)).states_([["restart"]])
+		Button(window, Rect(10, 60, 61, 18)).states_([["restart"]])
 			.font_( font )
 			.action_({ window.close; window = nil; { MIDIWindow.new }.defer(0.2) });
 			
