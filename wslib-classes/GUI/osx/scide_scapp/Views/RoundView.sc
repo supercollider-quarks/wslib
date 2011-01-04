@@ -1,4 +1,4 @@
-RoundView : SCUserView {
+RoundViewOld : SCUserView {
 
 	// fix for drawing slightly outside an SCUserView
 	// this class doesn't draw the focusring itself,

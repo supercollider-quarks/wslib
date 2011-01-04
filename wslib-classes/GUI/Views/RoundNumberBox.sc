@@ -1,4 +1,4 @@
-RoundNumberBox : RoundView2 {
+RoundNumberBox : RoundView {
 	
 	classvar <>defaultFormatFunc, <>defaultInterpretFunc, <>defaultFontFace, <>defaultFontSize;
 	
@@ -50,6 +50,12 @@ RoundNumberBox : RoundView2 {
 				{ ^super.doesNotUnderstand( selector, *args ) }; }
 			{ ^super.doesNotUnderstand( selector, *args ) };
 		}
+		
+	respondsTo { arg ... args;
+		^if( super.respondsTo( *args ),
+		 	true, 
+		 	{ this.class.instVarNames.includes( args[0].asSymbol.asGetter ) });
+	}
 		
 	background_ { |color| background = color; this.refresh; }
 	
@@ -153,7 +159,7 @@ RoundNumberBox : RoundView2 {
 				
 			background !? { 
 				Pen.roundedRect( rect, radius );
-				background.fill( rect );
+				background.penFill( rect );
 				};
 			
 			if( extrude )

@@ -21,3 +21,21 @@
 	
 	penFill { Pen.fillColor = this; ^Pen.fill; }
 	}
+	
++ Function {
+	penFill { |rect| 
+		Pen.use({ 
+			Pen.clip; 
+			this.value( rect );
+		}) 
+	}
+}
+
++ Symbol {
+	penFill { |rect|
+		Pen.use({ 
+			Pen.clip; 
+			DrawIcon.symbolArgs( this, rect );
+		}) 
+	}
+}

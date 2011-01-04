@@ -1,7 +1,7 @@
 // wslib 2006
 // slider based on blackrain's knob
 
-SmoothSlider : RoundView2 {
+SmoothSlider : RoundView {
 	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false;
 	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
 	var <knobSize = 0.25, hitValue = 0;
@@ -167,13 +167,13 @@ SmoothSlider : RoundView2 {
 			color[0] !? { // base / background
 				//Pen.fillColor = color[0];
 				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
-				color[0].fill( baseRect );
+				color[0].penFill( baseRect );
 				};
 			
 			if( backgroundImage.notNil )
 				{ 
 				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
-				backgroundImage[0].fill( baseRect, *backgroundImage[1..] );
+				backgroundImage[0].penFill( baseRect, *backgroundImage[1..] );
 				}
 			};
 			
@@ -225,14 +225,14 @@ SmoothSlider : RoundView2 {
 								.max( baseRect.center.y  ) ))
 						
 					, radius ); //.fill;
-				color[1].fill( baseRect );
+				color[1].penFill( baseRect );
 				}
 				{
 				Pen.roundedRect( Rect.fromPoints( 
 						baseRect.left@(knobPosition - (realKnobSize / 2)),
 						baseRect.right@baseRect.bottom ), radius.min( baseRect.width/2) );
 				
-				color[1].fill( baseRect );
+				color[1].penFill( baseRect );
 				};
 				};
 				
@@ -248,7 +248,7 @@ SmoothSlider : RoundView2 {
 
 				Pen.roundedRect( knobRect, radius );//.fill; 
 				
-				color[3].fill( knobRect ); // requires extGradient-fill.sc methods
+				color[3].penFill( knobRect ); // requires extGradient-fill.sc methods
 				
 				 if( extrude && ( knobRect.height >= border ) )
 					  	{ 

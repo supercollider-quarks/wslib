@@ -1,12 +1,11 @@
-RoundView2 : UserViewHolder {
-	
-	// called RoundView2 for now, until all Smooth/Round views have been updated
+RoundView : UserViewHolder {
 
 	// fix for drawing slightly outside an SCUserView
 	// this class doesn't draw the focusring itself,
 	// it only handles the resizing.
 	
 	classvar <>focusRingSize = 3;
+	classvar <>skins;
 	
 	var <expanded = true;
 	var <shrinkForFocusRing = false; // only when expanded == false
@@ -28,6 +27,44 @@ RoundView2 : UserViewHolder {
 		if( this.class.prShouldExpand( parent ).not, { expanded = false });
 		if( expanded ) { this.bounds = view.bounds }; // resize after FlowLayout
 		view.focusColor = Color.clear;
+		if( skins.size > 0 ) { this.applySkin( skins.last ) };
+	}
+	
+	applySkin { |skin|
+		var classSpecific;
+		skin.pairsDo({ |key, value|
+				if( key.isClassName ) { 
+					if( this.class.name == key ) {
+						classSpecific = value;	
+					};
+				} {
+					key = key.asSetter;
+					if( this.respondsTo( key ) ) { this.perform( key, value ); };
+				};
+			});
+		classSpecific !? { this.applySkin( classSpecific ) };
+	}
+	
+	*useWithSkin { |skin, function|
+		this.pushSkin( skin );
+		function.value;
+		this.popSkin;
+	}
+	
+	*pushSkin { |skin|
+		this.skins = this.skins.add( skin );
+	}
+	
+	*popSkin {
+		this.skins.pop;
+	}
+	
+	*skin_ { |skin|
+		if( skin.isNil )
+			{ skins = [] } // remove all skins
+			{ if( skin != (skins ? []).last ) // only push if really new
+				{ this.pushSkin( skin ) } 
+			};
 	}
 	
 	drawBounds { ^if( expanded ) 
@@ -83,3 +120,5 @@ RoundView2 : UserViewHolder {
 		}
 	
 	}
+	
+RoundView2 : RoundView { } // still here for backwards compat

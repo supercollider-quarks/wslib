@@ -121,13 +121,13 @@ SmoothRangeSlider : SmoothSlider {
 			color[0] !? { // base / background
 				//Pen.fillColor = color[0];
 				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
-				color[0].fill( baseRect );
+				color[0].penFill( baseRect );
 				};
 			
 			if( backgroundImage.notNil )
 				{ 
 				Pen.roundedRect( baseRect, radius.min( baseRect.width/2) );
-				backgroundImage[0].fill( baseRect, *backgroundImage[1..] );
+				backgroundImage[0].penFill( baseRect, *backgroundImage[1..] );
 				}
 			};
 			
@@ -177,7 +177,7 @@ SmoothRangeSlider : SmoothSlider {
 						baseRect.right@(knobPosition[1] - (realKnobSize / 2))
 						 ), radius.min( baseRect.width/2) );
 				
-				color[1].fill( baseRect );
+				color[1].penFill( baseRect );
 				};
 			
 				};
@@ -198,7 +198,7 @@ SmoothRangeSlider : SmoothSlider {
 					Pen.roundedRect( knobRect, radius );
 						// ( [ 0, 0, radius, radius ].rotate(i*2) );//.fill; 
 					
-					color[3].fill( knobRect ); // requires extGradient-fill.sc methods
+					color[3].penFill( knobRect ); // requires extGradient-fill.sc methods
 					
 					 if( extrude && ( knobRect.height >= border ) )
 						  	{ 
@@ -401,4 +401,18 @@ SmoothRangeSlider : SmoothSlider {
 	}
 }
 
+RoundRangeSlider : SmoothRangeSlider {
+	
+	init { arg parent, bounds;
+		super.init( parent, bounds );
+		
+		// background, hilightColor, borderColor, knobColor, stringColor
+		color = [ nil, nil, Color.clear, Color.clear, Color.black ];
+		extrude = true;
+		border = 1;
+		knobSize = 0.5;
+		thumbSize = 12;
+		}
+		
+}
 

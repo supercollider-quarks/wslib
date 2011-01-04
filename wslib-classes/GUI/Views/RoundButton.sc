@@ -4,7 +4,7 @@
 
 // SCv3.3.1 revision
 
-RoundButton : RoundView2 { 
+RoundButton : RoundView { 
 	
 	// requires a version of SuperCollider where String:prBounds is working (after april 2007?)
 	
@@ -14,7 +14,8 @@ RoundButton : RoundView2 {
 	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
-	var <focusColor;
+	var <focusColor, bgColor, <stringColor, <hiliteColor, <borderColor; 
+		// hiliteColor = color of second state if not provided
 	
 	var <expanded = true;
 	var <shrinkForFocusRing = false;
@@ -52,6 +53,34 @@ RoundButton : RoundView2 {
 	radius_ { |newRadius| radius = newRadius; this.refresh; }
 	
 	focusColor_ { |newColor| focusColor = newColor; this.parent.refresh; }
+	stringColor_ { |newColor| stringColor = newColor; this.refresh; }
+	
+	background { ^bgColor }
+	background_ { |newColor| bgColor = newColor; this.refresh; }
+	
+	hiliteColor_ { |newColor| hiliteColor = newColor; this.refresh; }
+	
+	hilightColor { ^this.hiliteColor }
+	hilightColor_ { |newColor| this.hiliteColor = newColor; }
+	
+	label_ { |string|
+		if( [ Symbol, String ].includes( string.class ) ) { 
+			if( states.size == 0 ) { 
+				states = [ [ string ] ];
+			} { 
+				states = [ [ string ] ++ states[0][1..] ];
+			};
+		} { states = states ? [];
+			states = string.collect({ |str, i| 
+				[ str ] ++ (states[i] ? [])[1..]
+			});
+		};
+	}
+	
+	label { ^if( states.size == 1 ) 
+			{ states[0][0] }
+			{ states.collect(_[0]) }
+	}
 	
 	draw {
 		var rect, localRadius;
@@ -77,14 +106,22 @@ RoundButton : RoundView2 {
 			{ lightSide = Color.white.alpha_(0.5);
 		       shadeSide = Color.black.alpha_(0.5); };
 		
-			
+		if( bgColor.notNil )
+			{ Pen.roundedRect( rect, radius );
+			  bgColor.penFill( rect ); };
+		
 		states !? {
 			
 			Pen.use {
-							
+				
+				if( hiliteColor.notNil && { (value.asInt == 1) && { states[1][2].isNil } } ) {
+					Pen.roundedRect( rect, radius );
+					hiliteColor.penFill( rect ); // requires Gradient:fill method
+				};
+					
 				states[ value ][ 2 ] !? {
 					Pen.roundedRect( rect, radius );
-					states[ value ][ 2 ].fill( rect ); // requires Gradient:fill method
+					states[ value ][ 2 ].penFill( rect ); // requires Gradient:fill method
 					};				
 					
 					
@@ -101,7 +138,7 @@ RoundButton : RoundView2 {
 		case { states[value][0].isString }
 			{	
 				Pen.font = font ? Font.default;
-				Pen.color = states[value][1] ? Color.black;
+				Pen.color_(states[value][1] ?? { stringColor ? Color.black });
 				Pen.stringCenteredIn( states[value][0], 
 					rect  + ( if( pressed ) 
 						{ Rect( moveWhenPressed, moveWhenPressed, 0, 0 ) } 
@@ -112,7 +149,7 @@ RoundButton : RoundView2 {
 			{ states[value][0].class == Symbol }
 			{
 			Pen.use {
-				Pen.color_(states[value][1] ? Color.black);
+				Pen.color_(states[value][1] ?? { stringColor ? Color.black });
 				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
 				};
@@ -128,7 +165,7 @@ RoundButton : RoundView2 {
 			{ true }
 			{
 			Pen.use {
-				Pen.color_(states[value][1] ? Color.black);
+				Pen.color_(states[value][1] ?? { stringColor ? Color.black });
 				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
 				states[value][0].value( this, rect, radius ); // can be a Pen function
 				};
@@ -184,7 +221,7 @@ RoundButton : RoundView2 {
 	
 	doAction {
 		if( action.size > 0 ) // if action is in fact an array; couple states to actions
-			{ action.wrapAt( this.value.asInt ).value( this ); }
+			{ action.wrapAt( this.value.asInt - 1 ).value( this ); }
 			{ action.value( this ); };
 	}
 	
