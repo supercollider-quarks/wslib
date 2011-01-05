@@ -31,7 +31,7 @@ TransportWindow {
 	
 	init { |name, startPos|
 		var countStream, step, 
-		window = SCWindow( name, Rect( 360, 30, 300, 100 ), false );
+		window = Window( name, Rect( 360, 30, 300, 100 ), false );
 		window.front;
 		
 		pos = startPos;
@@ -83,11 +83,15 @@ TransportWindow {
 			.canFocus_( false );
 		
 		// counter
-		counter = SMPTEView( window, 145@38 ).pos_( pos );
-		
-		//counter = SCNumberBox( window, Rect(145, 38, 100, 20 ));
+		counter = SMPTEBox( window, Rect( 145, 35, 150, 24 ) )
+			.value_( pos )
+			.radius_( 12 )
+			.align_( \center )
+			.clipLo_(0)
+			.background_( Color.clear )
+			.charSelectColor_( Color.white.alpha_(0.5) )
+			.autoScale_( true );
 
-		
 		counter.action = { |v| pos = v.value; window.update; counterAction.value( this ); };
 		
 		//window.drawHook = { counter.value = pos; };

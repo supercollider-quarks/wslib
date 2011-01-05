@@ -317,6 +317,7 @@
 		}}
 */
 
+/*
 + GUIPen {
 
 	*roundedRect { |rect, radius| // radius can be array for 4 corners
@@ -337,3 +338,4 @@
 
 	
 }
+*/
