@@ -30,21 +30,6 @@ RoundView : UserViewHolder {
 		if( skins.size > 0 ) { this.applySkin( skins.last ) };
 	}
 	
-	applySkin { |skin|
-		var classSpecific;
-		skin.pairsDo({ |key, value|
-				if( key.isClassName ) { 
-					if( this.class.name == key ) {
-						classSpecific = value;	
-					};
-				} {
-					key = key.asSetter;
-					if( this.respondsTo( key ) ) { this.perform( key, value ); };
-				};
-			});
-		classSpecific !? { this.applySkin( classSpecific ) };
-	}
-	
 	*useWithSkin { |skin, function|
 		this.pushSkin( skin );
 		function.value;
@@ -66,6 +51,8 @@ RoundView : UserViewHolder {
 				{ this.pushSkin( skin ) } 
 			};
 	}
+	
+	*skin { ^(skins ? []).last }
 	
 	drawBounds { ^if( expanded ) 
 			{ this.bounds.moveTo(focusRingSize,focusRingSize); } 
@@ -122,3 +109,21 @@ RoundView : UserViewHolder {
 	}
 	
 RoundView2 : RoundView { } // still here for backwards compat
+
++ Object { // make skinning work for any object
+	applySkin { |skin|
+		var classSpecific;
+		skin.pairsDo({ |key, value|
+				if( key.isClassName ) { 
+					if( this.class.name == key ) {
+						classSpecific = value;	
+					};
+				} {
+					key = key.asSetter;
+					if( this.respondsTo( key ) ) { this.perform( key, value ); };
+				};
+			});
+		classSpecific !? { this.applySkin( classSpecific ) };
+	}
+}
+ 

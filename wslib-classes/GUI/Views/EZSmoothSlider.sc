@@ -4,7 +4,6 @@ EZSmoothSlider : EZSlider {
 	numberBoxClass { ^SmoothNumberBox }
 	staticTextClass { ^StaticText }
 	
-	
 	init {
 		 arg parentView, bounds, label, argControlSpec, argAction, initVal, 
 			initAction, labelWidth, argNumberWidth,argUnitWidth, 
@@ -20,10 +19,13 @@ EZSmoothSlider : EZSlider {
 		layout=argLayout;
 		bounds.isNil.if{bounds = 350@20};
 		
-		
 		// if no parent, then pop up window 
 		# view,bounds = this.prMakeView( parentView,bounds);
 		
+		// override layout (sorry if you want otherwise)
+		if( layout != \line2 ) { 
+			layout = if( bounds.height < bounds.width ) { \horz } { \vert };
+		};
 		
 		labelSize=labelWidth@labelHeight;
 		numSize = numberWidth@labelHeight;
@@ -69,7 +71,13 @@ EZSmoothSlider : EZSlider {
 		};
 
 		numberView.action = { this.valueAction_(numberView.value) };
-		if (controlSpec.step != 0) { numberView.step=controlSpec.step*10; };
+		if (controlSpec.step != 0) { 
+			numberView.step = controlSpec.step*10; 
+		} { numberView.step = ((10**((controlSpec.maxval - controlSpec.minval).log10.ceil))/100)
+			.min(1);
+		};
+		
+		numberView.scroll_step = numberView.step; 
 		
 		if (initAction) {
 			this.valueAction_(initVal);
@@ -77,6 +85,11 @@ EZSmoothSlider : EZSlider {
 			this.value_(initVal);
 		};
 		this.prSetViewParams;
+		
+		labelView.applySkin( RoundView.skin );
+		unitView.applySkin( RoundView.skin );
+		this.applySkin( RoundView.skin );
+			
 		}
 		
 	setColors{arg stringBackground,stringColor,sliderBackground,numBackground,
@@ -108,6 +121,34 @@ EZSmoothSlider : EZSlider {
 		}
 		
 	setSliderProperty { |key ...value| sliderView.perform( (key ++ "_").asSymbol, *value ); }
+	
+	bounds { ^view.bounds }
+	bounds_ { |bounds| view.bounds = bounds }
+	
+	labelWidth { ^labelView !? { labelView.bounds.width } ? 0 }
+	labelWidth_ { |width = 60|
+		var delta;
+		if( layout === \horz && { labelView.notNil } ) { // only for horizontal sliders
+			delta = labelView.bounds.width - width;
+			labelView.bounds = labelView.bounds.width_( width );
+			sliderView.bounds = sliderView.bounds
+				.width_( sliderView.bounds.width + delta )
+				.left_( sliderView.bounds.left - delta );
+		};
+	}
+	
+	numberWidth { ^numberView !? { numberView.bounds.width } ? 0 }
+	numberWidth_ { |width = 45|
+		var delta;
+		if( layout === \horz && { numberView.notNil } ) { // only for horizontal sliders
+			delta = numberView.bounds.width - width;
+			sliderView.bounds = sliderView.bounds
+				.width_( sliderView.bounds.width + delta );
+			numberView.bounds = numberView.bounds
+				.width_( width )
+				.left_( numberView.bounds.left + delta );
+		};
+	}
 	
 	}
 

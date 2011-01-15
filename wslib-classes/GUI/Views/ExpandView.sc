@@ -112,8 +112,10 @@ ExpandView {
 	}
 	
 	reflowParentGUI {
-		var parent;
 		if( composite.parent.decorator.notNil ) {
+			composite.parent.decorator.reFlow( composite.parent );
+		};
+			/*
 			parent = composite.parent;
 			parent.decorator.reset;
 			parent.children.do({ |widget|
@@ -123,8 +125,21 @@ ExpandView {
 						parent.decorator.place(widget);
 					})
 				});
-		}
+			*/
 	}
 	
 	
+}
+
++ FlowLayout {
+	reFlow { |parent| 
+		this.reset;
+		parent.children.do({ |widget|
+					if(widget.isKindOf( StartRow ),{
+						this.nextLine
+					},{
+						this.place(widget);
+					})
+				});	
+	}
 }
