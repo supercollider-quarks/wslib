@@ -35,10 +35,14 @@ RoundNumberBox : RoundView {
 	
 	*initClass { 
 		defaultFormatFunc = { |value| value };
-		StartUp.add({ defaultFontFace = Font.defaultSansFace; }); // linux compatible?
+		StartUp.add({ 
+			if( GUI.current.notNil ) { 
+				defaultFontFace = Font.defaultSansFace; 
+			};
+		});
 		defaultFontSize = 12;
 		defaultInterpretFunc = { |string| string.interpret };
-		 }
+	}
 		 
 	*defaultFont { ^Font( defaultFontFace, defaultFontSize ) }
 	*defaultFont_ { |font| defaultFontFace = font.name; defaultFontSize = font.size }

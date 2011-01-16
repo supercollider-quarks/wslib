@@ -6,8 +6,7 @@ ColPenGUI { // wslib 2007 - for use with ColPen to make { ... }.asGUICode possib
 		inited = true;
 		mustInitGUI.if({ Class.initClassTree( GUI ); });
 		redirectScheme = GUI.schemes[ thisProcess.platform.defaultGUIScheme ];
-		GUI.add( this );
-		GUI.schemes[ \colpen, this ];
+		GUI.schemes.put( this.id, this );
 	}
 	
 	*id { ^\colpen }
