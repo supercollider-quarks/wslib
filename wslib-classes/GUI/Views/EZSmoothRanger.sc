@@ -88,6 +88,11 @@ EZSmoothRanger : EZRanger {
 		};
 
 		this.prSetViewParams;
+		
+				
+		labelView.applySkin( RoundView.skin );
+		unitView.applySkin( RoundView.skin );
+		this.applySkin( RoundView.skin );
 
 	}
 	
@@ -124,4 +129,33 @@ EZSmoothRanger : EZRanger {
 	}
 		
 	setSliderProperty { |key ...value| rangeSlider.perform( (key ++ "_").asSymbol, *value ); }
+	
+	bounds { ^view.bounds }
+	bounds_ { |bounds| view.bounds = bounds }
+	
+	labelWidth { ^labelView !? { labelView.bounds.width } ? 0 }
+	labelWidth_ { |width = 60|
+		var delta;
+		if( layout === \horz && { labelView.notNil } ) { // only for horizontal sliders
+			delta = labelView.bounds.width - width;
+			labelView.bounds = labelView.bounds.width_( width );
+			loBox !? { loBox.bounds = loBox.bounds.left_( loBox.bounds.left - delta ) };
+			rangeSlider.bounds = rangeSlider.bounds
+				.width_( rangeSlider.bounds.width + delta )
+				.left_( rangeSlider.bounds.left - delta );
+		};
+	}
+	
+	numberWidth { ^loBox !? { loBox.bounds.width } ? 0 }
+	
+	numberWidth_ { |width = 45|
+		// TODO
+	}
 }
+
+EZRoundRanger : EZSmoothRanger {
+
+	sliderClass { ^RoundRangeSlider }
+	numberBoxClass { ^RoundNumberBox }
+	
+	}

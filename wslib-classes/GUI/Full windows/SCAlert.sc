@@ -104,7 +104,7 @@ SCAlert {
 				
 		actions = actions ?? { ( { |i| { |button| buttons[i][0].postln; } } ! buttons.size ); };
 			
-		if( modal )		
+		if( modal && { GUI.id == \cocoa } )		
 			{ window = SCModalWindow( "Alert", 
 				Rect.aboutPoint( SCWindow.screenBounds.center, 
 					((buttons.size * 42) + 2).max( 160 ), 
@@ -197,7 +197,7 @@ SCRequestString {
 		
 		buttons =[["cancel"], ["ok"]];
 		
-		if( GUI.current == SwingGUI ) { modal = false };
+		if( GUI.id == \swing ) { modal = false };
 						
 		action = func ? { |inString| inString.postln };
 						

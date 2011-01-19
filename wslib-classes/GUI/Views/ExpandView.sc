@@ -28,6 +28,8 @@ ExpandView {
 	var <composite, <view, <header, <button;
 	var <>time, <task;
 	var <>expandAction, <>collapseAction;
+	var <>reflow = true;
+	var window, <>resizeWindow = false;
 	
 	*new { |parent, bigBounds, smallBounds, collapsed = true|
 		^super.newCopyArgs( bigBounds.asRect, smallBounds.asRect ).init( parent, collapsed );
@@ -98,9 +100,12 @@ ExpandView {
 	}
 	
 	changeSizeOnce { |newBounds|
+		var currentBounds;
+		currentBounds = composite.bounds;
 		composite.bounds = newBounds;
 		this.hideOutside;
-		this.reflowParentGUI;
+		if( reflow ) { this.reflowParentGUI; };
+		if( resizeWindow ) { this.resizeParentWindow( currentBounds, composite.bounds ) };
 	}
 	
 	hideOutside {
@@ -115,17 +120,14 @@ ExpandView {
 		if( composite.parent.decorator.notNil ) {
 			composite.parent.decorator.reFlow( composite.parent );
 		};
-			/*
-			parent = composite.parent;
-			parent.decorator.reset;
-			parent.children.do({ |widget|
-					if(widget.isKindOf( StartRow ),{
-						parent.decorator.nextLine
-					},{
-						parent.decorator.place(widget);
-					})
-				});
-			*/
+	}
+	
+	window { ^window ?? { window = composite.getParents.last.findWindow } }
+	
+	resizeParentWindow { |oldBounds, newBounds|
+		this.window.setInnerExtent(
+			*( this.window.bounds.extent + ( newBounds.extent - oldBounds.extent ) ).asArray
+		);
 	}
 	
 	
