@@ -2,7 +2,7 @@
 // slider based on blackrain's knob
 
 SmoothSlider : RoundView {
-	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false;
+	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false, <centerPos = 0.5;
 	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
 	var <knobSize = 0.25, hitValue = 0;
 	var <orientation = \v;
@@ -12,7 +12,7 @@ SmoothSlider : RoundView {
 	var <>deltaAction, <>allwaysPerformAction = false;
 	var <>outOfBoundsAction;
 	
-	var <>clipMode = \clip; // or \wrap;
+	var <>clipMode = \clip; // or \wrap, \fold (or any unary or binary op)
 	var <string, <font, <align, <stringOrientation = \h, <stringAlignToKnob = false;
 	
 	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
@@ -219,10 +219,10 @@ SmoothSlider : RoundView {
 				Pen.roundedRect( Rect.fromPoints( 
 						baseRect.left@
 							((knobPosition - (realKnobSize / 2))
-								.min( baseRect.center.y ) ),
+								.min( baseRect.bottom.blend( baseRect.top, centerPos ) ) ),
 						baseRect.right@
 							((knobPosition + (realKnobSize / 2))
-								.max( baseRect.center.y  ) ))
+								.max( baseRect.bottom.blend( baseRect.top, centerPos ) ) ))
 						
 					, radius ); //.fill;
 				color[1].penFill( baseRect );
@@ -465,6 +465,11 @@ SmoothSlider : RoundView {
 		^isCentered
 	}
 	
+	centerPos_ { |value = 0.5|
+		centerPos = value;
+		this.refresh;
+	}
+	
 	orientation_ { |newOrientation| 
 		if( stringOrientation == orientation ) { stringOrientation = newOrientation };
 		orientation = newOrientation ? orientation; this.refresh;
@@ -491,7 +496,7 @@ SmoothSlider : RoundView {
 		if (char == $r, { this.valueAction = 1.0.rand; });
 		if (char == $n, { this.valueAction = 0.0; });
 		if (char == $x, { this.valueAction = 1.0; });
-		if (char == $c, { this.valueAction = 0.5; });
+		if (char == $c, { this.valueAction = centerPos; });
 		if (char == $], { this.increment(zoom); ^this });
 		if (char == $[, { this.decrement(zoom); ^this });
 		if (unicode == 16rF700, { this.increment(zoom); ^this });

@@ -86,12 +86,18 @@ EZSmoothSlider : EZSlider {
 		};
 		this.prSetViewParams;
 		
-		labelView.applySkin( RoundView.skin );
-		unitView.applySkin( RoundView.skin );
+		//labelView.applySkin( RoundView.skin );
+		//unitView.applySkin( RoundView.skin );
 		this.applySkin( RoundView.skin );
 			
 		}
 		
+	applySkin { |skin|
+		labelView.applySkin( skin );
+		unitView.applySkin( skin );
+		super.applySkin( skin );
+	}
+	
 	setColors{arg stringBackground,stringColor,sliderBackground,numBackground,
 		numStringColor,numNormalColor,numTypingColor,knobColor,background, hiliteColor;
 			
