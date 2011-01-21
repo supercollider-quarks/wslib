@@ -19,15 +19,15 @@ WSPopUpMenu {
 				if( (item[0] == $-) or: { item.includes( $( ) /*)*/ } ) { 
 					pu.value = lastValue; 
 				} {
-					wasClicked = false;
 					action.value( this );
 					lastValue = pu.value;
 				};
 			} {	
-				wasClicked = false;
 				action.value( this );
 				lastValue = pu.value;
 			};
+			
+			wasClicked = false;
 		};
 	}
 	
