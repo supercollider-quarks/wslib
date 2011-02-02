@@ -115,26 +115,42 @@ SmoothScrollView {
 	resize_ { |resize| composite.resize_( resize ) }
 			
 	updateSliders {	
-		moveSliders[0].relThumbSize_(
-			(scrollView.bounds.width / scrollView.innerBounds.width).clip(0,1)
-			);
+		var xSize, ySize;
+		
+		if( hasHorizontalScroller ) {
+			xSize = (scrollView.bounds.width / scrollView.innerBounds.width).clip(0,1);
 			
-		moveSliders[1].relThumbSize_(
-			(scrollView.bounds.height / scrollView.innerBounds.height).clip(0,1)
-			);
+			moveSliders[0].relThumbSize_( xSize );
 			
-		moveSliders[0].value_(
-			(scrollView.visibleOrigin.x / 
+			if( xSize == 1 ) { 
+				moveSliders[0].knobColor = nil;
+			} { 
+				moveSliders[0].knobColor = sliderKnobColor;
+			};
+			
+			moveSliders[0].value_(
+				(scrollView.visibleOrigin.x / 
 					(scrollView.innerBounds.width - scrollView.bounds.width))
-				.clip(0,1)
 			);
+		};
+		
+		if( hasVerticalScroller ) {	
+			ySize = (scrollView.bounds.height / scrollView.innerBounds.height).clip(0,1);
 			
-		moveSliders[1].value_(
-			(1- (scrollView.visibleOrigin.y / 
-			 	(scrollView.innerBounds.height - scrollView.bounds.height)))
-				.clip(0,1)
-			);
+			moveSliders[1].relThumbSize_( ySize );
+			
+			if( ySize == 1 ) { 
+				moveSliders[1].knobColor = nil;
+			} { 
+				moveSliders[1].knobColor = sliderKnobColor;
+			};
+						
+			moveSliders[1].value_(
+				(1- (scrollView.visibleOrigin.y / 
+				 	(scrollView.innerBounds.height - scrollView.bounds.height)))
+				);
 		}
+	}
 		
 	window { ^window ?? { window = composite.getParents.last.findWindow; } }
 	

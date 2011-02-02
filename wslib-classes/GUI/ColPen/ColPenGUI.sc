@@ -3,10 +3,12 @@ ColPenGUI { // wslib 2007 - for use with ColPen to make { ... }.asGUICode possib
 	classvar <>redirectScheme;
 	
 	*initClass { |mustInitGUI = true|
-		inited = true;
-		mustInitGUI.if({ Class.initClassTree( GUI ); });
-		redirectScheme = GUI.schemes[ thisProcess.platform.defaultGUIScheme ];
-		GUI.schemes.put( this.id, this );
+		// StartUp.defer({	
+			inited = true;
+			mustInitGUI.if({ Class.initClassTree( GUI ); });
+			redirectScheme = GUI.schemes[ thisProcess.platform.defaultGUIScheme ];
+			GUI.schemes.put( this.id, this );
+		// });
 	}
 	
 	*id { ^\colpen }
@@ -16,8 +18,8 @@ ColPenGUI { // wslib 2007 - for use with ColPen to make { ... }.asGUICode possib
 	*doesNotUnderstand { arg selector ... args;
 		if( redirectScheme.notNil ) { 
 			^redirectScheme.perform( selector, *args )
-		}{ 
-			DoesNotUnderstandError(this, selector, args).throw; 
+		}{  
+			// DoesNotUnderstandError(this, selector, args).throw; 
 		};
 	}
 }

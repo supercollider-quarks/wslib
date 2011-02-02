@@ -22,7 +22,7 @@ v.do( _.expandAction = { |vw| v.do({ |vwx| if( vwx != vw ) { vwx.collapse } }) }
 
 ExpandView {
 	
-	classvar <>defaultTime = 0.1;
+	classvar <>defaultTime = 0.1, <>fps = 40;
 	
 	var <bigBounds, <smallBounds;
 	var <composite, <view, <header, <button;
@@ -48,7 +48,8 @@ ExpandView {
 			.label_( [ 'triangle', 'triangle_0.5pi' ] )
 			.action_( [ { this.expand }, { this.collapse } ] )
 			.canFocus_( false )
-			.value_( collapsed.not.binaryValue );
+			.value_( collapsed.not.binaryValue )
+			.hiliteColor_( nil );
 			
 		this.background = Color.white.alpha_(0.5);
 		
@@ -80,7 +81,22 @@ ExpandView {
 		}
 	}
 	
+	expanded { ^button.value == 1; }
+	collapsed { ^button.value == 0; }
+	
+	toggle { if( this.expanded ) { this.collapse } { this.expand }; }
+	
 	bounds { ^composite.bounds }
+	
+	smallBounds_ { |bounds|
+		smallBounds = bounds.asRect;
+		if( this.collapsed ) { this.changeSize( smallBounds ) };
+	}
+	
+	bigBounds_ { |bounds|
+		bigBounds = bounds.asRect;
+		if( this.expanded ) { this.changeSize( bigBounds ) };
+	}
 
 	changeSize { |newBounds|
 		var oldBounds, n;
@@ -89,11 +105,11 @@ ExpandView {
 			this.changeSizeOnce( newBounds );
 		} {
 			oldBounds = composite.bounds;
-			n = (time / 0.02).floor;
+			n = (time * fps).floor;
 			task = {
 				n.do({ |i|
 					{ this.changeSizeOnce( oldBounds.blend( newBounds, i/(n-1) ) ); }.defer;
-					0.02.wait;
+					(1/fps).wait;
 				});
 			}.fork;
 		};

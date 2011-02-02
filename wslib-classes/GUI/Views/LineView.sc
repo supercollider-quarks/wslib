@@ -1,26 +1,22 @@
 // wslib 2006
 
-LineView : SCUserView {
+LineView : UserViewHolder {
 	
 	// just a simple line..
 	// use as border or separator
 	
 	var <orientation = \h, <full = true, <color, <width, <margin = 0;
 	
-	*viewClass { ^SCUserView }
-	
-	init { |parent, bounds|
+	init { |parent,bounds|
 		bounds = bounds.asRect;
 		if( bounds.width < bounds.height )
 			{ orientation = \v };
-		color = Color.gray(0.25).alpha_(0.5);
 		if( orientation == \h )
 			{ width = bounds.height }
-			{ width = bounds.width }; 
-		super.init( parent, bounds.asRect );
-		this.canFocus_( false );
-		parent.refresh; 
-		}
+			{ width = bounds.width };
+		color = Color.gray(0.25).alpha_(0.5);
+		this.canFocus_( false );		
+	}
 	
 	draw {
 		var realMargin;
@@ -51,13 +47,13 @@ LineView : SCUserView {
 			 };
 			 
 		Pen.stroke;
-		}
-	
-	refreshView { if( full ) { parent.refresh; } { this.refresh; } }
+	}	
+		
+	refreshView { if( full ) { this.parent.refresh; } { this.refresh; } }
 	
 	color_ { |newColor| color = newColor; this.refreshView; }
 	orientation_ { |newOrientation| orientation = newOrientation ? orientation; this.refreshView; }
-	full_ { |bool| full = bool; parent.refresh; } // always refresh parent when changing this
+	full_ { |bool| full = bool; this.parent.refresh; } // always refresh parent when changing this
 	width_ { |newWidth| width = newWidth ? { 
 		if( orientation == \h )
 			{ this.bounds.height }
@@ -68,4 +64,4 @@ LineView : SCUserView {
 	alpha { ^color.alpha }
 	alpha_ { |newAlpha| color.alpha_( newAlpha ); this.refreshView; }
 	
-	}
+}

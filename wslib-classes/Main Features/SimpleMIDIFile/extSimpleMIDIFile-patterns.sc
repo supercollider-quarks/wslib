@@ -34,14 +34,14 @@
 			^this.p( inst, amp ).play( clock, protoEvent, quant );
 	}
 		
-	*fromPattern { |pattern, maxEvents = 200, maxAmp = 0.2, startTime = 0, 
+	*fromPattern { |pattern, maxEvents = 1000, maxAmp = 0.2, startTime = 0, 
 			inTracks = 2, inTempo = 120, timeSignature|
 		var mf;
 		mf = this.new( "~/Desktop/fromPattern.mid" ).init1( inTracks, inTempo, timeSignature );
 		^mf.fromPattern( pattern );
 	}
 		
-	fromPattern {	|pattern, maxEvents = 200, maxAmp = 0.2, startTime = 0|
+	fromPattern {	|pattern, maxEvents = 1000, maxAmp = 0.2, startTime = 0|
 		var stream, time, count = 0, event, tmode;
 		var defaultEvent, instruments = [];
 		
@@ -187,7 +187,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 	}
 	
  // better use fromPattern here 
-	renderPattern {|pattern, maxEvents = 200, timeSig = "4/4", numTicks = 1024|
+	renderPattern {|pattern, maxEvents = 1000, timeSig = "4/4", numTicks = 1024|
 /* This method will accept a pattern and a maximum number of events and turn it in to a SimpleMIDIFile, suitable for writing to disc or using in any other way.
 
 Patterns wishing to involve several tracks should be sure to specify \track and \channel info in the pattern itself. Ê
