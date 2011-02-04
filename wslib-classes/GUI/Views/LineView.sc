@@ -19,27 +19,28 @@ LineView : UserViewHolder {
 	}
 	
 	draw {
-		var realMargin;
+		var realMargin, bounds;
 		Pen.color_( color );
 		Pen.width_( width );
 		realMargin = margin * width;
+		bounds = this.drawBounds;
 		switch ( orientation, 
 			\h, { Pen.line( 
-					(this.bounds.left + realMargin) @ (this.bounds.center.y),
-					(this.bounds.right - realMargin) @ (this.bounds.center.y)
+					(bounds.left + realMargin) @ (bounds.center.y),
+					(bounds.right - realMargin) @ (bounds.center.y)
 				);
 			}, 
 			\v, { Pen.line( 
-					(this.bounds.center.x) @ (this.bounds.top + realMargin),
-					(this.bounds.center.x) @ (this.bounds.bottom - realMargin)
+					(bounds.center.x) @ (bounds.top + realMargin),
+					(bounds.center.x) @ (bounds.bottom - realMargin)
 				); 
 			});
 			 
 		Pen.stroke;
 	}	
 	
-	full { DeprecatedError( this, thisMethod ).throw; ^true }
-	full_ { DeprecatedError( this, thisMethod ).throw; }
+	full { DeprecatedError( this, thisMethod, nil, this.class ).throw; ^true }
+	full_ { DeprecatedError( this, thisMethod, nil, this.class ).throw; }
 	
 	color_ { |newColor| color = newColor; this.refresh; }
 	orientation_ { |newOrientation| orientation = newOrientation ? orientation; this.refresh; }
