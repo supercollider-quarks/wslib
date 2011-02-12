@@ -109,7 +109,7 @@ ServerRecordWindow {
 		
 		controls = (
 			counterText: StaticText( w, 60@20 ).string_( "time" ).align_( \right ),
-			counter: SMPTEView( w, 0@0 ).fontSize_( 15 ).fontColor_( Color.black ),
+			counter: SMPTEBox( w, 120@20 ).fontSize_( 12 ).fontColor_( Color.black ),
 			nextLine: w.view.decorator.nextLine,
 			prepare:
 				Button( w, 60@20 )
@@ -197,6 +197,6 @@ ServerRecordWindow {
 				 	});
 			
 		 );
-		controls[ \counter ].view.enabled_( false );
+		controls[ \counter ].view.enabled_( true );
 	 }
 }

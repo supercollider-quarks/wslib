@@ -92,7 +92,9 @@ TransportWindow {
 			.charSelectColor_( Color.white.alpha_(0.5) )
 			.autoScale_( true );
 
-		counter.action = { |v| pos = v.value; window.update; counterAction.value( this ); };
+		counter.action = { |v| pos = v.value; 
+			if( pos != 0 ) { return.value = 1 } { return.value = 0 };
+			window.update; counterAction.value( this ); };
 		
 		//window.drawHook = { counter.value = pos; };
 		window.alwaysOnTop = true;
@@ -111,7 +113,12 @@ TransportWindow {
 		returnAction = { pos = 0; this.update; };
 		}
 	
-	pos_ { |newPos| pos = newPos; this.update; }
+	pos_ { |newPos| pos = newPos; 
+		if( play.value == 0 ) {
+			if( pos != 0 ) { return.value = 1 } { return.value = 0 };
+		};
+		this.update; 
+	}
 	
 	update { if( window2.notNil && { window2.dataptr.notNil } )
 				{ { counter.value = pos; window2.refresh; }.defer } }
