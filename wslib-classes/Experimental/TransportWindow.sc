@@ -126,7 +126,7 @@ TransportWindow {
 	name { ^window2.name }
 	name_ { |newName| window2.name = newName.asString }
 	
-	isClosed { ^(window2.isNil or: { window2.isClosed.not } ) }
+	isClosed { ^(window2.isNil or: { window2.isClosed } ) }
 	close { window2.close }
 	
 	window { ^window2 }
