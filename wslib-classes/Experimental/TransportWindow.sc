@@ -120,13 +120,13 @@ TransportWindow {
 		this.update; 
 	}
 	
-	update { if( window2.notNil && { window2.dataptr.notNil } )
+	update { if( window2.notNil && { window2.isClosed.not } )
 				{ { counter.value = pos; window2.refresh; }.defer } }
 				
 	name { ^window2.name }
 	name_ { |newName| window2.name = newName.asString }
 	
-	isClosed { ^(window2.isNil or: { window2.dataptr.isNil } ) }
+	isClosed { ^(window2.isNil or: { window2.isClosed.not } ) }
 	close { window2.close }
 	
 	window { ^window2 }

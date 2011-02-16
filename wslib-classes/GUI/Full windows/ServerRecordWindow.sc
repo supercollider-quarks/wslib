@@ -95,7 +95,7 @@ ServerRecordWindow {
 						
 		w.view.decorator.nextLine;
 		StaticText( w, 60@20 ).string_( "folder" ).align_( \right );
-		folderName = SCStaticText(  w, 180@20 ).string_( "recordings/" ).align_( \center );
+		folderName = StaticText(  w, 180@20 ).string_( "recordings/" ).align_( \center );
 		Button( w, 35@20 ).states_( [["show"]] ).action_({ folderName.string.openInFinder });
 		
 		w.view.decorator.nextLine;
