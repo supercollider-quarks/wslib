@@ -8,7 +8,7 @@ MasterEQ {
 	*new { |numCha = (2), server|
 		
 		if( \TabbedView.asClass.notNil )
-			{ if( eq.isNil or: { window.dataptr.isNil } )
+			{ if( eq.isNil or: { window.isClosed } )
 				{ ^this.newEQ( numCha, server ) }
 				{ if( eq[ \numChannels ] != numCha )
 					{ if( eq[ \playing ] ) { eq[ \free ].value; };
@@ -30,15 +30,16 @@ MasterEQ {
 		
 		eq = ();
 		
-		window = GUI.window.new( "MasterEQ (% ch)".format( numCha ), 
-				Rect(300, 100, 346, 270), false ).front; 
+		window = Window.new( "MasterEQ (% ch)".format( numCha ), 
+				Rect(300, 100, 346, 260), true ).front; 
 		
-		window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@10 );
+		//window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@10 );
+		window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@0 );
 		
-		eq[ \uvw ] = GUI.userView.new( window, 
+		eq[ \uvw ] = UserView( window, 
 			window.view.bounds.insetBy(10,10).height_(180) ).resize_(5);
-		
-		eq[ \font ] = GUI.font.new( GUI.font.defaultMonoFace, 9 );
+			
+		eq[ \font ] = Font( Font.defaultMonoFace, 9 );
 		
 		// eq[ \uvw ].relativeOrigin = false;
 		
@@ -77,20 +78,24 @@ MasterEQ {
 			[ "low shelf", "peak 1", "peak 2", "peak 3", "high shelf" ],
 			{ |i| Color.hsv( i.linlin(0,5,0,1), 0.75, 0.5).alpha_( 0.25 ); }!5 )
 				.font_( eq[ \font ] )
-				.resize_( 7 );
+				.resize_( 8 )
+				.tabPosition_( \bottom );
 				
 		eq[ \tvw ].focusActions = { |i| { eq[ \selected ] = i; eq[ \uvw ].refresh;  }; }!5;
 		
 		eq[ \tvw_views ] = [];
+		
+		
+		StaticText( window, 10@10 ); window.view.decorator.nextLine;
 		
 		eq[ \tvw ].views.do({ |view,i| 
 			var vw_array = [];
 			
 			view.decorator = FlowLayout( view.bounds.moveTo(0,0) ); 
 			
-			GUI.staticText.new( view, 35@14 ).font_( eq[ \font ] ).align_( \right ).string_( "freq:" );
+			StaticText( view, 35@14 ).font_( eq[ \font ] ).align_( \right ).string_( "freq:" );
 			vw_array = vw_array.add( 
-				NumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][0] )
+				RoundNumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][0] )
 					.clipLo_(20).clipHi_(22000)
 					.action_({ |vw|
 						eq[ \frdb ][i][0] = vw.value;
@@ -99,10 +104,10 @@ MasterEQ {
 						eq[ \pumenu_check ].value;
 						})  );
 			
-			GUI.staticText.new( view, 25@14 ).font_( eq[ \font ] ).align_( \right ).string_( "db:" );
+			StaticText( view, 25@14 ).font_( eq[ \font ] ).align_( \right ).string_( "db:" );
 			vw_array = vw_array.add( 
-				NumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][1] )
-					.clipLo_( -24 ).clipHi_( 24 )
+				RoundNumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][1] )
+					.clipLo_( -36 ).clipHi_( 36 )
 					.action_({ |vw|
 						eq[ \frdb ][i][1] = vw.value;
 						eq[ \send_current ].value;
@@ -110,10 +115,10 @@ MasterEQ {
 						eq[ \pumenu_check ].value;
 						})  );
 			
-			GUI.staticText.new( view, 25@14 ).font_( eq[ \font ] ).align_( \right )
+			StaticText( view, 25@14 ).font_( eq[ \font ] ).align_( \right )
 				.string_( (0: "rs:", 4:"rs:")[i] ? "rq"  );
 			vw_array = vw_array.add( 
-				NumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][2] )
+				RoundNumberBox( view, 40@14 ).font_( eq[ \font ] ).value_( eq[ \frdb ][i][2] )
 					.step_(0.1).clipLo_( if( [0,4].includes(i) ) { 0.6 } {0.01}).clipHi_(10)
 					.action_({ |vw|
 						eq[ \frdb ][i][2] = vw.value;
@@ -136,35 +141,47 @@ MasterEQ {
 				});
 			};
 			
-		eq[ \pumenu ] = GUI.popUpMenu.new( window, 100@15 )
-			.font_( eq[ \font ] ).canFocus_(false);
+		eq[ \pumenu ] = PopUpMenu.new( window, 100@16 )
+			.font_( eq[ \font ] ).canFocus_(false)
+			.resize_(7);
+			
+		if( GUI.id == \swing ) {
+			 eq[ \pumenu ].bounds = 
+			 	eq[ \pumenu ].bounds
+			 		.insetBy(-3,-3)
+			 		.moveBy( 0, 1 ) };
 			
 		//eq[ \pumenu_check ].value;
 		eq[ \pu_buttons ] = [
-			RoundButton.new( window, 15@15 )
+			RoundButton.new( window, 16@16 )
 				.radius_( 2 ).border_(1)
-				.states_( [[ '+' ]] ),
-			RoundButton.new( window,  15@15 )
+				.states_( [[ '+' ]] )
+				.resize_(7)
+				,
+			RoundButton.new( window,  16@16 )
 				.radius_( 2 ).border_(1)
+				.resize_(7)
 				.states_( [[ '-' ]] ),	
 			];
 			
-		GUI.staticText.new( window, 26@15  );
+		StaticText( window, 18@15  );
 		
 		eq[ \pu_filebuttons ] = [
-			RoundButton.new( window, 50@15 )
-				.extrude_( false ).font_( eq[ \font ] )
-				.states_( [[ "save", Color.black, Color.red(0.75).alpha_(0.25) ]] ),
-			RoundButton.new( window,  50@15 )
-				.extrude_( false ).font_( eq[ \font ] )
+			RoundButton.new( window, 55@16 )
+				.extrude_( true ).border_(1).font_( eq[ \font ] )
+				.states_( [[ "save", Color.black, Color.red(0.75).alpha_(0.25) ]] )
+				.resize_(7),
+			RoundButton.new( window,  55@16 )
+				.extrude_( true ).border_(1).font_( eq[ \font ] )
 				.states_( [[ "revert", Color.black, Color.green(0.75).alpha_(0.25) ]] )
+				.resize_(7)
 			];
 			
 			
-		GUI.staticText.new( window, 24@15  );
+		StaticText( window, 18@15  );
 		
 		eq[ \bypass_button ] = RoundButton.new( window, 17@17 )
-				.extrude_( false ) //.font_( eq[ \font ] )
+				.extrude_( true ).border_(1) //.font_( eq[ \font ] )
 				.states_( [
 					[ 'power', Color.gray(0.2), Color.white(0.75).alpha_(0.25) ],
 					[ 'power', Color.red(0.8), Color.white(0.75).alpha_(0.25) ]] )
@@ -172,7 +189,8 @@ MasterEQ {
 				.action_({ |bt| switch( bt.value,
 					1, { eq[ \play ].value },
 					0, { eq[ \free ].value });
-					});
+					})
+				.resize_(9);
 		
 		eq[ \pu_filebuttons ][0].action_({
 				File.use("eq-prefs.txt", "w",
@@ -395,7 +413,9 @@ MasterEQ {
 			var vlines = [100,1000,10000];
 			var dimvlines = [25,50,75, 250,500,750, 2500,5000,7500];
 			var hlines = [-18,-12,-6,6,12,18];
-			var pt;
+			var pt, strOffset = 11;
+			
+			if( GUI.id === 'swing' ) { strOffset = 14 };
 			
 			bounds = vw.bounds.moveTo(0,0);
 			
@@ -431,10 +451,14 @@ MasterEQ {
 				(array[1].linlin(range.neg,range,bounds.height,0,\none));
 				});
 
-				Pen.color = Color.gray(0.2).alpha_(0.5);
-				Pen.strokeRect( bounds.insetBy(-1,-1) );
+				Pen.color_( Color.white.alpha_(0.25) );
+				Pen.roundedRect( bounds, [6,6,0,0] ).fill;
 				
-				Pen.addRect( bounds ).clip;
+				Pen.color = Color.gray(0.2).alpha_(0.5);
+				//Pen.strokeRect( bounds.insetBy(-1,-1) );
+				
+				//Pen.addRect( bounds ).clip;
+				Pen.roundedRect( bounds.insetBy(0,0), [6,6,0,0] ).clip;
 				
 				Pen.color = Color.gray(0.2).alpha_(0.125);
 				
@@ -463,12 +487,15 @@ MasterEQ {
 				Pen.color = Color.gray(0.2).alpha_(0.5);
 				hlines.do({ |hline|
 					Pen.stringAtPoint( hline.asString ++ "dB", 
-						1@(hline.linlin( range.neg,range, bounds.height, 0, \none ) -10) );
+						3@(hline.linlin( range.neg,range, bounds.height, 0, \none ) 
+							- strOffset) );
 					});
 				vlines.do({ |vline,i|
 					Pen.stringAtPoint( ["100Hz", "1KHz", "10KHz"][i], 
-						(vline+2)@(bounds.height - 10) );
+						(vline+2)@(bounds.height - (strOffset + 1)) );
 					});
+				
+				//Pen.roundedRect( bounds.insetBy(0.5,0.5), [5,5,0,0] ).stroke;
 				
 				/*
 				if( eq[ \selected ] != -1 )
@@ -516,6 +543,9 @@ MasterEQ {
 					Pen.lineTo( (i+1)@val );
 					});
 				Pen.stroke;
+				
+				Pen.extrudedRect( bounds, [6,6,0,0], 1, inverse: true );
+				
 				
 		
 			

@@ -28,6 +28,8 @@ RoundNumberBox : RoundView {
 	var <charSelectColor, <charSelectIndex = -1;
 	
 	var <>actionOnlyOnChange = true;
+	
+	var <>logScale; // nil, 10, 2
 		
 	// *viewClass { ^SCUserView }
 	
@@ -75,11 +77,16 @@ RoundNumberBox : RoundView {
 		}
 			
 	getScale { |modifiers| 
+		var inc = 1;
+		switch( logScale,
+			10, { inc = (10**(value.abs.log10.floor)).max(0.001); },
+			2, { inc = (2**(value.abs.log2.floor)).max(0.0625);  }
+		);
 		^case
-			{ modifiers & 131072 == 131072 } { shift_scale }
-			{ modifiers & 262144 == 262144 } { ctrl_scale }
-			{ modifiers & 524288 == 524288 } { alt_scale }
-			{ 1 };
+			{ modifiers & 131072 == 131072 } { shift_scale * inc }
+			{ modifiers & 262144 == 262144 } { ctrl_scale * inc }
+			{ modifiers & 524288 == 524288 } { alt_scale * inc }
+			{ inc };
 	}
 
 	valueAction_ { arg val;
@@ -115,10 +122,10 @@ RoundNumberBox : RoundView {
 		if( value.respondsTo( 'clip' ) && { value.class != String } )
 			{ 
 			if( wrap )
-				{ if ( (clipLo != -inf) && { clipHi != inf } )
-					{ value = value.wrap( clipLo, clipHi ) }
+				{ if ( (clipLo != -inf) && { this.clipHi != inf } )
+					{ value = value.wrap( clipLo, this.clipHi ) }
 				}
-				{ value = value.clip(clipLo, clipHi); };
+				{ value = value.clip(clipLo, this.clipHi); };
 			};
 		}
 			
@@ -320,7 +327,7 @@ RoundNumberBox : RoundView {
 			direction = 1.0;
 				// horizontal or vertical scrolling:
 			//if ( (x - hit.x) < 0 or: { (y - hit.y) > 0 }) { direction = -1.0; };
-			
+			inc = this.getScale( modifiers );
 			angle = ((x@y) - hit).theta.wrap(-0.75pi, 1.25pi);
 			//angle = angle = ((x@y) - startHit).theta.wrap(-0.75pi, 1.25pi);
 			direction = 

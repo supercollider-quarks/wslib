@@ -1,45 +1,23 @@
-XYView : SCViewHolder {
+// wslib 2009-2011
+
+XYView : UserViewHolder {
 
 	var <x = 0, <y = 0;
-	var <>foreground, <>background;
+	var <foreground, <background;
 	var <>returnAfterMouseUp = true;
 	var mouseDownPoint, mouseDownValue;
 	var <radius;
 	var <>stepSize = 1;
-	
-	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction;
-	
-	var <>action;
-	
-	*new { arg parent, bounds;
-		^super.new.prInit( parent, bounds );
-	}
-	
+
+		
 	properties { ^[] }
 	
-	prInit { arg parent, bounds;
+	init { arg parent, bounds;
 		bounds = bounds.asRect;
 		foreground = Color.grey( 0.2 );
 		background = Color.white.alpha_(0.5);
 		radius = bounds.width.min(bounds.height) / 2;
-		this.view = GUI.userView.new( parent, bounds )
-			.canFocus_( true )
-			//.relativeOrigin_( true )
-			.drawFunc_({ arg ... args; this.prDraw( *args )})
-			.mouseDownAction_({ arg ... args; 
-				this.prMouseDown( *args );
-				mouseDownAction.value( *args );
-				action.value( this, x, y );
-				})
-			.mouseMoveAction_({ arg ... args; 
-				this.prMouseMove( *args );
-				mouseMoveAction.value( *args );
-				action.value( this, x, y );
-				})
-			.mouseUpAction_({ arg ... args; 
-				this.prMouseUp( *args );
-				mouseUpAction.value( *args );
-				});
+		this.canFocus_( false );
 	}
 	
 	value { ^(x@y) }
@@ -71,22 +49,23 @@ XYView : SCViewHolder {
 		this.doAction;
 	}
 	
-	doAction {
-		view.action.value( this );
-	}
+	foreground_ { |color| foreground = color; this.refresh; }
 	
-	prDraw { |vw| 
-		var relBounds = vw.drawBounds;
+	background_ { |color| background = color; this.refresh; }
+	
+	draw {
+		var relBounds = this.drawBounds;
 		var inset = 2;
 		var arrowRadius = (relBounds.width.min(relBounds.height) / 2) - inset;
 		
-		GUI.pen.color = background;
-		Pen.roundedRect( relBounds, radius).fill; 
+		Pen.roundedRect( relBounds, radius); 
 		
-		GUI.pen.use({
-			GUI.pen.translate( *relBounds.center.asArray );
+		background.penFill( relBounds );
+		
+		Pen.use({
+			Pen.translate( *relBounds.center.asArray );
 			
-			GUI.pen.color = foreground;
+			Pen.color = foreground;
 			
 			4.do({ |i|
 				if( switch( i,
@@ -94,8 +73,8 @@ XYView : SCViewHolder {
 					1, { y > 0  },
 					2, { x < 0  },
 					3, { y < 0  }), 
-					{ GUI.pen.width = 2.5 },
-					{ GUI.pen.width = 1 });
+					{ Pen.width = 2.5 },
+					{ Pen.width = 1 });
 
 				Pen.arrow( 0@0, Polar( arrowRadius, (i / 2) * pi ).asPoint, 3 );
 				Pen.stroke;
@@ -104,19 +83,21 @@ XYView : SCViewHolder {
 		 });
 	}
 	
-	prMouseDown { arg view, x, y, modifiers, buttonNumber, clickCount;
+	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
 		if( clickCount > 1 ) { this.value = 0@0 }; // reset
 		mouseDownPoint = (x@y);
 		mouseDownValue = this.value;
+		action.value( this, x, y );
 	}
 
 	
-	prMouseMove { arg view, x, y, modifiers, buttonNumber, clickCount;
+	mouseMove { arg x, y, modifiers, buttonNumber, clickCount;
 		this.value_( mouseDownValue + 
 			(((x@y) - mouseDownPoint) * stepSize) );
+		action.value( this, x, y );
 	}
 	
-	prMouseUp { arg view, x, y, modifiers, buttonNumber, clickCount;
+	mouseUp { arg x, y, modifiers, buttonNumber, clickCount;
 		if( returnAfterMouseUp ) { this.value_( mouseDownValue ); };
 	}
 }

@@ -54,7 +54,7 @@ ColPen {
 		
 	*asCode { |penClass, clear = true, inCmds, indent = 0|  // generate executable Pen code
 		var outstring = "";
-		penClass = ( penClass ? "GUI.pen" ).asString;
+		penClass = ( penClass ? "Pen" ).asString;
 		inCmds = inCmds ?? { this.collectUse };
 		inCmds.do({ |cmd|
 			if( cmd[0] == \use )
