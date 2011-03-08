@@ -68,7 +68,7 @@
 		(Score.program + " -N" + oscFilePath + (inputFilePath ? "_") + "\""++path++"\""
 		 	+ sampleRate + headerFormat + sampleFormat +
 			options.asOptionsString
-			+ "; rm" + oscFilePath + 
+			+ " > ~/Desktop/output.txt; rm" + oscFilePath + 
 				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
 		).unixCmd({ |...args| // result, pid
 			"done recording file: '%'\n".postf( path ); 
