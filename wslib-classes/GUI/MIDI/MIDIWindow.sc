@@ -59,11 +59,11 @@ MIDIWindow {
 		inIsOn.do({ |item, i|
 			if(item) {MIDIIn.connect(toPort, i) } });
 
-		window = Window("MIDIClient", Rect(326, 60, 200, 48), false);
+		window = Window("MIDIClient", Rect(299, 55, 200, 48), false);
 		window.addFlowLayout;
 		
 		
-		clientPopUp = PopUpMenu(window, Rect(10, 10, 192, 18))
+		clientPopUp = PopUpMenu(window, 192@18)
 			.items_( sourceNames )
 			.font_( font )
 			.value_(currentDevice)
@@ -85,7 +85,7 @@ MIDIWindow {
 				.font_( font );
 		*/
 			
-		clientConnectInButton = Button(window, Rect(10, 30, 61, 18))
+		clientConnectInButton = Button(window, 61@18)
 			.states_([[ "Connect" ],
 				[ "Connect", Color.black, Color.green.alpha_(0.2) ]])
 			.font_( font )
@@ -103,7 +103,7 @@ MIDIWindow {
 						clientPopUp.action.value(clientPopUp);}
 				});
 				
-		connectAllButton = Button(window, Rect(10, 30, 61, 18))
+		connectAllButton = Button(window, 61@18)
 			.states_([[ "All" ],
 				[ "All", Color.black, Color.green.alpha_(0.2) ]])
 			.font_( font )
@@ -137,7 +137,7 @@ MIDIWindow {
 		if(noMidi) {clientConnectInButton.enabled=false; clientPopUp.enabled=false; }
 			{ clientPopUp.action.value(clientPopUp);};
 			
-		Button(window, Rect(10, 60, 61, 18)).states_([["restart"]])
+		Button(window, 61@18).states_([["restart"]])
 			.font_( font )
 			.action_({ window.close; window = nil; { MIDIWindow.new }.defer(0.2) });
 			

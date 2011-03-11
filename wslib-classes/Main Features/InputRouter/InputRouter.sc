@@ -58,7 +58,8 @@ InputRouter {
 		});
 		settings = [_]!outputLabels.size;
 		inputLevels = settings.collect( _.collect( 0 ) );
-		path = this.settingsPath;
+		path = path ?? 
+			{ thisProcess.nowExecutingPath !? { thisProcess.nowExecutingPath.dirname; }; };
 		this.readSettings; // replace with settings from file if available
 		serverQuitFunc = {
 			synths = nil; 

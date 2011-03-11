@@ -11,6 +11,9 @@ x.nextN(100).plot2;
 x = Phrand( (..10), 9, inf ).asStream; // slowly changing
 x.nextN(100).plot2;
 
+// sound example:
+Pbind( \note, Phrand( (..12), 11, inf ), \dur, 1/8 ).play;
+
 // proof of concept
 x = Phrand( (..10), 1, inf ).asStream; 
 
@@ -40,7 +43,7 @@ Phrand : ListPattern {
 	}
 	
 	embedInStream { arg inval;
-		var item, size, history = [];
+		var item, size, history = [], histSizeStr = histSize.asStream;
 		var index;
 		repeats.value(inval).do({ arg i;
 			var count = 0;
@@ -49,7 +52,7 @@ Phrand : ListPattern {
 			while { history.includes( index ) && { count < 1000 }; } // prevent inf loop
 				{ index = size.rand; count = count + 1 };
 			item = list.at(index);
-			history = ([ index ] ++ history)[..histSize-1];
+			history = ([ index ] ++ history)[..(histSizeStr.next(inval))-1];
 			inval = item.embedInStream(inval);
 		});
 		^inval;

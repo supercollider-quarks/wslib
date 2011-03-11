@@ -1,3 +1,16 @@
+// wslib 2010-2011
+// cascaded butterworth filters
+// these filters provide linear slope of -12 to -60 dB per octave
+/*
+
+(
+6.collect({ |i| // order: 0-5
+	BLowCut.magResponse( 1000, 44100, 1000, i ).ampdb
+}).plot2( minval: -350, maxval: 10 ).superpose_(true);
+)
+
+*/
+
 BHiCut : BEQSuite {
 	
 	classvar <allRQs;
@@ -16,15 +29,15 @@ BHiCut : BEQSuite {
 		*/
 		
 		allRQs = [ 	// Tietze/Schenk, 1999 issue page 856, pdf page #882.
-			[],
-			[ 2 ].sqrt,					 		// 2nd order - 12dB per octave
-			[ 2 + 2.sqrt, 2 - 2.sqrt ].sqrt,	 		// 4 - 24dB
-			[ 2 + 3.sqrt, 2, 2 - 3.sqrt ].sqrt,		// 6 - 36dB
+			[],									// 0: bypass
+			[ 2 ].sqrt,					 		// 1: 2nd order - 12dB per octave
+			[ 2 + 2.sqrt, 2 - 2.sqrt ].sqrt,	 		// 2: 4th order - 24dB
+			[ 2 + 3.sqrt, 2, 2 - 3.sqrt ].sqrt,		// 3: 6th order - 36dB
 			[ 2 + (2 + 2.sqrt).sqrt, 
 			  2 + (2 - 2.sqrt).sqrt, 
 			  2 - (2 - 2.sqrt).sqrt, 
-			  2 - (2 + 2.sqrt).sqrt ].sqrt,           // 8 - 48dB
-			[1.9754, 1.7820, 2.sqrt, 0.9080, 0.3129 ]	// 10 - 60dB
+			  2 - (2 + 2.sqrt).sqrt ].sqrt,           // 4: 8th order - 48dB
+			[1.9754, 1.7820, 2.sqrt, 0.9080, 0.3129 ]	// 5: 10th order - 60dB
 		];
 		
 		
@@ -32,20 +45,47 @@ BHiCut : BEQSuite {
 	
 	*filterClass { ^BLowPass }
 	
-	*new1 { |rate = 'audio', in, freq, order=2| 
+	*new1 { |rate = 'audio', in, freq, order=2, maxOrder=5| 
+		if( order.isNumber ) {
+			// fixed order: less cpu
+			^this.newFixed( rate, in, freq, order );
+		} { 	// variable order
+			// assume control input
+			// use lower maxOrder for less cpu use
+			^this.newVari( rate, in, freq, order, maxOrder );
+		};
+	}
+	
+	*newFixed { |rate = 'audio', in, freq, order=2| // maxOrder doesn't apply here
 		var rqs, selector; 
-		rqs = allRQs.clipAt(order); 
+		rqs = allRQs.clipAt(order);
 		selector = this.methodSelectorForRate( rate );
 		rqs.do {Ê|rq|Êin = this.filterClass.perform( selector, in, freq, rq ) };
 		^in;
 	}
+	
+	*newVari { |rate = 'audio', in, freq, order=2, maxOrder=5|
+		var rqs, selector;
+		rqs = Select.kr(
+			order.clip(0, maxOrder), 
+			allRQs.collect(_.extend(maxOrder, 2.sqrt) ) 
+		);
+		selector = this.methodSelectorForRate( rate );
+		rqs.do { |rq, i| 
+			in = Select.ar( order > i, [ 
+				in, 
+				this.filterClass.perform( selector, in, freq, rq ) 
+			]);
+		};
+		^in;	
+	}
 
-	*ar { |in, freq, order=2|Ê
-		^this.new1( 'audio', in, freq, order );
+	*ar { |in, freq, order=2, maxOrder = 5|Ê
+		^this.new1( 'audio', in, freq, order, maxOrder );
 	}
 	
-	*kr { |in, freq, order=2|Ê
-		^this.new1( 'control', in, freq, order );
+	*kr { |in, freq, order=2, maxOrder = 5|Ê
+		^this.new1( 'control', in, freq, order, maxOrder );
 	}
 
 }
@@ -56,12 +96,14 @@ BLowCut : BHiCut {
 
 LRLowCut : BLowCut { // dual cascaded butterworth - use for crossovers
 	
-	*new1 { |rate = 'audio', in, freq, order=2| 
-		var rqs, selector; 
-		rqs = allRQs.clipAt(order); 
-		selector = this.methodSelectorForRate( rate );
-		2.do { rqs.do {Ê|rq|Êin = this.filterClass.perform( selector, in, freq, rq ) }; };
-		^in;
+	*ar { |in, freq, order=2, maxOrder=5|
+		in = this.new1( 'audio', in, freq, order, maxOrder );
+		^this.new1( 'audio', in, freq, order, maxOrder );
+	}
+	
+	*kr { |in, freq, order=2, maxOrder=5|
+		in = this.new1( 'control', in, freq, order, maxOrder );
+		^this.new1( 'control', in, freq, order, maxOrder );
 	}
 	
 }

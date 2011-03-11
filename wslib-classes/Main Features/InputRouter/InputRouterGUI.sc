@@ -12,7 +12,7 @@ InputRouterGUI {
 		var resize =0;
 		
 		if( parent.isNil ) {
-			bounds = bounds ? Rect( 300,128, 220, 4 + 
+			bounds = bounds ? Rect( 72,256, 220, 4 + 
 				(ir.settings.size * (rowHeight + 12)) +
 				(ir.settings.collect(_.size).sum * (rowHeight + 4)) +
 				24 

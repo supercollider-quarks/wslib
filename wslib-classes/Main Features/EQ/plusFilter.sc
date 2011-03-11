@@ -108,7 +108,7 @@
 + Filter {
 	*coeffs { ^this.subclassResponsibility( thisMethod ) }
 	
-	*magResponse { arg freqs, sr ... rest;
+	*magResponse { arg freqs = 1000, sr = 44100 ... rest;
 		var ma, ar, size;
 		
 		#ma, ar = this.coeffs( sr, *rest );

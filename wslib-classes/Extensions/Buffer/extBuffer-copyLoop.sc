@@ -8,15 +8,28 @@
 		numSamplesLeft = numSamples;
 		srcPointer = srcStartAt;
 		dstPointer = dstStartAt;
-		while { numSamplesLeft > 0 }
-			{ 	numSamplesThisTime = numSamplesLeft.min( numFrames - srcPointer );
-				this.copyData( buf, dstPointer, srcPointer, numSamplesThisTime );
-				//"copied: %,%,%\n".postf( dstPointer, srcPointer, numSamplesThisTime );
-				dstPointer =  dstPointer + numSamplesThisTime;
-				numSamplesLeft = numSamplesLeft - numSamplesThisTime;
-				srcPointer = 0;
-				
-			 };
-		}
-
+		while { numSamplesLeft > 0 } { 	
+			numSamplesThisTime = numSamplesLeft.min( numFrames - srcPointer );
+			this.copyData( buf, dstPointer, srcPointer, numSamplesThisTime );
+			//"copied: %,%,%\n".postf( dstPointer, srcPointer, numSamplesThisTime );
+			dstPointer =  dstPointer + numSamplesThisTime;
+			numSamplesLeft = numSamplesLeft - numSamplesThisTime;
+			srcPointer = 0;
+		};
 	}
+	
+	copyLoopTo { arg buf, dstStartAt = 0, srcStartAt = 0, numSamples = -1, action;
+		{	
+			this.server.sync( nil, 
+				this.server.makeBundle( false, {
+					this.copyLoop( buf, dstStartAt, srcStartAt, numSamples );
+				})
+			);
+			action.value( this );
+		}.forkIfNeeded;
+	}
+	
+	copyLoopFrom { arg buf, dstStartAt = 0, srcStartAt = 0, numSamples = -1, action;
+		buf.copyLoopTo( this, dstStartAt, srcStartAt, numSamples, action ); 
+	}
+}

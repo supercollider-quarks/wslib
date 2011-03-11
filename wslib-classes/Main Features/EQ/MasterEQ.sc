@@ -31,15 +31,16 @@ MasterEQ {
 		eq = ();
 		
 		window = Window.new( "MasterEQ (% ch)".format( numCha ), 
-				Rect(300, 100, 346, 260), true ).front; 
-		
-		//window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@10 );
+				Rect(299, 130, 305, 220), true ).front; 
+				
 		window.view.decorator = FlowLayout( window.view.bounds, 10@10, 4@0 );
 		
 		eq[ \uvw ] = UserView( window, 
-			window.view.bounds.insetBy(10,10).height_(180) ).resize_(5);
+			window.view.bounds.insetBy(10,10)
+				.height_(window.view.bounds.height - 80) 
+			).resize_(5);
 			
-		eq[ \font ] = Font( Font.defaultMonoFace, 9 );
+		eq[ \font ] = Font( Font.defaultSansFace, 10 );
 		
 		// eq[ \uvw ].relativeOrigin = false;
 		
@@ -86,7 +87,7 @@ MasterEQ {
 		eq[ \tvw_views ] = [];
 		
 		
-		StaticText( window, 10@10 ); window.view.decorator.nextLine;
+		window.view.decorator.shift(0,8);
 		
 		eq[ \tvw ].views.do({ |view,i| 
 			var vw_array = [];
@@ -141,6 +142,18 @@ MasterEQ {
 				});
 			};
 			
+		eq[ \bypass_button ] = RoundButton.new( window, 17@17 )
+				.extrude_( true ).border_(1) //.font_( eq[ \font ] )
+				.states_( [
+					[ 'power', Color.gray(0.2), Color.white(0.75).alpha_(0.25) ],
+					[ 'power', Color.red(0.8), Color.white(0.75).alpha_(0.25) ]] )
+				.value_(1)
+				.action_({ |bt| switch( bt.value,
+					1, { eq[ \play ].value },
+					0, { eq[ \free ].value });
+					})
+				.resize_(7);
+			
 		eq[ \pumenu ] = PopUpMenu.new( window, 100@16 )
 			.font_( eq[ \font ] ).canFocus_(false)
 			.resize_(7);
@@ -154,17 +167,15 @@ MasterEQ {
 		//eq[ \pumenu_check ].value;
 		eq[ \pu_buttons ] = [
 			RoundButton.new( window, 16@16 )
-				.radius_( 2 ).border_(1)
+				.border_(1)
 				.states_( [[ '+' ]] )
 				.resize_(7)
 				,
 			RoundButton.new( window,  16@16 )
-				.radius_( 2 ).border_(1)
+				.border_(1)
 				.resize_(7)
 				.states_( [[ '-' ]] ),	
 			];
-			
-		StaticText( window, 18@15  );
 		
 		eq[ \pu_filebuttons ] = [
 			RoundButton.new( window, 55@16 )
@@ -176,21 +187,6 @@ MasterEQ {
 				.states_( [[ "revert", Color.black, Color.green(0.75).alpha_(0.25) ]] )
 				.resize_(7)
 			];
-			
-			
-		StaticText( window, 18@15  );
-		
-		eq[ \bypass_button ] = RoundButton.new( window, 17@17 )
-				.extrude_( true ).border_(1) //.font_( eq[ \font ] )
-				.states_( [
-					[ 'power', Color.gray(0.2), Color.white(0.75).alpha_(0.25) ],
-					[ 'power', Color.red(0.8), Color.white(0.75).alpha_(0.25) ]] )
-				.value_(1)
-				.action_({ |bt| switch( bt.value,
-					1, { eq[ \play ].value },
-					0, { eq[ \free ].value });
-					})
-				.resize_(9);
 		
 		eq[ \pu_filebuttons ][0].action_({
 				File.use("eq-prefs.txt", "w",
