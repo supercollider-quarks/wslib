@@ -555,7 +555,7 @@ MasterEQ {
 		(
 		eq[ \playing ] = false;
 		eq[ \numChannels ] = numCha; /// 3 channels
-		eq[ \cmdPeriod ] = {
+		eq[ \doOnServerTree ] = {
 			if( eq[ \playing ] ) { { eq[ \play ].value; }.defer(0.05); };
 			};
 			
@@ -582,7 +582,7 @@ MasterEQ {
 			
 			
 			eq[ \playing ] = true;
-			CmdPeriod.add( eq );
+			ServerTree.add( eq );
 			}
 			};
 			
@@ -590,7 +590,7 @@ MasterEQ {
 			eq[ \group ].release;
 			eq[ \group ] = nil;
 			eq[ \playing ] = false;
-			CmdPeriod.remove( eq );
+			ServerTree.remove( eq );
 			};
 			
 		window.onClose = { if( eq[ \playing ] != false ) { eq[ \free ].value; }; };

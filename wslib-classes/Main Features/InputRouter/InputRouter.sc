@@ -14,9 +14,8 @@ InputRouter {
 	
 	var <meterLevels, <updateFreq = 10;
 	
-	var serverQuitFunc;
-	
 	var <>surviveCmdPeriod = true;
+	var <>surviveServerQuit = true;
 	
 	*new { |server, name, outputLabels|
 		^super.newCopyArgs( server, name, outputLabels ).init.addToAll;
@@ -61,26 +60,18 @@ InputRouter {
 		path = path ?? 
 			{ thisProcess.nowExecutingPath !? { thisProcess.nowExecutingPath.dirname; }; };
 		this.readSettings; // replace with settings from file if available
-		serverQuitFunc = {
-			synths = nil; 
-		 	isRunning = false;
-		 	this.changed( \stop );
-		 	CmdPeriod.remove( this ); 
-		};
 	}
 	
 	start { // calls stop internally -- also used for restart
 		this.stop;
 		this.prStart;	
 		this.changed( \start );
-		CmdPeriod.add( this );
+		ServerTree.add( this, server );
 	}
 	
-	stop { this.freeSynths; 
-		  isRunning = false;
-		  this.changed( \stop ); 
-		  CmdPeriod.remove( this ); 
-		  ServerQuit.remove( serverQuitFunc, server );
+	stop { 
+		this.freeSynths; 
+		this.prAfterStop;
 	}
 	
 	prStart {
@@ -90,19 +81,30 @@ InputRouter {
 			isRunning = true;
 			this.startSynths;
 			this.startResponders;
-			ServerQuit.add( serverQuitFunc, server );
+			ServerQuit.add( this, server );
 			});
 	}
 	
-	cmdPeriod { if( surviveCmdPeriod ) { 
-			{ this.prStart }.defer(0.01) 
+	prAfterStop {
+		synths = nil;
+		isRunning = false;
+		this.changed( \stop ); 
+		ServerTree.remove( this, server ); 
+		ServerQuit.remove( this, server );
+	}
+		
+	doOnServerTree { 
+		if( surviveCmdPeriod ) { 
+			this.prStart;
 		} { 
-			synths = nil; 
-		 	isRunning = false;
-		 	this.changed( \stop );
-		 	CmdPeriod.remove( this ); 
-		 	ServerQuit.remove( serverQuitFunc, server );
+			this.prAfterStop;
 		};
+	}
+	
+	doOnServerQuit {
+		if( surviveServerQuit.not ) {
+			this.prAfterStop;
+		 };
 	}
 	
 	startSynths {
