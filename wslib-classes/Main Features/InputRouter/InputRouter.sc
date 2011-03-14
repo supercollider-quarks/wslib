@@ -75,14 +75,19 @@ InputRouter {
 	}
 	
 	prStart {
-		server.waitForBoot({	
-			this.synthDef.send(server);
-			server.sync;
+		if( server.serverRunning ) {	
+			{
+				this.synthDef.send(server);
+				server.sync;
+				isRunning = true;
+				this.startSynths;
+				this.startResponders;
+				ServerQuit.add( this, server );
+			}.fork;
+		} { 
 			isRunning = true;
-			this.startSynths;
-			this.startResponders;
 			ServerQuit.add( this, server );
-			});
+		};
 	}
 	
 	prAfterStop {
