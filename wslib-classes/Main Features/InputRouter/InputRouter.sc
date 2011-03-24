@@ -11,11 +11,20 @@ InputRouter {
 	var <meter = true, <isRunning = false;
 	
 	var <settings, <inputLevels;
+
 	
 	var <meterLevels, <updateFreq = 10;
 	
 	var <>surviveCmdPeriod = true;
 	var <>surviveServerQuit = true;
+	
+	var <useFilters = true, <useCompression = true;
+	var <filterOrder = 2;
+	var <compressionKnee = 10;
+	var <compressionRelease = 0.25;
+	var <filterSettings, <compressionSettings;
+	
+	var <testSynths;
 	
 	*new { |server, name, outputLabels|
 		^super.newCopyArgs( server, name, outputLabels ).init.addToAll;
@@ -55,11 +64,19 @@ InputRouter {
 		inputLabels = server.options.numInputBusChannels.collect({ |i|
 			"AudioIn %".format( i+1 );
 		});
-		settings = [_]!outputLabels.size;
-		inputLevels = settings.collect( _.collect( 0 ) );
+		
+		this.initSettings;
+		
 		path = path ?? 
 			{ thisProcess.nowExecutingPath !? { thisProcess.nowExecutingPath.dirname; }; };
 		this.readSettings; // replace with settings from file if available
+	}
+	
+	initSettings {
+		settings = [_]!outputLabels.size;
+		inputLevels = settings.collect( _.collect( 0 ) );
+		filterSettings = settings.collect( _.collect( [ 0, 20, 0, 22050] ) );
+		compressionSettings = settings.collect( _.collect( [ -12, 0, 0.05 ] ) );
 	}
 	
 	start { // calls stop internally -- also used for restart
@@ -97,8 +114,99 @@ InputRouter {
 		ServerTree.remove( this, server ); 
 		ServerQuit.remove( this, server );
 	}
+	
+	useFilters_ { |bool|
+		bool = bool ? useFilters;
+		useFilters = bool;
+		if( isRunning ) { this.start; };
+		this.changed( \useFilters, bool );
+	}
+	
+	useCompression_ { |bool|
+		bool = bool ? useCompression;
+		useCompression = bool;
+		if( isRunning ) { this.start; };
+		this.changed( \useCompression, bool );
+	}
+	
+	filterOrder_ { |bool|
+		bool = bool ? 2;
+		if( filterOrder != bool ) {
+			filterOrder = bool;
+			if( isRunning ) { this.start; };
+		};
+		this.changed( \filterOrder, bool );
+	}
+	
+	compressionKnee_ { |knee|
+		knee = knee ? 10;
+		compressionKnee = knee;
+		if( isRunning ) {
+			synths.do(_.do( _.set( \knee, compressionKnee ) ) );
+		};
+		this.changed( \compressionKnee, compressionKnee );
+	}
+	
+	compressionRelease_ { |time|
+		time = time ? 0.25;
+		compressionRelease = time;
+		if( isRunning ) {
+			synths.do(_.do( _.set( \release, compressionRelease ) ) );
+		};
+		this.changed( \compressionRelease, compressionRelease );
+	}
+	
+	test { |input = 0, dB = -12, type = 'pink'| // 'pink', 'white', float (sine hz)
+		
+		if( isRunning.not ) {
+			"test: not running".warn;
+		} {
+			this.endTest( input );
+			testSynths = testSynths ?? { Order() };
+			testSynths[ input ] = 
+				switch ( type,
+					\pink, { 
+						 { Out.ar( 
+							 NumOutputBuses.ir + input,
+							 PinkNoise.ar( dB.dbamp )
+							) 
+						}.play( RootNode(server) );
+					},
+					\white, { 
+						 { Out.ar( 
+							 NumOutputBuses.ir + input,
+							 WhiteNoise.ar( dB.dbamp )
+							) 
+						}.play( RootNode(server) );
+					
+					},
+					{ 
+						 { Out.ar( 
+							 NumOutputBuses.ir + input,
+							 SinOsc.ar( type, 0, dB.dbamp )
+							) 
+						}.play( RootNode(server) );
+					
+					}
+				);
+					
+			} 
+	}
+	
+	endTest { |input|
+		if( input.isNil ) {
+			testSynths.do(_.free); 
+			testSynths = nil;
+		} {
+			if( testSynths.notNil && { testSynths[ input ].notNil } ) {
+				testSynths[ input ].free; 
+				testSynths[ input ] = nil;
+			};
+		};
+	}
 		
 	doOnServerTree { 
+		testSynths = nil;
 		if( surviveCmdPeriod ) { 
 			this.prStart;
 		} { 
@@ -129,6 +237,17 @@ InputRouter {
 				 			\outOffset, outOffset, 
 				 			\private, private.binaryValue,
 				 			
+				 			// filter
+				 			\lowCut, filterSettings[i][ii][0],
+				 			\lowFreq, filterSettings[i][ii][1],
+				 			\hiCut, filterSettings[i][ii][2],
+				 			\hiFreq, filterSettings[i][ii][3],
+				 			
+				 			// compression
+				 			\thresh, compressionSettings[i][ii][0],
+				 			\amt, compressionSettings[i][ii][1],
+				 			\attack, compressionSettings[i][ii][2],
+				 			
 				 		 	] ); 
 				});
 			});
@@ -157,8 +276,8 @@ InputRouter {
 		});
 	}
 	
-	setSynth { |output = 0, index = 0, key = \gain, value = 0|
-		synths !? { synths[output][index].set( key, value ); };
+	setSynth { |output = 0, index = 0 ...pairs|
+		synths !? { synths[output][index].set( *pairs ); };
 	}
 	
 	setAllSynths { |key = \private, val = 1|
@@ -170,6 +289,46 @@ InputRouter {
 		this.setSynth( output, index, \gain, dB.dbamp );
 		inputLevels[ output ][ index ] = dB;
 		this.changed( \level, output, index, dB );
+	}
+	
+	setFilter { |output = 0, index = 0, lowCut, lowFreq, hiCut, hiFreq|
+		var current;
+		
+		current = filterSettings[ output ][ index ];
+		
+		lowCut = (lowCut ? current[0]).binaryValue;
+		lowFreq = lowFreq ? current[1];
+		hiCut = (hiCut ? current[2]).binaryValue;
+		hiFreq = hiFreq ? current[3];
+		
+		this.setSynth( output, index, 
+			\lowCut, lowCut,
+			\lowFreq, lowFreq,
+			\hiCut, hiCut,
+			\hiFreq, hiFreq 
+		); 
+		
+		filterSettings[ output ][ index ] = [ lowCut, lowFreq, hiCut, hiFreq ];
+		this.changed( \filter, output, index,  lowCut, lowFreq, hiCut, hiFreq );
+	}
+	
+	setCompression { |output = 0, index = 0, thresh, amt, attack|
+		var current;
+		
+		current = compressionSettings[ output ][ index ];
+		
+		thresh = thresh ? current[0];
+		amt = amt ? current[1];
+		attack = attack ? current[2];
+		
+		this.setSynth( output, index, 
+			\thresh, thresh,
+			\amt, amt,
+			\attack, attack
+		); 
+		
+		compressionSettings[ output ][ index ] = [ thresh, amt, attack ];
+		this.changed( \compression, output, index, thresh, amt, attack );
 	}
 	
 	setInput { |output = 0, index = 0, in = 0|
@@ -204,6 +363,18 @@ InputRouter {
 			});
 		});
 		
+		filterSettings = settings.collect({ |item, i|
+			item.collect({ |iitem, ii|
+				filterSettings[i][ii] ? [ 0, 20, 0, 22050 ];
+			});
+		});
+		
+		compressionSettings = settings.collect({ |item, i|
+			item.collect({ |iitem, ii|
+				compressionSettings[i][ii] ? [ -12, 0, 0.05 ];
+			});
+		});
+		
 		this.changed( \settings, settings );
 		if( isRunning ) { this.start; }
 	}
@@ -218,6 +389,8 @@ InputRouter {
 		if( settings[ output ].size >= (i+1) ) { 
 			settings[ output ].removeAt( i );
 			inputLevels[ output ].removeAt( i );
+			filterSettings[ output ].removeAt( i );
+			compressionSettings[ output ].removeAt( i );
 			this.settings = settings;
 		} { 
 			"%:removeInput : index out of range".warn;
@@ -248,7 +421,29 @@ InputRouter {
 		^SynthDef( this.synthDefName, { |in = 0, out = 0, amp = 1, gain = 1, 
 				private = 1, outOffset = 0, inOffset = 0, updateFreq = 10, meter = 1|
 			var input, imp;
-			input = SoundIn.ar( in + inOffset ) * amp * gain;
+			input = SoundIn.ar( in + inOffset );
+			
+			if( useFilters == true ) {
+				
+				input = if( \lowCut.kr( 0 ),
+					BLowCut.ar( input, \lowFreq.kr( 20 ).lag(1).clip(20,22050), filterOrder ),
+					input );
+					
+				input = if( \hiCut.kr( 0 ), 
+					BHiCut.ar( input, \hiFreq.kr( 22050 ).lag(1).clip(20,22050), filterOrder ),
+					input );
+					
+			};
+			
+			if( useCompression == true ) {
+				input = SoftKneeCompressor.ar( input, input, 
+					\thresh.kr( -12 ), (1 - \amt.kr(0)).squared, \knee.kr( compressionKnee ), 
+					\attack.kr(0), \release.kr( compressionRelease )
+				);	
+			};
+			
+			
+			input = input * amp * gain;
 			
 			imp = Impulse.ar(updateFreq) * meter;
 			
@@ -265,7 +460,7 @@ InputRouter {
 	
 	settingsPath { ^( path ?? { 
 			(thisProcess.nowExecutingPath !? { thisProcess.nowExecutingPath.dirname; }) ?
-			defaultPath } ) +/+ 
+			defaultPath } ).standardizePath +/+ 
 		"%_%_prefs.txt".format( name, this.class.name );
 	}
 
@@ -283,25 +478,45 @@ InputRouter {
 					evt = f.readAllString.interpret;
 					settings = evt[ \settings ];
 					inputLabels = evt[ \inputLabels ];
+					
 					inputLevels = evt[ \inputLevels ] ??  
 						{ settings.collect( _.collect( 0 ) ) };
+						
+					compressionSettings = evt[ \compressionSettings ] ??  
+						{ settings.collect( _.collect( [ -12, 0, 0.05 ] ) ) };
+						
+					filterSettings = evt[ \filterSettings ] ??  
+						{ settings.collect( _.collect( [ 0, 20, 0, 22050 ] ) ) };
+						
+					useCompression = evt[ \useCompression ] ? useCompression;
+					useFilters = evt[ \useFilters ] ? useFilters;
+					
+					filterOrder = evt[ \filterOrder ] ? filterOrder;
+					compressionKnee =  evt[ \compressionKnee ] ? compressionKnee;
+					compressionRelease = evt[ \compressionRelease ] ? compressionRelease;
+					
 					this.settings = settings;
 			});
 		};	
 	}
 	
-	writeSettings {
-		path = path ?? 
-			{ thisProcess.nowExecutingPath !? { thisProcess.nowExecutingPath.dirname; }; };
-		path.makeDir;
+	writeSettings {	
+		this.settingsPath.dirname.makeDir;
 		File.use( this.settingsPath,
 		"w",
 		{ |f|
 			f.putString( ( 
 					settings: settings, 
 					inputLabels: inputLabels,
-					inputLevels: inputLevels
-					 ).asCompileString );
+					inputLevels: inputLevels,
+					compressionSettings: compressionSettings,
+					filterSettings: filterSettings,
+					useCompression: useCompression,
+					useFilters: useFilters,
+					filterOrder: filterOrder,
+					compressionKnee: compressionKnee,
+					compressionRelease: compressionRelease
+				).asCompileString );
 		});
 	}
 	
