@@ -226,7 +226,7 @@ InputRouter {
 				 	Synth.before( server, this.synthDefName, 
 				 		[	// per channel:
 				 			\in, iitem,
-				 			\out, i + outOffset,  
+				 			\out, i,  
 				 			\amp, (1/item.size),
 				 			\gain, (inputLevels[i][ii] ? 0).dbamp,
 				 			
@@ -332,7 +332,7 @@ InputRouter {
 	}
 	
 	setInput { |output = 0, index = 0, in = 0|
-		this.setSynth( output, index, \in, in + inOffset );
+		this.setSynth( output, index, \in, in );
 		settings[ output ][ index ] = in;
 		this.changed( \input, output, index, in );
 	}
