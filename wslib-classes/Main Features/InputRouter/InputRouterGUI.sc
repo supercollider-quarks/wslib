@@ -11,7 +11,7 @@ InputRouterGUI {
 	init { |parent, bounds, ir|
 		var resize =0;
 		
-		if( parent.isNil ) {
+		if( parent.isNil or: parent.isString ) {
 			bounds = bounds ? Rect( 72,256, 220, 4 + 
 				(ir.settings.size * (rowHeight + 12)) +
 				//(ir.settings.collect(_.size).sum * (rowHeight + 4)) +
@@ -21,7 +21,7 @@ InputRouterGUI {
 			bounds = bounds ? parent.asView.bounds;
 		};
 	
-		view = SmoothScrollView( parent ? "InputRouter %".format(ir.name), bounds );
+		view = SmoothScrollView( parent ? "% InputRouter".format(ir.name), bounds );
 		view.composite.bounds = view.composite.bounds.resizeBy(0, -24);
 		view.hasHorizontalScroller = false;
 		view.asView.addFlowLayout( 2@0, 4@4 );
@@ -194,7 +194,7 @@ InputRouterGUI {
 			views = inputRouter.settings.collect({ |setting, i|
 				var el, inWidth, mViewHeight;
 				el = ();
-				el.view = ExpandView( view, 
+				el.view = ExpandView( view.asView, 
 					width @ ( ( setting.size * (nRows * (rowHeight + 4)) ) + rowHeight + 8 ),
 					width @ ( rowHeight + 8 ), 
 					collapsed[i] );

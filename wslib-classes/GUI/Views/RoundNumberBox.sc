@@ -73,7 +73,7 @@ RoundNumberBox : RoundView {
 		stringColor = normalColor;
 		formatFunc = defaultFormatFunc;
 		interpretFunc = defaultInterpretFunc;
-		font = Font( defaultFontFace, defaultFontSize );
+		font = Font( defaultFontFace ? "Helvetica", defaultFontSize );
 		}
 			
 	getScale { |modifiers| 
