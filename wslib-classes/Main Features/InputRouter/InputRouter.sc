@@ -54,6 +54,10 @@ InputRouter {
 		all = nil;
 	}
 	
+	remove {
+		this.class.remove(this.name);
+	}
+	
 	gui { |parent, bounds| ^InputRouterGUI( this, parent, bounds ) }
 	
 	init { 
@@ -113,6 +117,11 @@ InputRouter {
 		this.changed( \stop ); 
 		ServerTree.remove( this, server ); 
 		ServerQuit.remove( this, server );
+	}
+	
+	inputLabels_ { |array|
+		inputLabels = array;
+		this.changed( \inputLabels );
 	}
 	
 	useFilters_ { |bool|

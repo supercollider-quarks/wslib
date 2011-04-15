@@ -75,6 +75,7 @@ InputRouterGUI {
 				\filter, { this.setFilterViews( *args ); },
 				\compression, { this.setCompressionViews( *args ); },
 				
+				\inputLabels, { this.deferRebuildViews; },
 				\settings, { this.deferRebuildViews; },
 				\useCompression, { this.deferRebuildViews; },
 				\useFilters, { this.deferRebuildViews; },
