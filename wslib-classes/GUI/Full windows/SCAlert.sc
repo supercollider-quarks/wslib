@@ -106,13 +106,13 @@ SCAlert {
 			
 		if( modal && { GUI.id == \cocoa } )		
 			{ window = SCModalWindow( "Alert", 
-				Rect.aboutPoint( SCWindow.screenBounds.center, 
+				Rect.aboutPoint( Window.screenBounds.center, 
 					((buttons.size * 42) + 2).max( 160 ), 
 						((26 + (string.occurrencesOf( $\n ) * 10) ) + 4).max( 52 )
 						), false, border ? true );
 			} {
 			window = Window( "Alert", 
-				Rect.aboutPoint( SCWindow.screenBounds.center, 
+				Rect.aboutPoint( Window.screenBounds.center, 
 					((buttons.size * 42) + 2).max( 160 ), 
 						((26 + (string.occurrencesOf( $\n ) * 10) ) + 4).max( 52 )
 						), false, border ? true );
@@ -205,7 +205,7 @@ SCRequestString {
 		
 		if( modal )
 		{	window = SCModalWindow( question, 
-				Rect.aboutPoint( SCWindow.screenBounds.center, 175, 
+				Rect.aboutPoint( Window.screenBounds.center, 175, 
 				27 + ( 6 * extraLines ) ), false );
 		}
 		{	window = Window( question, 
