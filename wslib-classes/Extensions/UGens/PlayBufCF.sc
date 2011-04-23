@@ -1,6 +1,52 @@
 PlayBufCF {
 	// dual play buf which crosses from 1 to the other at trigger
+			
+	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, 
+			lag = 0.1, n = 2; // alternative for safemode
+			
+		var index, method = \ar, on;
 		
+		switch ( trigger.rate,
+			 \audio, {
+				index = Stepper.ar( trigger, 0, 0, n-1 );
+			 },
+			 \control, { 
+				index = Stepper.kr( trigger, 0, 0, n-1 );  
+				method = \kr;
+			},
+			\demand, {
+				trigger = TDuty.ar( trigger ); // audio rate precision for demand ugens
+				index = Stepper.ar( trigger, 0, 0, n-1 ); 
+			},
+			{ ^PlayBuf.ar( numChannels, bufnum, rate, trigger, startPos, loop ); } // bypass
+		);
+		
+		on = n.collect({ |i|
+			//on = (index >= i) * (index <= i); // more optimized way?
+			InRange.perform( method, index, i-0.5, i+0.5 );
+		});
+		
+		if( rate.rate == \demand ) {
+			rate = on.collect({ |on, i|
+				Demand.perform( method, on, 0, rate );
+			});
+		} {
+			rate = rate.asCollection;
+		};
+		
+		if( startPos.rate == \demand ) { 
+			startPos = Demand.perform( method, trigger, 0, startPos ) 
+		};
+		
+		^Mix(	
+			on.collect({ |on, i| 
+				PlayBuf.ar( numChannels, bufnum, rate.wrapAt(i), on, startPos, loop )
+					* Slew.perform( method, on, 1/lag, 1/lag ).sqrt
+			})
+		);
+		
+	}
+	
 	*arOld { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, 
 			lag = 0.1, safeMode = true;
 		var ffp, slew;
@@ -39,40 +85,7 @@ PlayBufCF {
 			PlayBuf.ar( numChannels, bufnum, rate.wrapAt(0), ffp, startPos, loop ),
 			slew );
 		}
-		
-	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, 
-			lag = 0.1, n = 2; // alternative for safemode
-			
-		var index, method = \ar;
-		
-		switch ( trigger.rate,
-			 \audio, {
-				index = Stepper.ar( trigger, 0, 0, n-1 );
-			 },
-			 \control, { 
-				index = Stepper.kr( trigger, 0, 0, n-1 );  
-				method = \kr;
-			},
-			\demand, {
-				trigger = TDuty.ar( trigger );
-				index = Stepper.ar( trigger, 0, 0, n-1 ); 
-			},
-			{ ^PlayBuf.ar( numChannels, bufnum, rate, trigger, startPos, loop ); } // bypass
-		);
-		
-		rate = rate.asCollection;
-		if( startPos.rate == \demand ) { 
-			startPos = Demand.perform( method, trigger, 0, startPos ) 
-		};
-		
-		^Mix({ |i| 
-				var on;
-				on = (index >= i) * (index <= i); // more optimized way?
-				PlayBuf.ar( numChannels, bufnum, rate.wrapAt(1), on, startPos, loop )
-					* Slew.perform( method, on, 1/lag, 1/lag ).sqrt
-		}!n);
-		
-	}
+
 		
 }
 	

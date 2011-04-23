@@ -10,30 +10,30 @@ SCAlert {
 	
 	string_ {  |newString = ""|
 		string = newString;
-		if( window.notNil && { window.dataptr.notNil } )
+		if( window.notNil && { window.isClosed.not } )
 			{ stringView.string = string };
 		}
 		
 	iconName_ { |newIconName = \warning|
 		iconName = newIconName.asSymbol;
-		if( window.notNil && { window.dataptr.notNil } )
+		if( window.notNil && { window.isClosed.not } )
 			{ iconView.refresh; };
 		}
 		
 	color_ { |newColor|
 		color = newColor ? Color.red.alpha_(0.75);
-		if( window.notNil && { window.dataptr.notNil } )
+		if( window.notNil && { window.isClosed.not } )
 			{ window.refresh; };
 		}
 		
 	background { ^window.view.background }
 	background_ { |aColor|
-		if( window.notNil && { window.dataptr.notNil } )
+		if( window.notNil && { window.isClosed.not } )
 			{  window.view.background = aColor };
 		}
 		
 	hit { |index| // focussed or last if no index provided
-		if( window.notNil && { window.dataptr.notNil } )
+		if( window.notNil && { window.isClosed.not } )
 			{ index = index ?? { buttonViews.detectIndex({ |bt| bt.hasFocus }) ?
 					 ( buttonViews.size - 1 ) }; 
 				 buttonViews[ index ] !? 
@@ -125,12 +125,12 @@ SCAlert {
 		window.alpha_( 0.95 );
 		window.drawHook_( { |w|
 			Pen.width = 2;
-			color.set;
+			Pen.color = color;
 			Pen.strokeRect( w.bounds.left_(0).top_(0).insetBy(1, 1) );
 			} );
 		
 		iconView = UserView( window, Rect( 4,4, 72, 72) ).drawFunc_({ |vw|
-			color.set;
+			Pen.color = color;
 			DrawIcon.symbolArgs( iconName, vw.bounds );
 			}).canFocus_( false );
 		
@@ -150,7 +150,7 @@ SCAlert {
 					.action_( { |button|
 						if( button.enabled )
 							{ actions.wrapAt(i).value( button, this );
-								if( buttonClosesWindow && { window.dataptr.notNil } )
+								if( buttonClosesWindow && { window.isClosed.not } )
 									{ window.close; };
 								};
 						} );
