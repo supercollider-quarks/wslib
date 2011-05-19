@@ -12,7 +12,10 @@ Synth_ID : Synth {
 		addNum = addActions[addAction];
 		synth = Synth.basicNew(defName, server, nodeID);
 		if((addNum < 2), { synth.group = inTarget; }, { synth.group = inTarget.group; });
-		server.sendMsg(9, defName, synth.nodeID, addNum, inTarget.nodeID, *args); //"s_new"
+		server.sendMsg(9, //"s_new"
+			defName, synth.nodeID, addNum, inTarget.nodeID,
+			*(args.asOSCArgArray)
+		);
 		^synth
 		}
 		
@@ -23,8 +26,8 @@ Synth_ID : Synth {
 		addNum = addActions[addAction];
 		synth = Synth.basicNew(defName, server, nodeID);
 		if((addNum < 2), { synth.group = inTarget; }, { synth.group = inTarget.group; });
-		server.sendBundle(nil, [9, defName, synth.nodeID, addNum, inTarget.nodeID] ++ args, 
-			[12, synth.nodeID, 0]); // "s_new" + "/n_run"
+		server.sendBundle(nil, [9, defName, synth.nodeID, addNum, inTarget.nodeID] ++
+			args.asOSCArgArray, [12, synth.nodeID, 0]); // "s_new" + "/n_run"
 		^synth
 	}
 		

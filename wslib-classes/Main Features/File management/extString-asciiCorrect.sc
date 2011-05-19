@@ -9,7 +9,7 @@
 + String {
 	asciiCorrect { var str, table;
 		str = this;
-		table =  [				 
+		table =  #[				 
 			[ [ 194, 160 ], 202 ],
 			[ [ 194, 161 ], 193 ],
 			[ [ 194, 162 ], 162 ],

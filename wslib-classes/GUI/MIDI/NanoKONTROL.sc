@@ -6,6 +6,7 @@ NanoKONTROL {
 	classvar <window, <tabbedView;
 	classvar <allViews;
 	classvar <>inPort = 0;
+	classvar <>allScenesActive = true; // if controllers double in scenes, only react to current
 	
 	*new { |height = 120, initMIDI = true|
 		if( window.isNil or: { window.dataptr.isNil } )
@@ -38,7 +39,14 @@ NanoKONTROL {
 			{ ^allViews.collect( _[9..17] ) };
 		}
 		
-	*setScene { |scene = 0| tabbedView.focus( scene ); }
+	*setScene { |scene = 0| 
+		tabbedView.focus( scene );
+		this.changed( \scene, scene );
+	}
+	
+	*currentScene { ^tabbedView.activeTab }
+	
+	*isInScene { |scene| ^this.currentScene == scene }
 		
 	*makeWindow {	 |height = 120|
 		//var tabbedView;
@@ -52,7 +60,7 @@ NanoKONTROL {
 		// enable live scene switching
 		MIDIIn.sysex = { |port, msg| if( msg[..8] == 
 			Int8Array[ -16, 66, 64, 0, 1, 4, 0, 95, 79] )
-				{ { tabbedView.focus( msg[9] ) }.defer; };
+				{ { this.setScene( msg[9] ) }.defer; };
 				};
 		
 		window.onClose_({ MIDIIn.sysex = nil });
@@ -150,11 +158,12 @@ NanoKONTROL {
 			
 		resp = CCResponder( { |port, chan, cc, val| 
 			var view;
-			view =  allViews[ allControllers.detectIndex({ |item| item == [chan, cc] }) ]; 
+			if( allScenesActive or: { this.isInScene( scene-1 ) } ) {				view =  allViews[ allControllers.detectIndex({ |item| item == [chan, cc] }) ]; 
 				if( view.class == SCKnob )
 					{ { view.valueAction = val/127; }.defer; }
 					{ view.valueAction = val/127; };
-			}, inPort, usedChannels, usedControllers );
+			};
+		}, inPort, usedChannels, usedControllers );
 				 
 		view.onClose_({ resp.remove });
 		

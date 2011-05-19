@@ -2,12 +2,12 @@
 // shortcut for starting a Synth using bundled messaging
 
 + Synth {
-	*sched { arg time = 0.2, defName, args, target, addAction=\addToHead;
+	*sched { arg time = 0.2, defName, args, target, addAction=\addToHead, nodeID;
 		var synth, server, addNum, inTarget;
 		inTarget = target.asTarget;
 		server = inTarget.server;
 		addNum = addActions[addAction];
-		synth = this.basicNew(defName, server);
+		synth = this.basicNew(defName, server, nodeID);
 
 		if((addNum < 2), { synth.group = inTarget; }, { synth.group = inTarget.group; });
 
@@ -16,12 +16,12 @@
 		^synth
 		}
 	
-	*newMsg { arg defName, args, target, addAction=\addToHead;
+	*newMsg { arg defName, args, target, addAction=\addToHead, nodeID;
 		var synth, server, addNum, inTarget;
 		inTarget = target.asTarget;
 		server = inTarget.server;
 		addNum = addActions[addAction];
-		synth = this.basicNew(defName, server);
+		synth = this.basicNew(defName, server, nodeID);
 
 		if((addNum < 2), { synth.group = inTarget; }, { synth.group = inTarget.group; });
 

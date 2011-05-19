@@ -26,6 +26,6 @@ VirtualMics {
 		delays = distances / Number.speedOfSound;
 		limit = dbLimit.dbamp;
 		amps = ( limit.dbamp / distances.pow( dbFactor / -6 ) ).min( limit );
-		^DelayC.ar( in, 32768 / 44100, delays ) * amps;
+		^DelayC.ar( in, 32768 / SampleRate.ir, delays ) * amps;
 	}
 }
