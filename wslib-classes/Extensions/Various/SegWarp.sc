@@ -160,6 +160,7 @@ SegWarp : Warp {
 
 + Env {
 	asWarp { ^SegWarp( this ); }
+	asSpec { ^ControlSpec(0,1,this) }
 	}
 
 + SequenceableCollection {

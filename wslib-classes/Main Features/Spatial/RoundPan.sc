@@ -10,7 +10,7 @@ RoundPan {
 		sourcePos = Polar( distance * speakerRadius, pos * pi ).asPoint;
 		
 		panAz = PanAz.kr( numChans, 1, pos );
-		panAz = LinXFade2.kr(  1.dup(4), panAz, panAzAmt.linlin(0,1,-1,1) );
+		panAz = LinXFade2.kr(  1.dup(numChans), panAz, panAzAmt.linlin(0,1,-1,1) );
 		virtMic = VirtualMics.ar( mics, in, sourcePos, dbFactor );
 		^virtMic * panAz * level;
 		

@@ -26,13 +26,26 @@ PlayBufCF {
 			InRange.perform( method, index, i-0.5, i+0.5 );
 		});
 		
-		if( rate.rate == \demand ) {
-			rate = on.collect({ |on, i|
-				Demand.perform( method, on, 0, rate );
-			});
-		} {
-			rate = rate.asCollection;
-		};
+		switch ( rate.rate,
+			\demand,  {
+				rate = on.collect({ |on, i|
+					Demand.perform( method, on, 0, rate );
+				});
+			}, 
+			\control, {
+				rate = on.collect({ |on, i|
+					Gate.kr( rate, on ); // hold rate at crossfade
+				});
+			}, 
+			\audio, {
+				rate = on.collect({ |on, i|
+					Gate.ar( rate, on );
+				});
+			}, 
+			{
+				rate = rate.asCollection;
+			}
+		);
 		
 		if( startPos.rate == \demand ) { 
 			startPos = Demand.perform( method, trigger, 0, startPos ) 
@@ -47,6 +60,7 @@ PlayBufCF {
 		
 	}
 	
+	// old version (in case it works better)
 	*arOld { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0, 
 			lag = 0.1, safeMode = true;
 		var ffp, slew;
@@ -90,9 +104,32 @@ PlayBufCF {
 }
 	
 PlayBufAlt {
-	// switches from forward to backward and vv playback when triggered
-	// includes crossfade to prevent clicks
-	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 1.0, lag = 0.05;
+	
+	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 1.0, lag = 0.05, 
+			n = 2;
+		var ffp, phase;
+		
+		if( trigger.rate == \demand ) { 
+			trigger = TDuty.ar( trigger ); // audio rate precision for demand ugens
+		};
+		
+		if( rate.rate == \demand ) {
+			rate = Demand.perform( 
+				UGen.methodSelectorForRate(trigger.rate),
+				trigger, 0, rate );
+		};
+		
+		ffp = ToggleFF.perform( UGen.methodSelectorForRate( trigger.rate ), trigger )
+			.linlin(0,1,-1,1);
+			
+		phase = Phasor.ar(0, rate * ffp, 0, BufFrames.kr(bufnum));
+		
+		^PlayBufCF.ar( numChannels, bufnum, rate * ffp, trigger, phase + startPos, loop, lag, n );
+	}
+	
+	
+	// Old version (in case it works better)
+	*arOld { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 1.0, lag = 0.05;
 		if( trigger.size < 2 )
 			{ ^this.ar1( numChannels, bufnum, rate, trigger, startPos, loop, lag ); }
 			{ ^trigger.collect({ |item,i|
@@ -107,23 +144,6 @@ PlayBufAlt {
 				})
 			}
 		}
-	
-	/*
-	*ar1 { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 1.0, lag = 0.05;
-		var ffp, x;
-		ffp = ToggleFF.ar( trigger ).linlin(0,1,-1,1);
-		x = Phasor.ar(0, rate * ffp, 0, BufFrames.kr(bufnum));
-		ffp = ffp * [1,-1];
-		^[ 
-		PlayBuf.ar( numChannels, bufnum, rate * 1, ffp[0], startPos + Latch.ar( x, ffp[0] ), loop ) 
-			* Lag.ar( ffp[0].max(0), lag ),
-		PlayBuf.ar( numChannels, bufnum, rate * -1, ffp[1], startPos + Latch.ar( x, ffp[1] ), loop ) 
-			* Lag.ar( ffp[1].max(0), lag  )
-		].sum;
-			
-		}
-	*/
-	
 	
 	*ar1 { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 1.0, lag = 0.05;
 		var ffp, x;
