@@ -130,6 +130,8 @@ EZSmoothRanger : EZRanger {
 		
 	setSliderProperty { |key ...value| rangeSlider.perform( (key ++ "_").asSymbol, *value ); }
 	
+	doAction { this.action.value(this); } // why not just action.value(this); ?
+	
 	bounds { ^view.bounds }
 	bounds_ { |bounds| view.bounds = bounds }
 	
