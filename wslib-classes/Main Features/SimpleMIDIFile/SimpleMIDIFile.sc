@@ -394,9 +394,10 @@ SimpleMIDIFile  {
 			var lastTime = 0;
 			track.sort({ |a, b| a[0] <= b[0] }); //sort to absolute times (just in case.. )
 			track.collect({ |event|
-				var out;
-				out = [ ( event[0] - lastTime ).round(0) ] ++ event[1..];
-				lastTime = event[0];
+				var out, now;
+				now = event[0].round(1); // round absolute times to prevent drift
+				out = [ now - lastTime ] ++ event[1..];
+				lastTime = now;
 				out;
 				});
 			});
