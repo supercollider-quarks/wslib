@@ -645,6 +645,9 @@ SimpleMIDIFile  {
 				noteOff = noteOffs.detect({ |subitem|
 					[ subitem[0], subitem[3], subitem[4] ] == note });
 				noteOffs.remove( noteOff );
+				if( noteOff.isNil ) { // infinite sustain if no noteOff found
+					noteOff = [ nil, inf, 64 ];
+				};
 				item ++ [ noteOff[1] - item[1], noteOff.last ]; // add sustain and upVelo
 				});
 			}
