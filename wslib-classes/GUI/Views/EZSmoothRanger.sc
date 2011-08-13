@@ -1,5 +1,7 @@
 EZSmoothRanger : EZRanger {
 	
+		var action;
+	
 		sliderClass { ^SmoothRangeSlider }
 		numberBoxClass { ^SmoothNumberBox }
 		staticTextClass { ^StaticText }
@@ -130,7 +132,10 @@ EZSmoothRanger : EZRanger {
 		
 	setSliderProperty { |key ...value| rangeSlider.perform( (key ++ "_").asSymbol, *value ); }
 	
-	doAction { this.action.value(this); } // why not just action.value(this); ?
+// 	doAction { action.value(this); } // why not just action.value(this); ?
+
+	action { ^action }
+	action_ { |func| action = func }
 	
 	bounds { ^view.bounds }
 	bounds_ { |bounds| view.bounds = bounds }

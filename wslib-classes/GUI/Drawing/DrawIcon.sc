@@ -34,12 +34,12 @@ DrawIcon {
 				radius = (rect.width.min( rect.height ) / 4) * size;
 				center = rect.center + Polar( radius * (2/9), angle );
 				backCenter =  center + Polar( radius, angle + pi ).asPoint;
-				GUI.pen.moveTo( backCenter );
-				GUI.pen.lineTo( backCenter + Polar( radius * width, angle + 1.5pi ).asPoint );
-				GUI.pen.lineTo( center + Polar( radius, angle ).asPoint );
-				GUI.pen.lineTo( backCenter + Polar( radius * width, angle + 0.5pi ).asPoint );
-				GUI.pen.lineTo( backCenter );
-				GUI.pen.perform( mode );
+				Pen.moveTo( backCenter );
+				Pen.lineTo( backCenter + Polar( radius * width, angle + 1.5pi ).asPoint );
+				Pen.lineTo( center + Polar( radius, angle ).asPoint );
+				Pen.lineTo( backCenter + Polar( radius * width, angle + 0.5pi ).asPoint );
+				Pen.lineTo( backCenter );
+				Pen.perform( mode );
 				},
 				
 			play:{ |rect, mode = \fill|  // triangle ( > )
@@ -64,8 +64,8 @@ DrawIcon {
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
 				if( mode == \fill )
-					{ GUI.pen.fillRect( square ); }
-					{ GUI.pen.strokeRect( square ); };
+					{ Pen.fillRect( square ); }
+					{ Pen.strokeRect( square ); };
 				},
 				
 			speaker:	{ | rect, mode = \fill| // square
@@ -77,16 +77,16 @@ DrawIcon {
 				square = square.insetBy( square.width / 6, 0 );
 				square = square.moveBy( square.width / -12, 0 );
 	
-				GUI.pen.moveTo( square.rightTop );
-				GUI.pen.lineTo( square.rightBottom );
-				GUI.pen.lineTo( (square.left + (square.width / 2.5))@
+				Pen.moveTo( square.rightTop );
+				Pen.lineTo( square.rightBottom );
+				Pen.lineTo( (square.left + (square.width / 2.5))@
 					(square.center.y + (square.width / 4)) );
-				GUI.pen.lineTo( square.left@(square.center.y + (square.width / 4)) );
-				GUI.pen.lineTo( square.left@(square.center.y - (square.width / 4)) );
-				GUI.pen.lineTo( (square.left + (square.width / 2.5))@
+				Pen.lineTo( square.left@(square.center.y + (square.width / 4)) );
+				Pen.lineTo( square.left@(square.center.y - (square.width / 4)) );
+				Pen.lineTo( (square.left + (square.width / 2.5))@
 					(square.center.y - (square.width / 4)) );
-				GUI.pen.lineTo( square.rightTop );
-				GUI.pen.perform( mode );
+				Pen.lineTo( square.rightTop );
+				Pen.perform( mode );
 				},
 
 			record:	{  | rect, mode = \fill|  // circle at 1/2 size
@@ -95,8 +95,8 @@ DrawIcon {
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
 				if( mode == \fill )
-					{ GUI.pen.fillOval( square ); }
-					{ GUI.pen.strokeOval( square ); }		
+					{ Pen.fillOval( square ); }
+					{ Pen.strokeOval( square ); }		
 				},
 				
 			sign: { |rect, text = "@", font, color|
@@ -106,15 +106,15 @@ DrawIcon {
 				
 				font = font ? Font( "Monaco", 12 );
 				textBounds = text.asString.bounds( font );
-				GUI.pen.use({
+				Pen.use({
 					var scaleFactor;
 					scaleFactor =  (radius * 2) / ( textBounds.width.max( textBounds.height ) );
 					//scaleFactor = 2.1;
 				
-					//GUI.pen.scale( radius / ( textBounds.width.max( textBounds.height ) ) );
+					//Pen.scale( radius / ( textBounds.width.max( textBounds.height ) ) );
 					
-					GUI.pen.translate( center.x, center.y );
-					GUI.pen.scale( scaleFactor, scaleFactor );
+					Pen.translate( center.x, center.y );
+					Pen.scale( scaleFactor, scaleFactor );
 					text.asString.drawAtPoint( 
 					
 						 (0@0) - textBounds.center, font, color ? Color.black );
@@ -128,8 +128,8 @@ DrawIcon {
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
 	
-				GUI.pen.fillRect( square - Rect( 0, 0, square.width / 1.5, 0  ) );
-				GUI.pen.fillRect( square + Rect( square.width / 1.5, 0, 
+				Pen.fillRect( square - Rect( 0, 0, square.width / 1.5, 0  ) );
+				Pen.fillRect( square + Rect( square.width / 1.5, 0, 
 					square.width.neg / 1.5, 0  ) );
 				},
 				
@@ -141,12 +141,12 @@ DrawIcon {
 						
 				wd = square.width * 1/4;
 	
-				GUI.pen.moveTo( square.rightTop );
-				GUI.pen.lineTo( (square.left + wd)@square.center.y );
-				GUI.pen.lineTo( square.rightBottom );
-				GUI.pen.fill;
+				Pen.moveTo( square.rightTop );
+				Pen.lineTo( (square.left + wd)@square.center.y );
+				Pen.lineTo( square.rightBottom );
+				Pen.fill;
 				
-				GUI.pen.fillRect( square.copy.width_( wd ) );
+				Pen.fillRect( square.copy.width_( wd ) );
 				},
 				
 			forward:	{ | rect| // 2 triangles ( >> )
@@ -159,15 +159,15 @@ DrawIcon {
 				square = square.insetBy( 0, wd / 1.5 );
 				square = square.resizeBy( wd / 1.5, 0);
 					
-				GUI.pen.moveTo( square.leftTop );
-				GUI.pen.lineTo( square.center );
-				GUI.pen.lineTo( square.leftBottom );
-				GUI.pen.fill;
+				Pen.moveTo( square.leftTop );
+				Pen.lineTo( square.center );
+				Pen.lineTo( square.leftBottom );
+				Pen.fill;
 				
-				GUI.pen.moveTo( square.center.x@square.top );
-				GUI.pen.lineTo( square.right@square.center.y );
-				GUI.pen.lineTo(square.center.x@square.bottom );
-				GUI.pen.fill;
+				Pen.moveTo( square.center.x@square.top );
+				Pen.lineTo( square.right@square.center.y );
+				Pen.lineTo(square.center.x@square.bottom );
+				Pen.fill;
 				},
 			
 			rewind:	{ | rect| // 2 triangles ( << )
@@ -181,15 +181,15 @@ DrawIcon {
 				square = square.resizeBy( wd / 1.5, 0);
 				square = square.moveBy( wd / -1.5, 0);
 				
-				GUI.pen.moveTo( square.center.x@square.top );
-				GUI.pen.lineTo( square.left@square.center.y );
-				GUI.pen.lineTo(square.center.x@square.bottom );
-				GUI.pen.fill;
+				Pen.moveTo( square.center.x@square.top );
+				Pen.lineTo( square.left@square.center.y );
+				Pen.lineTo(square.center.x@square.bottom );
+				Pen.fill;
 
-				GUI.pen.moveTo( square.rightTop );
-				GUI.pen.lineTo( square.center );
-				GUI.pen.lineTo( square.rightBottom );
-				GUI.pen.fill;
+				Pen.moveTo( square.rightTop );
+				Pen.lineTo( square.center );
+				Pen.lineTo( square.rightBottom );
+				Pen.fill;
 				
 				},
 				
@@ -200,14 +200,14 @@ DrawIcon {
 						rect.width.min( rect.height ) / 4 );
 				
 				wd = square.width * (1/5);
-				GUI.pen.width = wd;
-				GUI.pen.addArc( square.center, square.width / 2, 0, 2pi );
-				//GUI.pen.stroke;	
-				GUI.pen.line( 
+				Pen.width = wd;
+				Pen.addArc( square.center, square.width / 2, 0, 2pi );
+				//Pen.stroke;	
+				Pen.line( 
 					Polar( square.width / 2, 1.25pi ).asPoint + square.center,
 					Polar( square.width / 2, 0.25pi ).asPoint + square.center
 					  );
-				GUI.pen.stroke;	
+				Pen.stroke;	
 				
 				},
 				
@@ -222,12 +222,12 @@ DrawIcon {
 				#sr, sb = square.rightBottom.asArray;
 				wd = square.width * (1/5);
 				// v2
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
-				GUI.pen.addArc( square.center, sw / 3, 1.75pi, 1.5pi );
-				GUI.pen.stroke;
-				GUI.pen.line( square.center, ((sl + sr) / 2)@st );
-				GUI.pen.stroke;
+				Pen.addArc( square.center, sw / 3, 1.75pi, 1.5pi );
+				Pen.stroke;
+				Pen.line( square.center, ((sl + sr) / 2)@st );
+				Pen.stroke;
 				},
 				
 			cmd: { |rect| // apple key sign
@@ -236,27 +236,27 @@ DrawIcon {
 						rect.width.min( rect.height ) / 3, 
 						rect.width.min( rect.height ) / 3 );
 				#sl, st, sw, sh = square.asArray;
-				GUI.pen.width = (1/12) * sw;
+				Pen.width = (1/12) * sw;
 	
-				GUI.pen.moveTo( ( sl + ((1/6) * sw ))@( st + ((2/6) * sh )) );
+				Pen.moveTo( ( sl + ((1/6) * sw ))@( st + ((2/6) * sh )) );
 				
-				GUI.pen.lineTo( ( sl + ((5/6) * sw ))@( st + ((2/6) * sh )) );
-				GUI.pen.addArc( ( sl + ((5/6) * sw ))@( st + ((1/6) * sh )),
+				Pen.lineTo( ( sl + ((5/6) * sw ))@( st + ((2/6) * sh )) );
+				Pen.addArc( ( sl + ((5/6) * sw ))@( st + ((1/6) * sh )),
 					 (1/6) * sw, 0.5pi, -1.5pi );
 					 
-				GUI.pen.lineTo( ( sl + ((4/6) * sw ))@( st + ((5/6) * sh )) );
-				GUI.pen.addArc( ( sl + ((5/6) * sw ))@( st + ((5/6) * sh )),
+				Pen.lineTo( ( sl + ((4/6) * sw ))@( st + ((5/6) * sh )) );
+				Pen.addArc( ( sl + ((5/6) * sw ))@( st + ((5/6) * sh )),
 					 (1/6) * sw, pi, -1.5pi );
 					 
-				GUI.pen.lineTo( ( sl + ((1/6) * sw ))@( st + ((4/6) * sh )) );
-				GUI.pen.addArc( ( sl + ((1/6) * sw ))@( st + ((5/6) * sh )),
+				Pen.lineTo( ( sl + ((1/6) * sw ))@( st + ((4/6) * sh )) );
+				Pen.addArc( ( sl + ((1/6) * sw ))@( st + ((5/6) * sh )),
 					 (1/6) * sw, 1.5pi, -1.5pi );
 				
-				GUI.pen.lineTo( ( sl + ((2/6) * sw ))@( st + ((1/6) * sh )) );
-				GUI.pen.addArc( ( sl + ((1/6) * sw ))@( st + ((1/6) * sh )),
+				Pen.lineTo( ( sl + ((2/6) * sw ))@( st + ((1/6) * sh )) );
+				Pen.addArc( ( sl + ((1/6) * sw ))@( st + ((1/6) * sh )),
 					 (1/6) * sw, 0, -1.5pi );
 					 
-				GUI.pen.stroke;
+				Pen.stroke;
 				},
 			
 			alt: { |rect| // option key sign
@@ -265,17 +265,17 @@ DrawIcon {
 						rect.width.min( rect.height ) / 3, 
 						rect.width.min( rect.height ) / 3 );
 				#sl, st, sw, sh = square.asArray;
-				GUI.pen.width = (1/12) * sw;
+				Pen.width = (1/12) * sw;
 	
-				GUI.pen.moveTo( sl@(st + ((1/4) * sh)) );
-				GUI.pen.lineTo( (sl + ((1/3) * sw))@(st + ((1/4) * sh)) );
-				GUI.pen.lineTo( (sl + ((2/3) * sw))@(st + ((3/4) * sh)) );
-				GUI.pen.lineTo( (sl + sw)@(st + ((3/4) * sh)) );
+				Pen.moveTo( sl@(st + ((1/4) * sh)) );
+				Pen.lineTo( (sl + ((1/3) * sw))@(st + ((1/4) * sh)) );
+				Pen.lineTo( (sl + ((2/3) * sw))@(st + ((3/4) * sh)) );
+				Pen.lineTo( (sl + sw)@(st + ((3/4) * sh)) );
 				
-				GUI.pen.moveTo( (sl + ((2/3) * sw))@(st + ((1/4) * sh)) );
-				GUI.pen.lineTo( (sl + sw)@(st + ((1/4) * sh)) );
+				Pen.moveTo( (sl + ((2/3) * sw))@(st + ((1/4) * sh)) );
+				Pen.lineTo( (sl + sw)@(st + ((1/4) * sh)) );
 				
-				GUI.pen.stroke;
+				Pen.stroke;
 
 				},
 				
@@ -286,34 +286,34 @@ DrawIcon {
 						rect.width.min( rect.height ) / 3, 
 						rect.width.min( rect.height ) / 3 );
 					
-				GUI.pen.rotate( direction - 0.5pi, square.center.x, square.center.y );
+				Pen.rotate( direction - 0.5pi, square.center.x, square.center.y );
 				
-				GUI.pen.moveTo( (square.left)@(square.center.y) );
-				GUI.pen.lineTo( (square.left)@(square.top + (square.height * (1/4) ) ) );
-				GUI.pen.lineTo( (square.center.x)@(square.top + (square.height * (1/4) ) ) );
-				GUI.pen.lineTo( (square.center.x)@(square.top) );
-				GUI.pen.lineTo( (square.right)@(square.center.y) );
-				GUI.pen.lineTo( (square.center.x)@(square.bottom) );
-				GUI.pen.lineTo( (square.center.x)@(square.top + (square.height * (3/4) ) ) );
-				GUI.pen.lineTo( (square.left)@(square.top + (square.height * (3/4) ) ) );
-				GUI.pen.lineTo( (square.left)@(square.center.y) );
+				Pen.moveTo( (square.left)@(square.center.y) );
+				Pen.lineTo( (square.left)@(square.top + (square.height * (1/4) ) ) );
+				Pen.lineTo( (square.center.x)@(square.top + (square.height * (1/4) ) ) );
+				Pen.lineTo( (square.center.x)@(square.top) );
+				Pen.lineTo( (square.right)@(square.center.y) );
+				Pen.lineTo( (square.center.x)@(square.bottom) );
+				Pen.lineTo( (square.center.x)@(square.top + (square.height * (3/4) ) ) );
+				Pen.lineTo( (square.left)@(square.top + (square.height * (3/4) ) ) );
+				Pen.lineTo( (square.left)@(square.center.y) );
 				
-				GUI.pen.width = (1/12) * square.width;
-				GUI.pen.perform( mode );
+				Pen.width = (1/12) * square.width;
+				Pen.perform( mode );
 				
-				GUI.pen.rotate( (direction - 0.5pi).neg, square.center.x, square.center.y );
+				Pen.rotate( (direction - 0.5pi).neg, square.center.x, square.center.y );
 				
 				},
 				
 			lock: { |rect|
 				var size = rect.width.min( rect.height ) * 0.8;
 				
-				GUI.pen.use({
+				Pen.use({
 					
-					GUI.pen.translate( *rect.center.asArray );
+					Pen.translate( *rect.center.asArray );
 					
-					GUI.pen.fillRect( Rect( size.neg * 0.25,0, size / 2, size / 3 ) );
-					GUI.pen.line( (size.neg /6)@0, (size.neg /6)@( size.neg / 6) )
+					Pen.fillRect( Rect( size.neg * 0.25,0, size / 2, size / 3 ) );
+					Pen.line( (size.neg /6)@0, (size.neg /6)@( size.neg / 6) )
 						.addArc( 0@(size.neg / 6), size.neg / 6,0, pi )
 						.lineTo( (size /6)@0 )
 						.lineTo( (size /12)@0 )
@@ -327,12 +327,12 @@ DrawIcon {
 			unlock: { |rect|
 				var size = rect.width.min( rect.height ) * 0.8;
 				
-				GUI.pen.use({
-					GUI.pen.translate( *rect.center.asArray );
+				Pen.use({
+					Pen.translate( *rect.center.asArray );
 					
-					GUI.pen.fillRect( Rect( size.neg * (1/6),0, size / 2, size / 3 ) );
+					Pen.fillRect( Rect( size.neg * (1/6),0, size / 2, size / 3 ) );
 					
-					GUI.pen.line( (size.neg / 3)@0, (size.neg /3)@( size.neg / 6) )
+					Pen.line( (size.neg / 3)@0, (size.neg /3)@( size.neg / 6) )
 						.addArc( (size.neg / 6)@(size.neg / 6), size.neg / 6,0, pi )
 						.lineTo( 0@0 )
 						.lineTo( (size.neg /12)@0 )
@@ -355,13 +355,13 @@ DrawIcon {
 				#sr, sb = square.rightBottom.asArray;
 				wd = square.width * (1/5);
 				
-				GUI.pen.width = wd;
+				Pen.width = wd;
 	
-				GUI.pen.moveTo( rect.center + Polar( (sw / 2), 0.25pi ).asPoint );
-				GUI.pen.lineTo( rect.center + Polar( (sw / 2), 1.25pi ).asPoint );
-				GUI.pen.moveTo( rect.center + Polar( (sw / 2), 0.75pi ).asPoint );
-				GUI.pen.lineTo( rect.center + Polar( (sw / 2), 1.75pi ).asPoint );
-				GUI.pen.stroke; 
+				Pen.moveTo( rect.center + Polar( (sw / 2), 0.25pi ).asPoint );
+				Pen.lineTo( rect.center + Polar( (sw / 2), 1.25pi ).asPoint );
+				Pen.moveTo( rect.center + Polar( (sw / 2), 0.75pi ).asPoint );
+				Pen.lineTo( rect.center + Polar( (sw / 2), 1.75pi ).asPoint );
+				Pen.stroke; 
 				
 				}, 
 			 	 
@@ -375,9 +375,9 @@ DrawIcon {
 				#sr, sb = square.rightBottom.asArray;
 				wd = square.width * (1/4);
 				
-				GUI.pen.fillRect( Rect( sl + (( sw - wd ) / 2) , st + (1.4 * wd), 
+				Pen.fillRect( Rect( sl + (( sw - wd ) / 2) , st + (1.4 * wd), 
 					wd, sh - (1.4 * wd) ) );
-				GUI.pen.fillOval( 
+				Pen.fillOval( 
 					Rect( sl + (( sw - wd ) / 2), st, wd, wd ).insetBy( wd * -0.1,  
 						wd * -0.1   ) );
 				
@@ -393,8 +393,8 @@ DrawIcon {
 				#sr, sb = square.rightBottom.asArray;
 				wd = square.width * (1/4);
 				
-				GUI.pen.fillRect( Rect( sl + (( sw - wd ) / 2) , st, wd, sh - (1.33 * wd) ) );
-				GUI.pen.fillRect( Rect( sl + (( sw - wd ) / 2), sb - wd, wd, wd ) );
+				Pen.fillRect( Rect( sl + (( sw - wd ) / 2) , st, wd, sh - (1.33 * wd) ) );
+				Pen.fillRect( Rect( sl + (( sw - wd ) / 2), sb - wd, wd, wd ) );
 				
 				},
 			'+': 	{ | rect| // +
@@ -408,14 +408,14 @@ DrawIcon {
 				wd =  square.width * (1/4);
 				w3 = (square.width - wd) / 2;
 				
-				GUI.pen.moveTo( sl@( st+w3) );
+				Pen.moveTo( sl@( st+w3) );
 				
 				[ (sl+w3)@(st+w3), (sl+w3)@(st), (sr-w3)@(st), (sr-w3)@(st+w3),
 					sr@(st+w3), sr@(sb-w3), (sr-w3)@(sb-w3), (sr-w3)@sb,
 					(sl+w3)@sb, (sl+w3)@(sb-w3), sl@(sb-w3), sl@( st+w3) ]
-					.do( GUI.pen.lineTo( _ ) );
+					.do( Pen.lineTo( _ ) );
 					    
-				GUI.pen.fill;
+				Pen.fill;
 				
 				},
 			'-': 	{ | rect| // -
@@ -427,7 +427,7 @@ DrawIcon {
 				wd = square.width * (1/4);
 				w3 = (square.width - wd) / 2;
 				
-				GUI.pen.fillRect( Rect( 
+				Pen.fillRect( Rect( 
 					square.left, square.top + w3,
 					square.width,  wd ) )
 				
@@ -444,15 +444,15 @@ DrawIcon {
 				sw = square.width;	
 				wd = sw * (1/5);
 				
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
 				numSides.do({ |i|
-					GUI.pen.moveTo( rect.center );
-					GUI.pen.lineTo( rect.center + Polar( (sw / 2), 
+					Pen.moveTo( rect.center );
+					Pen.lineTo( rect.center + Polar( (sw / 2), 
 						 (2pi * ( i/numSides )) + start).asPoint );
 				});
 				
-				GUI.pen.stroke; 
+				Pen.stroke; 
 				
 				},
 				
@@ -468,16 +468,16 @@ DrawIcon {
 				sw = square.width;	
 				wd = sw * (1/8);
 				
-				//GUI.pen.width = wd;
+				//Pen.width = wd;
 				
-				GUI.pen.moveTo( square.center + Polar( (sw / 2), start ) );
+				Pen.moveTo( square.center + Polar( (sw / 2), start ) );
 				
 				(numSides + 1).do({ |i|
-					GUI.pen.lineTo( square.center + Polar( (sw / 2), 
+					Pen.lineTo( square.center + Polar( (sw / 2), 
 						 (2pi * ( i/numSides )) + start).asPoint );
 				});
 				
-				GUI.pen.perform( mode ); 
+				Pen.perform( mode ); 
 				
 				},
 			*/
@@ -495,12 +495,12 @@ DrawIcon {
 				start = start ? -0.5pi;
 				sw = square.width;	
 				wd = sw * (1/8);
-				GUI.pen.moveTo( square.center + Polar( (sw / 2), start ) );
+				Pen.moveTo( square.center + Polar( (sw / 2), start ) );
 				(numSides + 1).do({ |i|
-					GUI.pen.lineTo( square.center + Polar( (sw / 2),Ê
+					Pen.lineTo( square.center + Polar( (sw / 2),Ê
 						(2pi * ( i/numSides * factor )) + start).asPoint );
 				});
-				GUI.pen.perform( mode );Ê
+				Pen.perform( mode );Ê
 				},
 			
 				
@@ -528,18 +528,18 @@ DrawIcon {
 						
 						 };
 							
-				GUI.pen.width_( wd );
+				Pen.width_( wd );
 				
-				GUI.pen.moveTo( square.center + Polar( radius, direction + pi ).asPoint );
-				GUI.pen.lineTo( square.center + Polar( radius, direction ).asPoint );
+				Pen.moveTo( square.center + Polar( radius, direction + pi ).asPoint );
+				Pen.lineTo( square.center + Polar( radius, direction ).asPoint );
 				
-				GUI.pen.moveTo( ( square.center + Polar( radius, direction ) ).asPoint
+				Pen.moveTo( ( square.center + Polar( radius, direction ) ).asPoint
 					+ Polar( wd * 2.5, direction + 0.75pi ).asPoint );
-				GUI.pen.lineTo( ( square.center + Polar( radius, direction ) ).asPoint );
-				GUI.pen.lineTo( ( square.center + Polar( radius, direction ) ).asPoint
+				Pen.lineTo( ( square.center + Polar( radius, direction ) ).asPoint );
+				Pen.lineTo( ( square.center + Polar( radius, direction ) ).asPoint
 					+ Polar( wd * 2.5, direction - 0.75pi ).asPoint );
 				
-				GUI.pen.stroke;
+				Pen.stroke;
 				},
 			
 			
@@ -550,21 +550,21 @@ DrawIcon {
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
 					
-				GUI.pen.rotate( direction, square.center.x, square.center.y );
+				Pen.rotate( direction, square.center.x, square.center.y );
 				
-				GUI.pen.moveTo( (square.left)@(square.center.y) );
-				GUI.pen.lineTo( (square.left)@(square.top + (square.height * (1/3) ) ) );
-				GUI.pen.lineTo( (square.center.x)@(square.top + (square.height * (1/3) ) ) );
-				GUI.pen.lineTo( (square.center.x)@(square.top) );
-				GUI.pen.lineTo( (square.right)@(square.center.y) );
-				GUI.pen.lineTo( (square.center.x)@(square.bottom) );
-				GUI.pen.lineTo( (square.center.x)@(square.top + (square.height * (2/3) ) ) );
-				GUI.pen.lineTo( (square.left)@(square.top + (square.height * (2/3) ) ) );
-				GUI.pen.lineTo( (square.left)@(square.center.y) );
+				Pen.moveTo( (square.left)@(square.center.y) );
+				Pen.lineTo( (square.left)@(square.top + (square.height * (1/3) ) ) );
+				Pen.lineTo( (square.center.x)@(square.top + (square.height * (1/3) ) ) );
+				Pen.lineTo( (square.center.x)@(square.top) );
+				Pen.lineTo( (square.right)@(square.center.y) );
+				Pen.lineTo( (square.center.x)@(square.bottom) );
+				Pen.lineTo( (square.center.x)@(square.top + (square.height * (2/3) ) ) );
+				Pen.lineTo( (square.left)@(square.top + (square.height * (2/3) ) ) );
+				Pen.lineTo( (square.left)@(square.center.y) );
 				
-				GUI.pen.perform( mode );
+				Pen.perform( mode );
 				
-				GUI.pen.rotate( direction.neg, square.center.x, square.center.y );
+				Pen.rotate( direction.neg, square.center.x, square.center.y );
 				
 				},
 			
@@ -579,19 +579,19 @@ DrawIcon {
 				arrowSide = (wd*1.5) * 2.sqrt;
 						
 						
-				GUI.pen.moveTo( Polar( radius - (wd/2), startAngle ).asPoint + square.center );
-				GUI.pen.addArc( square.center, radius, startAngle, arcAngle ); //outer circle
-				GUI.pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint 
+				Pen.moveTo( Polar( radius - (wd/2), startAngle ).asPoint + square.center );
+				Pen.addArc( square.center, radius, startAngle, arcAngle ); //outer circle
+				Pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint 
 					+ square.center );
-				GUI.pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint +
+				Pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint +
 						Polar( arrowSide, (startAngle + arcAngle) + 0.75pi ).asPoint 
 							+ square.center);
-				GUI.pen.lineTo( Polar( radius - (wd*2),  startAngle + arcAngle ).asPoint 
+				Pen.lineTo( Polar( radius - (wd*2),  startAngle + arcAngle ).asPoint 
 							+ square.center );
-				GUI.pen.addArc( square.center, radius - wd, startAngle + arcAngle, arcAngle.neg );
-				GUI.pen.lineTo(  Polar( radius - (wd/2), startAngle ).asPoint + square.center );
+				Pen.addArc( square.center, radius - wd, startAngle + arcAngle, arcAngle.neg );
+				Pen.lineTo(  Polar( radius - (wd/2), startAngle ).asPoint + square.center );
 				
-				GUI.pen.fill;
+				Pen.fill;
 				
 				},
 			
@@ -610,26 +610,26 @@ DrawIcon {
 				hAngle = ((h / 12) * 2pi) - 0.5pi;
 				mAngle = ((m / 60) * 2pi) - 0.5pi;
 				
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
-				GUI.pen.addArc( square.center, radius, 0, 2pi );
-				GUI.pen.stroke;
+				Pen.addArc( square.center, radius, 0, 2pi );
+				Pen.stroke;
 				
-				GUI.pen.line( Polar( wd/2, hAngle - pi ).asPoint + square.center, 
+				Pen.line( Polar( wd/2, hAngle - pi ).asPoint + square.center, 
 					Polar( hSize, hAngle ).asPoint + square.center );
-				//GUI.pen.stroke;
+				//Pen.stroke;
 				
-				GUI.pen.line( Polar( wd/2, mAngle - pi ).asPoint + square.center, 
+				Pen.line( Polar( wd/2, mAngle - pi ).asPoint + square.center, 
 					Polar( mSize, mAngle  ).asPoint + square.center );
-				GUI.pen.stroke;
+				Pen.stroke;
 				
 				if( secs.notNil )
-					{ GUI.pen.width = wd / 3;
-						GUI.pen.line( Polar( wd/2, ((secs / 60) * 2pi) - 1.5pi ).asPoint 
+					{ Pen.width = wd / 3;
+						Pen.line( Polar( wd/2, ((secs / 60) * 2pi) - 1.5pi ).asPoint 
 								+ square.center, 
 						Polar( mSize, ((secs / 60) * 2pi) - 0.5pi  ).asPoint 
 								+ square.center );
-						GUI.pen.stroke;
+						Pen.stroke;
 					};
 				},
 				
@@ -645,11 +645,11 @@ DrawIcon {
 								(( (i/numLines) + (1 - pos) )%1.0) * 
 									( if( active ) { 1 } { 0.5 } ) 
 								).set;
-							GUI.pen.width_( lineWidth * radius * 2 );
-							GUI.pen.moveTo( ((val.cos@val.sin) * (radius * centerSize )) 
+							Pen.width_( lineWidth * radius * 2 );
+							Pen.moveTo( ((val.cos@val.sin) * (radius * centerSize )) 
 									+ center );
-							GUI.pen.lineTo( ((val.cos@val.sin) * radius) + center );
-							GUI.pen.stroke;
+							Pen.lineTo( ((val.cos@val.sin) * radius) + center );
+							Pen.stroke;
 						});
 					};
 				},
@@ -664,13 +664,13 @@ DrawIcon {
 				square = square.insetAll( wd, wd, 0, 0 );
 				rd = square.width / 4;
 				
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
-				GUI.pen.addArc( ( square.left + rd )@(square.top + rd ), rd + wd, 0, 2pi );
-				GUI.pen.moveTo( square.center );
-				GUI.pen.lineTo( square.rightBottom );
+				Pen.addArc( ( square.left + rd )@(square.top + rd ), rd + wd, 0, 2pi );
+				Pen.moveTo( square.center );
+				Pen.lineTo( square.rightBottom );
 				
-				GUI.pen.stroke;
+				Pen.stroke;
 				
 				}, 
 				
@@ -694,7 +694,7 @@ DrawIcon {
 				
 				step = (square.width / (n*res));
 				
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
 				((n*res) + 1).do({ |i|
 					var point;
@@ -702,10 +702,10 @@ DrawIcon {
 						@(((( (i / res) * 2pi ) + phase).sin.neg + 1 * (square.height / 2))
 							+ square.top);
 					if( i == 0 )
-						{ GUI.pen.moveTo( point ) }
-						{ GUI.pen.lineTo( point ) };
+						{ Pen.moveTo( point ) }
+						{ Pen.lineTo( point ) };
 					});
-				GUI.pen.stroke;
+				Pen.stroke;
 				
 				},
 				
@@ -722,23 +722,23 @@ DrawIcon {
 				docRect = square.insetBy( 
 					(square.width / 2) - (( square.height / 2.sqrt ) / 2) ,0);
 					
-				GUI.pen.width = wd;
+				Pen.width = wd;
 					
-				GUI.pen.moveTo( (docRect.center.x)@(docRect.top) );
-				GUI.pen.lineTo( (docRect.right - rd)@(docRect.top) );
+				Pen.moveTo( (docRect.center.x)@(docRect.top) );
+				Pen.lineTo( (docRect.right - rd)@(docRect.top) );
 				
-				GUI.pen.lineTo( (docRect.right)@(docRect.top + rd ) );
-				GUI.pen.lineTo( docRect.rightBottom );
-				GUI.pen.lineTo( docRect.leftBottom );
-				GUI.pen.lineTo( docRect.leftTop );
-				GUI.pen.lineTo( (docRect.center.x)@(docRect.top) );
+				Pen.lineTo( (docRect.right)@(docRect.top + rd ) );
+				Pen.lineTo( docRect.rightBottom );
+				Pen.lineTo( docRect.leftBottom );
+				Pen.lineTo( docRect.leftTop );
+				Pen.lineTo( (docRect.center.x)@(docRect.top) );
 					
 				
 			
-				GUI.pen.moveTo( (docRect.right )@(docRect.top + rd) );
-				GUI.pen.lineTo( (docRect.right - rd )@(docRect.top + rd) );
-				GUI.pen.lineTo( (docRect.right - rd )@(docRect.top) );				
-				GUI.pen.stroke;	
+				Pen.moveTo( (docRect.right )@(docRect.top + rd) );
+				Pen.lineTo( (docRect.right - rd )@(docRect.top + rd) );
+				Pen.lineTo( (docRect.right - rd )@(docRect.top) );				
+				Pen.stroke;	
 				
 				},
 				
@@ -762,24 +762,24 @@ DrawIcon {
 					0, (square.width / 2) - (( square.height / 2.sqrt ) / 2)); 
 				
 					
-				GUI.pen.width = wd;
+				Pen.width = wd;
 				
 					
-				GUI.pen.moveTo( (folderRect.right)@(folderRect.center.y) );
-				GUI.pen.lineTo( folderRect.rightBottom );
-				GUI.pen.lineTo( folderRect.leftBottom );
-				GUI.pen.lineTo( folderRect.leftTop );
+				Pen.moveTo( (folderRect.right)@(folderRect.center.y) );
+				Pen.lineTo( folderRect.rightBottom );
+				Pen.lineTo( folderRect.leftBottom );
+				Pen.lineTo( folderRect.leftTop );
 				
-				GUI.pen.lineTo( (folderRect.left + rd )@(folderRect.top - rd ) );
-				GUI.pen.lineTo( ( (folderRect.left + (folderRect.width/2)) - rd )
+				Pen.lineTo( (folderRect.left + rd )@(folderRect.top - rd ) );
+				Pen.lineTo( ( (folderRect.left + (folderRect.width/2)) - rd )
 					@(folderRect.top - rd) );
-				GUI.pen.lineTo( ( folderRect.left + (folderRect.width/2) )@folderRect.top );
-				GUI.pen.lineTo( folderRect.rightTop );
-				GUI.pen.lineTo(  (folderRect.right)@(folderRect.center.y) );
+				Pen.lineTo( ( folderRect.left + (folderRect.width/2) )@folderRect.top );
+				Pen.lineTo( folderRect.rightTop );
+				Pen.lineTo(  (folderRect.right)@(folderRect.center.y) );
 				
 				
 								
-				GUI.pen.stroke;	
+				Pen.stroke;	
 				
 				},
 				
@@ -801,7 +801,7 @@ DrawIcon {
 				hOffset = ( square.width - ( wd *  ( size * 4 + (size - 1 ) ) ) ) / 2;
 				
 				
-				GUI.pen.translate( hOffset + square.left, vOffset + square.top );
+				Pen.translate( hOffset + square.left, vOffset + square.top );
 			
 				
 				array =	( { [0,0,0, 0,0,0,0] } ! size ).collect({ |item, i|
@@ -855,15 +855,15 @@ DrawIcon {
 						if( item != 0 )
 						{	vPos = ii * 3;
 							
-							GUI.pen.moveTo( ( (ghPos + 0.5)@( vPos + 0.5 ) ) * wd  );
-							GUI.pen.lineTo( ( (ghPos + 1)@vPos ) * wd );
-							GUI.pen.lineTo( ( (ghPos + 3)@vPos ) * wd );
-							GUI.pen.lineTo( ( (ghPos + 3.5)@(vPos + 0.5) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + 3)@(vPos + 1) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + 1)@(vPos + 1) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + 0.5)@( vPos + 0.5 ) ) * wd  );
+							Pen.moveTo( ( (ghPos + 0.5)@( vPos + 0.5 ) ) * wd  );
+							Pen.lineTo( ( (ghPos + 1)@vPos ) * wd );
+							Pen.lineTo( ( (ghPos + 3)@vPos ) * wd );
+							Pen.lineTo( ( (ghPos + 3.5)@(vPos + 0.5) ) * wd );
+							Pen.lineTo( ( (ghPos + 3)@(vPos + 1) ) * wd );
+							Pen.lineTo( ( (ghPos + 1)@(vPos + 1) ) * wd );
+							Pen.lineTo( ( (ghPos + 0.5)@( vPos + 0.5 ) ) * wd  );
 							
-							GUI.pen.fill;
+							Pen.fill;
 						};
 						
 						});
@@ -874,15 +874,15 @@ DrawIcon {
 						{ 	vPos = (ii / 2).floor * 3;
 							hPos = (ii % 2) * 3;
 							
-							GUI.pen.moveTo( ( (ghPos + hPos + 0.5)@( vPos + 0.5 ) ) * wd  );
-							GUI.pen.lineTo( ( (ghPos + hPos + 1)@( vPos + 1 ) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + hPos + 1)@( vPos + 3 ) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + hPos + 0.5)@(vPos + 3.5) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + hPos)@(vPos + 3) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + hPos)@(vPos + 1) ) * wd );
-							GUI.pen.lineTo( ( (ghPos + hPos + 0.5)@( vPos + 0.5 ) ) * wd  );
+							Pen.moveTo( ( (ghPos + hPos + 0.5)@( vPos + 0.5 ) ) * wd  );
+							Pen.lineTo( ( (ghPos + hPos + 1)@( vPos + 1 ) ) * wd );
+							Pen.lineTo( ( (ghPos + hPos + 1)@( vPos + 3 ) ) * wd );
+							Pen.lineTo( ( (ghPos + hPos + 0.5)@(vPos + 3.5) ) * wd );
+							Pen.lineTo( ( (ghPos + hPos)@(vPos + 3) ) * wd );
+							Pen.lineTo( ( (ghPos + hPos)@(vPos + 1) ) * wd );
+							Pen.lineTo( ( (ghPos + hPos + 0.5)@( vPos + 0.5 ) ) * wd  );
 							 
-							GUI.pen.fill;
+							Pen.fill;
 						};
 						
 						});
@@ -890,7 +890,7 @@ DrawIcon {
 										
 					});
 				
-				GUI.pen.translate( hOffset.neg + square.left.neg, vOffset.neg + square.top.neg );
+				Pen.translate( hOffset.neg + square.left.neg, vOffset.neg + square.top.neg );
 				
 				},
 				
@@ -915,21 +915,21 @@ DrawIcon {
 				4.do({ |i|
 					var yy;
 					yy = docRect.top + rd + wd + ((i+1) * (wd * 2));
-					GUI.pen.line( 
+					Pen.line( 
 						(docRect.left + (wd * 2))@yy,
 						(docRect.right - (wd * 2))@yy  );
 					});
 				
-				GUI.pen.stroke;
+				Pen.stroke;
 								
 				},
 			
 			warning:  { |rect| 
 				drawFuncs[ \polygon ].value( rect, 8, 0.125pi );
-				if( GUI.pen.respondsTo( \color_ ) )
-					{ GUI.pen.color = Color.white; }
+				if( Pen.respondsTo( \color_ ) )
+					{ Pen.color = Color.white; }
 					{ Color.white.set; };
-				GUI.pen.width = 2;
+				Pen.width = 2;
 				drawFuncs[ \polygon ].value( rect
 					.insetBy( 4, 4 ), 8, 0.125pi, \stroke );
 				drawFuncs[ '!' ].value(  rect

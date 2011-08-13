@@ -1,14 +1,22 @@
 + String {
-	curlMsg { |path|
-		if( path.notNil )
-			{ ^"curl % -o %".format( this.quote, path.quote ) }
-			{  ^"curl %".format( this.quote ) };
-		}
-	
-	curl { |path, action, postOutput = true|
-		if( path.notNil )
-			{ ^this.curlMsg.unixCmd( action, postOutput ) }
-			{ ^this.unixCmdGetStdOut }; // DOESNT WORK YET
-		}
+	curlMsg { |path, options|
+		var expr;
 
+		expr = "curl % %".format( options ? "", this.quote );
+		path.notNil.if{
+			expr = expr + "-o %".format(path.quote);
+		};
+
+		^expr;
 	}
+	
+	curl { |path, options, action, postOutput = true|
+		var msg = this.curlMsg(path, options);
+		
+		path.notNil.if({
+			^msg.unixCmd(action, postOutput);
+		}, {
+			^msg.unixCmdGetStdOut;
+		})
+	}
+}
