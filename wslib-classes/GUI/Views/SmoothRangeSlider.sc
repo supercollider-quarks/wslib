@@ -15,8 +15,6 @@ SmoothRangeSlider : SmoothSlider {
 		//super.init( parent, bounds );
 				
 		mode = \jump;  // \jump or \move
-		keystep = 0.01;
-		step = 0.01;
 		value = [0.0,0.0];
 		
 		// background, hilightColor, borderColor, knobColor, stringColor
@@ -305,7 +303,7 @@ SmoothRangeSlider : SmoothSlider {
 			hit = Point(x,y);
 			hitValue = value;
 			if( mode == \drag ) { 
-					value = this.xyToPos(x,y).dup;
+					value = this.xyToPos(x,y).dup.round( step ? 0 );
 					nowMoving = 1;
 					 };
 			this.mouseMove(x, y, modifiers);
@@ -339,7 +337,7 @@ SmoothRangeSlider : SmoothSlider {
 						       nowMoving = 1-nowMoving;
 							};
 						};
-						
+					value = value.round( step ? 0 );
 					deltaAction.value( this, value - oldValue );
 					this.clipValue;
 					

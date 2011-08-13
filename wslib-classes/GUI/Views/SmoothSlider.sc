@@ -2,7 +2,7 @@
 // slider based on blackrain's knob
 
 SmoothSlider : RoundView {
-	var <>color, <value, <>step, hit, <>keystep, <>mode, isCentered = false, <centerPos = 0.5;
+	var <>color, <value, <>step, hit, <>mode, isCentered = false, <centerPos = 0.5;
 	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
 	var <knobSize = 0.25, hitValue = 0;
 	var <orientation = \v;
@@ -29,8 +29,6 @@ SmoothSlider : RoundView {
 		//super.init( parent, bounds );
 				
 		mode = \jump;  // \jump or \move
-		keystep = 0.01;
-		step = 0.01;
 		value = 0.0;
 		
 		// background, hilightColor, borderColor, knobColor, stringColor
@@ -364,9 +362,8 @@ SmoothSlider : RoundView {
 								.max( thumbSize.min( bounds.width ) ) )
 						};
 					};
-					
+				value = value.round( step ? 0 );
 				deltaAction.value( this, value - oldValue );
-				value = value;
 				this.clipValue;
 
 				
@@ -405,9 +402,8 @@ SmoothSlider : RoundView {
 									* this.getScale( modifiers ) ) ) 
 						} 
 					};
-				
+				value = value.round( step ? 0 );
 				deltaAction.value( this, value - oldValue );
-				value = value;
 				this.clipValue;
 
 				
@@ -427,7 +423,7 @@ SmoothSlider : RoundView {
 		}
 
 	value_ { arg val;
-		value = val;
+		value = val.round( step ? 0 );
 		this.clipValue( false );
 		this.refresh;
 	}
@@ -436,7 +432,7 @@ SmoothSlider : RoundView {
 		var oldVal;
 		deltaAction.value( this, val - value );
 		oldVal = value;
-		value = val;
+		value = val.round( step ? 0 );
 		this.clipValue;
 		if( allwaysPerformAction or: { oldVal != value } ) { action.value(this); };
 		this.refresh;
@@ -484,9 +480,9 @@ SmoothSlider : RoundView {
 	knobSize_ { |newSize| knobSize = newSize ? knobSize; this.refresh; }
 	
 	increment { |zoom=1| ^this.valueAction = 
-		( this.value + (max(this.step, this.pixelStep) * zoom) ).min(1); }
+		( this.value + (max(this.step ? 0, this.pixelStep) * zoom) ).min(1); }
 	decrement { |zoom=1| ^this.valueAction = 
-		( this.value - (max(this.step, this.pixelStep) * zoom) ).max(0); }
+		( this.value - (max(this.step ? 0, this.pixelStep) * zoom) ).max(0); }
 	
 
 	keyDown { arg char, modifiers, unicode,keycode;
