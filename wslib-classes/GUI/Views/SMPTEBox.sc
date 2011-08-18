@@ -118,4 +118,22 @@ SMPTEBox : RoundNumberBox {
 	fontSize_ { |size| font.size = size ? font.size; this.refresh; }
 	fontColor_ { |color| this.normalColor = color }
 	
+	applySmoothSkin {
+		this.applySkin( ( 
+			extrude: false,
+			border: 0,
+			background: Color.white.alpha_(0.5),
+			typingColor: Color.red(0.5).alpha_(0.75)
+		) );
+	}
+	
+	applyRoundSkin {
+		this.applySkin( ( 	
+			extrude: true,
+			border: 2,
+			background: Color.white,
+			typingColor: Color.red
+		) );
+	}
+	
 }
