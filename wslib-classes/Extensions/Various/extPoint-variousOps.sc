@@ -5,6 +5,7 @@
 	
 	asUGenInput { ^this.asArray } // dangerous?
 	asControlInput { ^this.asArray }
+	asOSCArgEmbeddedArray { | array| ^this.asArray.asOSCArgEmbeddedArray(array) }
 	
 	performOnEach { arg selector ...args; // more optimization possible?
 		args = args.collect(_.asArray);
