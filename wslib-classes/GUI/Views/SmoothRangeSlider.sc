@@ -303,7 +303,7 @@ SmoothRangeSlider : SmoothSlider {
 			hit = Point(x,y);
 			hitValue = value;
 			if( mode == \drag ) { 
-					value = this.xyToPos(x,y).dup.round( step ? 0 );
+					value = (this.xyToPos(x,y).dup - (step/2)).round( step ? 0 );
 					nowMoving = 1;
 					 };
 			this.mouseMove(x, y, modifiers);
