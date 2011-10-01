@@ -16,12 +16,26 @@
 			name ++ "\", " ++ 
 			this.bounds 
 			++ " ).front;\n" ++ this.view.asCode( varName ) ++
-			( if( drawHook.notNil ) {
-				varName.asString ++ ".drawHook = {\n" ++ 
-					drawHook.asGUICode( "GUI.pen", 1, this ) ++
-					"\t};\n" } { "" }
-					 ) );
-		}
+			( if( this.respondsTo( \drawHook ) ) {
+				if( this.drawHook.notNil ) {
+					varName.asString ++ ".drawHook = {\n" ++ 
+						this.drawHook.asGUICode( "GUI.pen", 1, this ) ++
+						"\t};\n" 
+				} { 
+					"" 
+				};
+			} {
+				if( this.drawFunc.notNil ) {
+					varName.asString ++ ".drawHook = {\n" ++ 
+						this.drawFunc.asGUICode( "GUI.pen", 1, this ) ++
+						"\t};\n" 
+				} {
+					 "" 
+				};
+			}
+			)
+		);
+	}
 	
 	// the window plus it's views, between brackets	
 	asFullCode { |varName = "w", additionalVarNames|
