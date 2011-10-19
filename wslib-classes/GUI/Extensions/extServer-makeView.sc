@@ -148,9 +148,9 @@
 			
 		//w.view.decorator;
 		
-		composite = CompositeView( w, 192@18 );
+		composite = CompositeView( w, 250@18 );
 		
-			infoString = GUI.staticText.new(composite, Rect(0,0, 192, 18));
+			infoString = GUI.staticText.new(composite, Rect(0,0, 250, 18));
 		infoString.string = "CPU: %/%\tSynths/Defs: %/%"			.format( "?", "?", "?", "?" );
 		infoString.font_( GUI.font.new( "Monaco", 9 ) );
 		
