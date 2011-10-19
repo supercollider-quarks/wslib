@@ -7,7 +7,8 @@ OSCMonitor {
 	
 	classvar <>exclude;
 	
-	*value { |time = 0, addr, msg = ([])|
+	*value { |time = 0, addr, port, msg = ([])|
+		if( port.size != 0 ) { msg = port };
 		if( ([ '/status.reply', '/localhostOutLevels', '/localhostInLevels' ] 
 				++ exclude.asCollection ).includes( msg[0] ).not ) {
 			[ time.asSMPTEString, addr, msg ].postln;
