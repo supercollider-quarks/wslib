@@ -154,7 +154,9 @@ RoundButton : RoundView {
 				DrawIcon.symbolArgs( states[value][0], rect.insetBy( border/2,border/2 ) );
 				};
 			 }
-			{ states[value][0].class.name == Image.implClass.name }
+			{ GUI.current.respondsTo( \image ) && 
+				{ states[value][0].class.name == Image.implClass.name }
+			}
 			{
 			Pen.use {
 				if( pressed ) { Pen.translate( moveWhenPressed, moveWhenPressed ) };
