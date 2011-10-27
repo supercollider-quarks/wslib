@@ -123,7 +123,7 @@ SCAlert {
 		window.view.background_( background );
 		window.alwaysOnTop_( true );
 		window.alpha_( 0.95 );
-		window.drawHook_( { |w|
+		window.perform( if( window.respondsTo( \drawFunc_ ) ) { \drawFunc_ } { \drawHook_ }, { |w|
 			Pen.width = 2;
 			Pen.color = color;
 			Pen.strokeRect( w.bounds.left_(0).top_(0).insetBy(1, 1) );
