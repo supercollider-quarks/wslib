@@ -652,7 +652,7 @@ action = inAction ? action;
 if(reverse.isNil) {reverse = []};
 
 if(window.isNil) {
-window = SCWindow.new(channels.size.asString ++ " x Cinetix", 
+window = Window.new(channels.size.asString ++ " x Cinetix", 
 	Rect(1020, 470, 30 + (channels.size * 40), 320), false); 
 window.front;
 

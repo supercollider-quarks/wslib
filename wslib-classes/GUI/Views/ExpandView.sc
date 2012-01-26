@@ -152,12 +152,6 @@ ExpandView {
 + FlowLayout {
 	reFlow { |parent| 
 		this.reset;
-		parent.children.do({ |widget|
-					if(widget.isKindOf( StartRow ),{
-						this.nextLine
-					},{
-						this.place(widget);
-					})
-				});	
+		parent.children.do({ |widget| this.place(widget); });
 	}
 }
