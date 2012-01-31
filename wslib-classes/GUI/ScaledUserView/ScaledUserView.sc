@@ -60,7 +60,7 @@ ScaledUserView {
 	init { |window, bounds|
 		view = UserView( window, bounds );
 		//view.relativeOrigin_( false );
-		view.background = background;
+		if( background.notNil ) { view.background = background; };
 		
 		gridColor = defaultGridColor;
 		
