@@ -8,7 +8,7 @@
 	recordNRTs { arg oscFilePath, outputFilePath, inputFilePath, sampleRate = 44100, headerFormat =
 		"AIFF", sampleFormat = "int16", options, completionString="", duration = nil;
 		this.writeOSCFile(oscFilePath, 0, duration);
-		^systemCmd(program + " -N" + oscFilePath + (inputFilePath ? "_") + 
+		^systemCmd(Server.program + " -N" + oscFilePath + (inputFilePath ? "_") + 
 			"\""++outputFilePath++"\""
 		 	+ sampleRate + headerFormat + sampleFormat +
 			(options ? Score.options).asOptionsString
