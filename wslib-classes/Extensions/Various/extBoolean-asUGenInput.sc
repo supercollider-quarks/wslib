@@ -1,4 +1,6 @@
+// wslib 2012
+// make true/false valid inputs for UGens
+
 + Boolean {
-	asUGenInput { ^this.binaryValue }
-	asControlInput { ^this.binaryValue }
+	writeInputSpec { |file, synth| this.binaryValue.writeInputSpec(file, synth) }	isValidUGenInput { ^true }
 }

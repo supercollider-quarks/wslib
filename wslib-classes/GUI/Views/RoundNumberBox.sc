@@ -16,7 +16,7 @@ RoundNumberBox : RoundView {
 	var <autoScale = false; // BETA
 	
 	var <keyString, <>step=1, <>scroll_step=1;
-	var <typingColor, <normalColor, <stringColor;
+	var <typingColor, <normalColor;
 	var <background;
 	var <>clipLo = -inf, <>clipHi = inf, hit, startHit, inc=1.0, 
 		<>scroll=true; //, <>shift_step=0.1, <>ctrl_step=10;

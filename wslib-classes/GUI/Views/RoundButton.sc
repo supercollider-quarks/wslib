@@ -17,9 +17,6 @@ RoundButton : RoundView {
 	var <focusColor, bgColor, <stringColor, <hiliteColor, <borderColor; 
 		// hiliteColor = color of second state if not provided
 	
-	var <expanded = true;
-	var <shrinkForFocusRing = false;
-	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
 	
 	// *viewClass { ^SCUserView }

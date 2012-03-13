@@ -28,7 +28,7 @@ OptionView {
 		switch( type.asSymbol,
 		
 			'number', { 
-				views[ \nbox ] = SNBox( composite, Rect( composite.bounds.left + labelWidth,
+				views[ \nbox ] = RoundNumberBox( composite, Rect( composite.bounds.left + labelWidth,
 						composite.bounds.top, 50, height ) );
 				views[ \nbox ].value = specs[ \current ] ? 0;
 				views[ \nbox ].clipLo = specs[ \minVal ] ? -inf;

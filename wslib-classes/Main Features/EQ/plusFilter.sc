@@ -52,7 +52,7 @@
 		var a0, b0;
 		a0 = 1 - abs(coef);
 		b0 = coef;
-		^[[a0],[b0]]
+		^[[a0],[b0.neg]]
 	}
 }
 
