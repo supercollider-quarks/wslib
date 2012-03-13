@@ -107,7 +107,7 @@ SimpleMIDIFile  {
 		file = File(pathName,"r");
 		theTrackNumber = -1;
 		while (
-			{file.pos != file.length},
+			{file.pos < (file.length-8) },
 			{this.processChunk(file)}
 		);
 		file.close;
