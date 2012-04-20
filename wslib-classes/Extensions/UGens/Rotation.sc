@@ -2,7 +2,7 @@
 // and crossfading Select (XFadeSelect)
 // wslib 2005
 
-RotateN : Panner { // rotate an array of channels
+RotateN : MultiOutUGen { // rotate an array of channels
 	*ar { arg n = 0, in;
 		^Array.fill(in.size,
 			{ |i| Select.ar((i + n)%in.size, in); })
@@ -14,7 +14,7 @@ RotateN : Panner { // rotate an array of channels
 	}
 }
 
-RotateL : Panner { // rotate an array of channels with interpolation (linear crossfade)
+RotateL : MultiOutUGen { // rotate an array of channels with interpolation (linear crossfade)
 	*ar { arg n = 0, in;
 		/* if(amt.rate = 'control')
 			{amt = K2A.ar(n); }; */
@@ -30,7 +30,7 @@ RotateL : Panner { // rotate an array of channels with interpolation (linear cro
 	
 }
 
-XFadeRotate : Panner{ // same as RotateL, but with equal power crossfading
+XFadeRotate : MultiOutUGen { // same as RotateL, but with equal power crossfading
 	 *ar { arg n = 0, in;
 		var insize = in.size;
 		^Mix.fill(insize, {|i|
