@@ -197,7 +197,7 @@ SCRequestString {
 		
 		buttons =[["cancel"], ["ok"]];
 		
-		if( GUI.id == \swing ) { modal = false };
+		if( GUI.id != \cocoa ) { modal = false };
 						
 		action = func ? { |inString| inString.postln };
 						

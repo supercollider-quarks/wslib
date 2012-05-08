@@ -1,6 +1,6 @@
 + BHiCut {
 	
-	*magResponse { arg freqs = 1000, sr = 44100, freq, order = 2;
+	*magResponse { arg freqs = 1000, sr = 44100, freq = 1200, order = 2;
 		var rqs, in; 
 		rqs = allRQs.clipAt(order); 
 		
