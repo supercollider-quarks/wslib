@@ -45,6 +45,10 @@ BHiCut : BEQSuite {
 	
 	*filterClass { ^BLowPass }
 	
+	*coeffs { |sr, freq = 1200, order = 2|
+		^[]; // not us ed, only here for EQdef to know the args
+	}
+	
 	*new1 { |rate = 'audio', in, freq, order=2, maxOrder=5| 
 		if( order.isNumber ) {
 			// fixed order: less cpu

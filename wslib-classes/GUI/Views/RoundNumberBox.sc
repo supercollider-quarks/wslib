@@ -204,10 +204,16 @@ RoundNumberBox : RoundView {
 				stringRect = this.stringRect;
 				
 				if( autoScale )
-					{ Pen.transformToRect( stringRect.insetBy(1,0), string.bounds( font ), true, 
-						move: ( left: (0@0.5), right: (1@0.5), center: (0.5@0.5), 
-							middle: (0.5@0.5) )[ align ] ? (0@0.5) );
-					  stringRect = string.bounds( font );
+					{ 
+						stringBounds = string.bounds( font );
+						if( GUI.id == \qt ) { 
+							stringBounds.width = stringBounds.width * 1.2;
+							stringBounds.height = stringBounds.height * 1.3;
+						};
+						Pen.transformToRect( stringRect.insetBy(1,0), stringBounds, true, 
+							move: ( left: (0@0.5), right: (1@0.5), center: (0.5@0.5), 
+								middle: (0.5@0.5) )[ align ] ? (0@0.5) );
+					 	 stringRect = stringBounds;
 					 };
 					
 				//Pen.color = Color.green.alpha_( 0.5 ); // debug
