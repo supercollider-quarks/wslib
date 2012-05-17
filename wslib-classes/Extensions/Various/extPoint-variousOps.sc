@@ -13,7 +13,27 @@
 			.asPoint;
 	}
 	
+	theta_ { |theta = 0|
+		var polar;
+		polar = this.asPolar;
+		polar.theta = theta;
+		polar = polar.asPoint;
+		this.x = polar.x;
+		this.y = polar.y;
+	}
+	
+	rho_ { |rho = 1|
+		var polar;
+		polar = this.asPolar;
+		polar.rho = rho;
+		polar = polar.asPoint;
+		this.x = polar.x;
+		this.y = polar.y;
+	}
+	
 	angle { ^this.theta }
+	angle_ { |angle = 0| this.theta = angle }
+	
 	
 	// unary ops
 	neg { ^this.performOnEach( thisMethod.name ) }
