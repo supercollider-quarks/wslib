@@ -325,13 +325,17 @@ InputRouterGUI {
 				
 			el.amt = Knob( parent, rowHeight @ rowHeight )
 				.applySkin( skin )
-				.skin_( (
+				.value_( inputRouter.compressionSettings[i][ii][1] )
+				.action_({ |sl|  inputRouter.setCompression( i, ii, amt: sl.value ); });
+			
+			if( GUI.scheme == \cocoa ) {
+				el.amt.skin_( (
 					scale:	Color.clear,
 					center: 	Color.gray(0.5, 0.5),
 					level:	Color.black.alpha_(0.7)
 				) )
-				.value_( inputRouter.compressionSettings[i][ii][1] )
-				.action_({ |sl|  inputRouter.setCompression( i, ii, amt: sl.value ); });
+			};
+				
 				
 			StaticText( parent, 20 @ rowHeight )
 				.applySkin( skin )
