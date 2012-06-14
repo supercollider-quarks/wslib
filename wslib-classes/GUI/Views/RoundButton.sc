@@ -14,7 +14,7 @@ RoundButton : RoundView {
 	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
-	var <focusColor, bgColor, <stringColor, <hiliteColor, <borderColor; 
+	var bgColor, <stringColor, <hiliteColor, <borderColor; 
 		// hiliteColor = color of second state if not provided
 	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
@@ -87,6 +87,7 @@ RoundButton : RoundView {
 		
 		radius = radius ?? { rect.width.min( rect.height ) / 2 };
 
+		/*
 		if( this.hasFocus ) // rounded focus rect
 			{
 			Pen.use({
@@ -96,6 +97,7 @@ RoundButton : RoundView {
 				Pen.stroke;
 				});
 			};
+		*/
 			
 		if( inverse )
 			{ lightSide = Color.black.alpha_(0.5);
@@ -176,6 +178,8 @@ RoundButton : RoundView {
 				Pen.roundedRect( rect, radius ).fill;
 				};
 			};
+			
+		this.drawFocusRing( rect, radius );
 		}
 		
 	*paletteExample { arg parent, bounds;

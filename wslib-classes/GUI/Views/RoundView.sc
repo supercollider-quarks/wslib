@@ -11,6 +11,7 @@ RoundView : UserViewHolder {
 	var <shrinkForFocusRing = false; // only when expanded == false
 	
 	var <enabled = true, couldFocus = true;
+	var <focusColor;
 	
 	var <backgroundImage;
 	
@@ -19,7 +20,7 @@ RoundView : UserViewHolder {
 	}
 	
 	*prShouldExpand { arg v;
-		^( [ \cocoa, \qt ].includes( GUI.id ) and: { v.isKindOf( GUI.hLayoutView ).not && 
+		^( [ \cocoa ].includes( GUI.id ) and: { v.isKindOf( GUI.hLayoutView ).not && 
 			{ v.isKindOf( GUI.vLayoutView ).not }  } );
 	}
 	
@@ -106,7 +107,27 @@ RoundView : UserViewHolder {
 		this.refresh;
 		}
 	
+	drawFocusRing { |rect, radius|
+		if( this.hasFocus ) {
+			if( GUI.id === \qt ) {
+				Pen.use({
+					Pen.width = 1.5;
+					Pen.color = Color.white.alpha_(0.75);
+					Pen.roundedRect( rect.insetBy(1,1), radius-1 ).stroke;
+					Pen.color = Color.blue.hue_(0.7).alpha_(0.5);
+					Pen.roundedRect( rect.insetBy(0.5,0.5), radius-0.5 ).stroke
+				});
+			} {
+				Pen.use({
+					Pen.color = focusColor ?? { Color.gray(0.2).alpha_(0.8) };
+					Pen.width = 2;
+					Pen.roundedRect( rect.insetBy(-2,-2), radius + 1 );
+					Pen.stroke;
+				});
+			};
+		};
 	}
+}
 	
 RoundView2 : RoundView { } // still here for backwards compat
 

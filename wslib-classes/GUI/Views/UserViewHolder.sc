@@ -37,6 +37,10 @@ UserViewHolder : ViewHolder2 {
 		// might be called immediately if the view is already visible,
 		// and it could rely on data prepared in the init method.
 		view.drawFunc	= { GUI.use( context, { this.draw; drawFunc.( this )})};
+		if( GUI.id == \qt ) {
+			view.focusLostAction_({ |vw| vw.refresh });
+			view.focusGainedAction_({ |vw| vw.refresh });
+		};
 		^result;
 	}
 	

@@ -150,6 +150,7 @@ SmoothSlider : RoundView {
 			knobPosition = drawBounds.top + ( realKnobSize / 2 )
 						+ ( (drawBounds.height - realKnobSize) * (1- value).max(0).min(1));
 			
+			/*
 			if( this.hasFocus ) // rounded focus rect
 				{
 				Pen.use({
@@ -160,7 +161,8 @@ SmoothSlider : RoundView {
 					Pen.stroke;
 					});
 				};
-				
+			*/
+			
 			Pen.use{	
 			color[0] !? { // base / background
 				//Pen.fillColor = color[0];
@@ -207,6 +209,11 @@ SmoothSlider : RoundView {
 					};
 				};
 				};
+				
+			this.drawFocusRing( 
+				baseRect.insetBy( border.neg , border.neg ), 
+				radius.min( baseRect.width/2) + border 
+			);
 			
 			Pen.use{	
 			
@@ -315,7 +322,7 @@ SmoothSlider : RoundView {
 						radius.min( baseRect.width/2) ).fill;
 					};
 				};
-		
+			
 			};
 		}
 		

@@ -145,10 +145,11 @@ RoundNumberBox : RoundView {
 	draw {
 		var rect, localRadius;
 		var shadeSide, lightSide, stringRect, stringBounds, stringStart, stringWidth;
-		rect = this.drawBounds;
+		rect = this.drawBounds.insetBy(1,1);
 		
 		radius = radius ?? { (rect.height/4).min( rect.width/2 ) };
 		
+		/*
 		if( this.hasFocus ) // rounded focus rect
 			{
 			Pen.use({
@@ -158,6 +159,7 @@ RoundNumberBox : RoundView {
 				Pen.stroke;
 				});
 			};
+		*/
 
 		if( inverse )
 			{ lightSide = Color.black.alpha_(0.5);
@@ -249,10 +251,13 @@ RoundNumberBox : RoundView {
 					};
 				};
 			
+			
+			this.drawFocusRing( rect, radius );
+			
 			} 
 		}
 		
-	stringRect { ^this.drawBounds.insetAll( (radius.asCollection@@[0,3]).maxItem / 2,
+	stringRect { ^this.drawBounds.insetBy(1,1).insetAll( (radius.asCollection@@[0,3]).maxItem / 2,
 				0, (radius.asCollection@@[1,2]).maxItem / 2, 0 );
 			}
 			
