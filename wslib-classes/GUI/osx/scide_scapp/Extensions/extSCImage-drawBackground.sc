@@ -100,7 +100,7 @@
 				24: 'xOR',
 				25: 'plusDarker',
 				26: 'plusLighter'
-			  ).findKeyForValue( key.asSymbol ).postln ? 0;
+			  ).findKeyForValue( key.asSymbol ) ? 0;
 			};
 		^Pen.blendMode_( key );
 		}
