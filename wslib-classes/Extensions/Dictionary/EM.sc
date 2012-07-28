@@ -101,3 +101,75 @@ EM : Environment {
 	}
 	
 }
+
+// ordered variant : keys are sorted by order of addition
+OEM : EM {
+	var <keys;
+	
+	put { |key, value|
+		if( value.isNil ) {
+			keys.remove( key );
+		} {
+			if( keys.isNil or: { keys.includes( key ).not } ) {
+				keys = keys.add(key);
+			};
+		};
+		super.put( key, value );
+	}
+	
+	putFirst { |key, value| this.insert( 0, key, value ); }
+	
+	insert { |index, key, value|
+		keys.remove( key ); // always remove (changes order)
+		if( keys.isNil or: { keys.includes( key ).not } ) {
+			keys = (keys ? {[]}).insert(index, key);
+		};
+		super.put( key, value );
+	}
+	
+	removeAt { |key|
+		keys.remove( key );
+		^super.removeAt( key );
+	}
+	
+	removeAtFail { |key, function|
+		keys.remove( key );
+		^super.removeAtFail( key, function );
+	}
+	
+	atIndex { |index|
+		^this.at((keys ?? {[]})[ index ] );
+	}
+	
+	keysValuesDo { |function|
+		var arr;
+		arr = Array.new(keys.size * 2);
+		keys.do({ |key|
+			arr.add( key );
+			arr.add( this[ key ] );
+		});
+		this.keysValuesArrayDo(arr, function);
+	}
+	
+	keys_ { |newKeys|
+		if( this.prCheckKeys( newKeys ) ) {
+			keys = newKeys;
+		} {
+			"%:keys_ - new keys don't match the existing keys, not using them".warn;
+		};
+	}
+	
+	prCheckKeys { |newKeys|
+		if( keys.size != newKeys.size ) { ^false };
+		keys.do({ |item|
+			if( newKeys.includes( item ).not ) { ^false };
+		});
+		^true
+	}
+	
+	pairsDo { |function|
+		this.keysValuesDo(function);
+	}
+	
+
+}

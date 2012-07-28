@@ -102,7 +102,7 @@ SmoothScrollView {
 					
 		refreshFunc = { this.updateSliders };
 		
-		this.window.drawHook = this.window.drawHook.addFunc( refreshFunc );
+		this.window.drawFunc = this.window.drawFunc.addFunc( refreshFunc );
 		
 		refreshFunc.value;
 		
