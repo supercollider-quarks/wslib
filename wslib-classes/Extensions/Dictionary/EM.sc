@@ -65,6 +65,24 @@ EM : Environment {
 		this.changed( key, value );
 	}
 	
+	atPathFail { arg path, function; // support nested dictionaries
+		var item;
+		item = this;
+		path.do({ arg name;
+			if( item.respondsTo( \at ) ) {
+				item = item.at( name );
+				if( item.isNil ) { ^function.value };
+			} {
+				 ^function.value;
+			};
+		});
+		^item
+	}
+	
+	atPath { arg path;
+		^this.atPathFail(path)
+	}
+	
 	// overwrite super methods
 	stop { |...args|
 		^this.doesNotUnderstand( \stop, *args );
@@ -155,7 +173,8 @@ OEM : EM {
 		if( this.prCheckKeys( newKeys ) ) {
 			keys = newKeys;
 		} {
-			"%:keys_ - new keys don't match the existing keys, not using them".warn;
+			"%:keys_ - new keys don't match the existing keys, not using them"
+				.format(this.class).warn;
 		};
 	}
 	
