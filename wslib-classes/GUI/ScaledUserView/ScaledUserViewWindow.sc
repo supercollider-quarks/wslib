@@ -152,6 +152,10 @@ ScaledUserViewContainer {
 			if( currentBounds != vw.bounds )
 				{ this.setMoveSliderWidths; currentBounds = vw.bounds; }
 			};
+			
+		if( GUI.id === \qt ) {
+			{ this.updateSliderBounds; }.defer(0.01);
+		};
 		}
 		
 	updateSliders { |scaleFlag = true, moveFlag = true|
