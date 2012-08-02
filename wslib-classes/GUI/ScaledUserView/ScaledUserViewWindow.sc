@@ -152,10 +152,6 @@ ScaledUserViewContainer {
 			if( currentBounds != vw.bounds )
 				{ this.setMoveSliderWidths; currentBounds = vw.bounds; }
 			};
-			
-		if( GUI.id === \qt ) {
-			{ this.updateSliderBounds; }.defer(0.01);
-		};
 		}
 		
 	updateSliders { |scaleFlag = true, moveFlag = true|
@@ -178,44 +174,45 @@ ScaledUserViewContainer {
 	updateSliderBounds {
 	
 		var hasH, hasV;
+		var scaleVReallyEnabled;
+		
+		scaleVReallyEnabled = scaleVEnabled and: (userView.keepRatio.not);
 		
 		// show/hide sliders
-		[scaleHEnabled, scaleVEnabled, moveHEnabled, moveVEnabled].do({ |enabled, i|
+		[scaleHEnabled, scaleVReallyEnabled, moveHEnabled, moveVEnabled].do({ |enabled, i|
 			[ scaleSliders[0], scaleSliders[1], moveSliders[0], moveSliders[1] ][i]
 				.visible = enabled;
 			});
-			
-		if( scaleVEnabled ) { scaleSliders[1].visible = userView.keepRatio.not; };	
-		
-		hasH =  (moveSliders[0].visible or: { scaleSliders[0].visible }).binaryValue;
-		hasV =  (moveSliders[1].visible or: { scaleSliders[1].visible }).binaryValue;
+					
+		hasH =  (moveHEnabled or: scaleHEnabled).binaryValue;
+		hasV =  (moveVEnabled or: scaleVReallyEnabled).binaryValue;
 		
 		#hasH, hasV = [ hasH, hasV ] * (sliderWidth + sliderSpacing);
 				
 		// set bounds		
-		if( moveSliders[0].visible )
+		if( moveHEnabled )
 			{ moveSliders[0].bounds = Rect( 
 				0, 
 				composite.bounds.height - sliderWidth, 
 				composite.bounds.width - ( hasV +
-					((scaleSliderLength + sliderSpacing) * scaleSliders[0].visible.binaryValue )
+					((scaleSliderLength + sliderSpacing) * scaleHEnabled.binaryValue )
 					), 
 				sliderWidth );
 			};
 				
-		if( moveSliders[1].visible )
+		if( moveVEnabled )
 			{ moveSliders[1].bounds = Rect( 
 				composite.bounds.width - sliderWidth,  
 				0, 
 				sliderWidth, 
 				composite.bounds.height - (hasH +
-					((scaleSliderLength + sliderSpacing) * scaleSliders[1].visible.binaryValue ) 
+					((scaleSliderLength + sliderSpacing) * scaleVReallyEnabled.binaryValue ) 
 					)
 					
 				);
 			};
 			
-		if( scaleSliders[0].visible )
+		if( scaleHEnabled )
 			{ scaleSliders[0].bounds = Rect(
 				composite.bounds.width - (scaleSliderLength + hasV),  
 		 		composite.bounds.height - sliderWidth, 
@@ -223,7 +220,7 @@ ScaledUserViewContainer {
 		 		sliderWidth );
 			};
 			
-		if( scaleSliders[1].visible )
+		if( scaleVReallyEnabled )
 			{ scaleSliders[1].bounds = Rect( 
 				composite.bounds.width - sliderWidth,  
 	 			composite.bounds.height - (scaleSliderLength + hasH), 
