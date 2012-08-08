@@ -51,10 +51,12 @@ PlayBufCF {
 			startPos = Demand.perform( method, trigger, 0, startPos ) 
 		};
 		
+		lag = 1/lag.asArray.wrapExtend(2);
+		
 		^Mix(	
 			on.collect({ |on, i| 
 				PlayBuf.ar( numChannels, bufnum, rate.wrapAt(i), on, startPos, loop )
-					* Slew.perform( method, on, 1/lag, 1/lag ).sqrt
+					* Slew.perform( method, on, lag[0], lag[1] ).sqrt
 			})
 		);
 		
