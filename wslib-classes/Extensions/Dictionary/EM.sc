@@ -54,6 +54,13 @@ EM : Environment {
 		^super.new(8, nil,nil, true).putPairs( pairs );
 	}
 	
+	*with { | ... args | // args: array of Associations
+		var newColl;
+		newColl = this.new();
+		newColl.addAll(args);
+		^newColl
+	}
+	
 	put { |key, value|
 		super.put( key, value );
 		this.changed( key, value );
@@ -61,8 +68,9 @@ EM : Environment {
 		
 	putGet { |key, value|
 		var res;
-		res = super.putGet( key, value );
-		this.changed( key, value );
+		res = this.at( key );
+		this.put( key, value );
+		^res;
 	}
 	
 	atPathFail { arg path, function; // support nested dictionaries
@@ -117,6 +125,36 @@ EM : Environment {
 		};
 		^this.superPerformList(\doesNotUnderstand, selector, args);
 	}
+	
+	printOn { arg stream, itemsPerLine = 5;
+		var max, itemsPerLinem1, i=0;
+		itemsPerLinem1 = itemsPerLine - 1;
+		max = this.size;
+		stream << this.class.name << "( ";
+		this.keysValuesDo({ arg key, val;
+			stream <<< key << ", " << val;
+			if ((i=i+1) < max, { stream.comma.space;
+				if (i % itemsPerLine == itemsPerLinem1, { stream.nl.space.space });
+			});
+		});
+		stream << " )";
+	}
+
+	storeOn { arg stream, itemsPerLine = 5;
+		var max, itemsPerLinem1, i=0;
+		itemsPerLinem1 = itemsPerLine - 1;
+		max = this.size;
+		stream << this.class.name << "( ";
+		this.keysValuesDo({ arg key, val;
+			stream <<< key << ", " <<< val;
+			if ((i=i+1) < max, { stream.comma.space;
+				if (i % itemsPerLine == itemsPerLinem1, { stream.nl.space.space });
+			});
+		});
+		stream << " )";
+	}
+
+
 	
 }
 
