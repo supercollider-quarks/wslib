@@ -10,7 +10,7 @@
 		var cpuMeter, composite;
 		
 		
-		font = Font("Monaco", 9);
+		font = Font(Font.defaultSansFace, 11);
 		onColor = onColor ? Color.new255(74, 120, 74);
 		
 		if (window.notNil, { ^window.front });
@@ -152,7 +152,7 @@
 		
 			infoString = GUI.staticText.new(composite, Rect(0,0, 250, 18));
 		infoString.string = "CPU: %/%\tSynths/Defs: %/%"			.format( "?", "?", "?", "?" );
-		infoString.font_( GUI.font.new( "Monaco", 9 ) );
+		infoString.font_( font );
 		
 		/*
 		cpuMeter = SCLevelIndicator( composite, 192@18 )
@@ -177,7 +177,7 @@
 				
 				infoString.string =
 					"CPU: %/%\tSynths/Defs: %/%"
-						.format(avgCPU.round(0.1),  peakCPU.round(0.1), 
+						.format(avgCPU.asStringWithFrac(1),  peakCPU.asStringWithFrac(1), 
 							numSynths, numSynthDefs );
 				
 				/*
