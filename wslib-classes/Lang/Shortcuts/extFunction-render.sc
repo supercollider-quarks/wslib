@@ -27,6 +27,7 @@
 		// get number of channels from Function
 		numChannels = this.value.asCollection.size; 
 		options = options ? Score.options;
+		options = options.deepCopy; // copy before we modify
 		options.numOutputBusChannels = numChannels;
 		
 		// create one synth instance at nodeID 1000
