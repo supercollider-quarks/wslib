@@ -11,18 +11,21 @@ LineView : UserViewHolder {
 		bounds = bounds.asRect;
 		if( bounds.width < bounds.height )
 			{ orientation = \v };
-		if( orientation == \h )
-			{ width = bounds.height }
-			{ width = bounds.width };
+		if( orientation == \h ) { 
+			width = bounds.height;
+			this.bounds = this.bounds.width_( parent.bounds.width - (margin * 2) );
+		} { 
+			width = bounds.width;
+		};
 		color = Color.gray(0.25).alpha_(0.5);
 		this.canFocus_( false );		
 	}
 	
 	draw {
-		var realMargin, bounds;
+		var realMargin = 0, bounds;
 		Pen.color_( color );
 		Pen.width_( width );
-		realMargin = margin * width;
+		//realMargin = margin * width;
 		bounds = this.drawBounds;
 		switch ( orientation, 
 			\h, { Pen.line( 
@@ -50,7 +53,11 @@ LineView : UserViewHolder {
 			{ this.bounds.width }; }; 
 		this.refresh;
 		}
-	margin_ { |newMargin| margin = newMargin; this.refresh; }
+	margin_ { |newMargin| 
+		margin = newMargin; 
+		this.bounds = this.bounds.width_( view.parent.bounds.width - (margin * 2) );
+		this.refresh; 
+	}
 		
 	alpha { ^color.alpha }
 	alpha_ { |newAlpha| color.alpha_( newAlpha ); this.refresh; }
