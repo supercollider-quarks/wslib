@@ -133,20 +133,28 @@ DrawIcon {
 					square.width.neg / 1.5, 0  ) );
 				},
 				
-			return:	{ | rect| // stripe and backwards triangle ( |< )
-				var square, wd;
+			skip: { | rect, angle = 0| // triangle and stripe ( >| )
+				var square, wd, w2;
 				square = Rect.aboutPoint( rect.center, 
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
-						
+					
+				w2 = square.width / 2;
 				wd = square.width * 1/4;
-	
-				Pen.moveTo( square.rightTop );
-				Pen.lineTo( (square.left + wd)@square.center.y );
-				Pen.lineTo( square.rightBottom );
-				Pen.fill;
 				
-				Pen.fillRect( square.copy.width_( wd ) );
+				Pen.use({	
+					Pen.translate( *square.center.asArray );
+					Pen.rotate( angle );
+					Pen.moveTo( ( w2 @ w2 ).neg );
+					Pen.lineTo( (w2 - wd) @ 0);
+					Pen.lineTo( w2.neg @ w2 );
+					Pen.addRect( Rect( w2 - wd, w2.neg, wd, 2 * w2 ) );
+					Pen.fill;
+				});
+				},
+				
+			return:	{ | rect| // stripe and backwards triangle ( |< )
+				drawFuncs[ \skip ].value( rect, pi );
 				},
 				
 			forward:	{ | rect| // 2 triangles ( >> )
@@ -568,30 +576,26 @@ DrawIcon {
 				
 				},
 			
-			roundArrow: { |rect, startAngle = -0.5pi, arcAngle = 1.5pi|
+			roundArrow: { |rect, startAngle = -0.5pi, arcAngle = 1.5pi, width = 0.25|
 				var square, radius, wd, arrowSide;
 				square = Rect.aboutPoint( rect.center, 
 						rect.width.min( rect.height ) / 4, 
 						rect.width.min( rect.height ) / 4 );
 				
 				radius = square.height / 2;
-				wd = radius * (1/4);
+				wd = radius * width;
 				arrowSide = (wd*1.5) * 2.sqrt;
-						
-						
-				Pen.moveTo( Polar( radius - (wd/2), startAngle ).asPoint + square.center );
-				Pen.addArc( square.center, radius, startAngle, arcAngle ); //outer circle
-				Pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint 
-					+ square.center );
+				
+				Pen.addAnnularWedge( square.center, radius - wd, radius, startAngle, arcAngle );
+				Pen.moveTo( Polar( radius + wd, startAngle + arcAngle ).asPoint + square.center );
 				Pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint +
 						Polar( arrowSide, (startAngle + arcAngle) + 0.75pi ).asPoint 
 							+ square.center);
 				Pen.lineTo( Polar( radius - (wd*2),  startAngle + arcAngle ).asPoint 
 							+ square.center );
-				Pen.addArc( square.center, radius - wd, startAngle + arcAngle, arcAngle.neg );
-				Pen.lineTo(  Polar( radius - (wd/2), startAngle ).asPoint + square.center );
-				
+				Pen.lineTo( Polar( radius + wd, startAngle + arcAngle ).asPoint + square.center ); 
 				Pen.fill;
+			
 				
 				},
 			
