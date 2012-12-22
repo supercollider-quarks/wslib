@@ -27,13 +27,14 @@ RoundButton : RoundView {
 		arg x, y, modifiers, buttonNumber, clickCount;
 		if( enabled ) {	
 			if( x.isNil or: { this.drawBounds.containsPoint(x@y) } )
-				{ mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		       pressed = true; this.refresh; };
+				{
+				pressed = true; this.refresh; };
 			};
 		}
 	
 	mouseUp {arg x, y, modifiers;
 		if( pressed == true ) // pressed can never be true if not enabled
-			{ mouseUpAction.value(this, x, y, modifiers);
+			{ 
 			  pressed = false; 
 			  this.valueAction = value + 1; };
 		//this.refresh;	

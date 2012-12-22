@@ -345,7 +345,6 @@ SmoothSlider : RoundView {
 		if( enabled ) {	
 			
 			hit = Point(x,y);
-			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
 			
 			if( mode == \jump )
 				{ // move slider to mouse point
