@@ -84,6 +84,7 @@ XYView : UserViewHolder {
 	}
 	
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
+		mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);
 		if( clickCount > 1 ) { this.value = 0@0 }; // reset
 		mouseDownPoint = (x@y);
 		mouseDownValue = this.value;
@@ -91,13 +92,15 @@ XYView : UserViewHolder {
 	}
 
 	
-	mouseMove { arg x, y, modifiers, buttonNumber, clickCount;
+	mouseMove { arg x, y, modifiers;
+		mouseMoveAction.value(this, x, y, modifiers);
 		this.value_( mouseDownValue + 
 			(((x@y) - mouseDownPoint) * stepSize) );
 		action.value( this, x, y );
 	}
 	
-	mouseUp { arg x, y, modifiers, buttonNumber, clickCount;
+	mouseUp { arg x, y, modifiers, buttonNumber;
+		mouseUpAction.value(this, x, y, modifiers, buttonNumber);
 		if( returnAfterMouseUp ) { this.value_( mouseDownValue ); };
 	}
 }

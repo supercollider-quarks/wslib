@@ -323,9 +323,10 @@ RoundNumberBox : RoundView {
 		if( enabled )
 		{	
 			hit = Point(x,y);
+			mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);
 			startHit = hit;
 			if (scroll == true, { inc = this.getScale(modifiers) });			
-			mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);
+			
 		};
 	}
 
@@ -357,7 +358,10 @@ RoundNumberBox : RoundView {
 		};
 	}
 	
-	mouseUp{ if( enabled ) { inc=1 }; }
+	mouseUp{  |x, y, modifiers, buttonNumber|
+		if( enabled ) { inc=1 }; 
+		mouseUpAction.value( this, x, y, modifiers, buttonNumber );
+ }
 	
 	keyDown { arg char, modifiers, unicode;
 		var zoom = this.getScale(modifiers);

@@ -345,7 +345,7 @@ SmoothSlider : RoundView {
 		if( enabled ) {	
 			
 			hit = Point(x,y);
-			
+			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
 			if( mode == \jump )
 				{ // move slider to mouse point
 				bounds = this.drawBounds;
@@ -391,6 +391,7 @@ SmoothSlider : RoundView {
 		var pt, angle, inc = 0;
 		var bounds, oldValue, delta;
 		if( enabled ) {	
+			mouseMoveAction.value( this, x, y, modifiers );
 			bounds = this.drawBounds;
 			if (modifiers != 1048576, { // we are not dragging out - apple key
 				oldValue = value;

@@ -300,6 +300,7 @@ SmoothRangeSlider : SmoothSlider {
 
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
 		if( enabled ) {	
+			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
 			hit = Point(x,y);
 			hitValue = value;
 			if( mode == \drag ) { 
@@ -315,6 +316,7 @@ SmoothRangeSlider : SmoothSlider {
 		var bounds;
 		var pos, closest;
 		if( enabled ) {	
+			mouseMoveAction.value( this, x, y, modifiers );
 			bounds = this.drawBounds;
 			if (modifiers != 1048576, { // we are not dragging out - apple key
 				
@@ -351,7 +353,10 @@ SmoothRangeSlider : SmoothSlider {
 		};
 	}
 	
-	mouseUp { nowMoving = nil; }
+	mouseUp { |x, y, modifiers, buttonNumber|
+		nowMoving = nil; 
+		mouseUpAction.value( this, x, y, modifiers, buttonNumber ); 
+	}
 	
 	clipValue { |active = true|
 		var newVal, range;

@@ -24,10 +24,10 @@ ViewHolder2 {
 
 		view	// install double behaviour
 			.action_({          arg view ... rest; action.( this, *rest )})
-			.mouseDownAction_({ arg view ... rest; this.mouseDown( *rest ); mouseDownAction.( this, *rest )})
-			.mouseUpAction_({   arg view ... rest; this.mouseUp( *rest );   mouseUpAction.( this, *rest )})
-			.mouseOverAction_({ arg view ... rest; this.mouseOver( *rest ); mouseOverAction.( this, *rest )})
-			.mouseMoveAction_({ arg view ... rest; this.mouseMove( *rest ); mouseMoveAction.( this, *rest )})
+			.mouseDownAction_({ arg view ... rest; this.mouseDown( *rest ); })
+			.mouseUpAction_({   arg view ... rest; this.mouseUp( *rest ); })
+			.mouseOverAction_({ arg view ... rest; this.mouseOver( *rest ); })
+			.mouseMoveAction_({ arg view ... rest; this.mouseMove( *rest ); })
 			.onClose_({         arg view ... rest; this.viewDidClose; protect { onClose.( this, *rest )} { this.view = nil }})
 			;
 		if( view.respondsTo( 'focusGainedAction_' ), {    // currently no support in cocoa
@@ -119,10 +119,10 @@ ViewHolder2 {
 	init { } // this is called after instantiation; put any initialization code here
 	
 	// mouse control. these methods get called before user registered actions
-	mouseDown { }
-	mouseUp { }
-	mouseOver { }
-	mouseMove { }
+	mouseDown { |...rest| mouseDownAction.( this, *rest ) }
+	mouseUp { |...rest| mouseUpAction.( this, *rest ) }
+	mouseOver { |...rest| mouseOverAction.( this, *rest ) }
+	mouseMove { |...rest| mouseMoveAction.( this, *rest ) }
 	
 	// for the three key methods, returning nil will bubble up events
 	keyDown { ^nil }				// corresponds to defaultKeyDownAction
