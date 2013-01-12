@@ -35,8 +35,8 @@
 	angle_ { |angle = 0| this.theta = angle }
 	
 	// conversion to float/int
-	asFloat { ^[x,y].mean }
-	asInt { ^this.asFloat.asInt }
+	asFloat { ^x.asFloat }
+	asInt { ^x.asInt }
 	
 	// unary ops
 	neg { ^this.performOnEach( thisMethod.name ) }
