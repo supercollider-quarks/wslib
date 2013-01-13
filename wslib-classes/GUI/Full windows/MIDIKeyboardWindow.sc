@@ -113,12 +113,12 @@ KeyboardWindow {
 		var scale;
 		//var blackKeysStructure = [0,1,1,0,1,1,1];
 					
-		window = SCWindow( "keys (channel " ++ channel ++ " )", bounds );
+		window = Window( "keys (channel " ++ channel ++ " )", bounds );
 		window.view.background_( Color.white );	
 		window.front;
 				
 		scale = KeyboardWindow.scale;			
-		userView = SCUserView( window, window.view.bounds ).resize_( 5 );
+		userView = UserView( window, window.view.bounds ).resize_( 5 );
 		
 		userView.mouseDownAction_({|v,x,y| 
 			var theKey = ( (x / bounds.width) * nWhiteKeys ) + ( (startOctave + 2) * 7 );
@@ -182,10 +182,10 @@ KeyboardWindow {
 			});
 			
 		
-		window.drawHook = { | theWindow |
+		userView.drawFunc = { | theWindow |
 			bounds = theWindow.bounds;
 			//userView.bounds = bounds.copy.top_(0).left_(0);
-			Color.black.set;
+			Pen.color = Color.black;
 			
 			nWhiteKeys.do( { |i|
 				var position, keyWidth;
@@ -193,13 +193,13 @@ KeyboardWindow {
 				position = keyWidth * i;
 				if( activeKeys.includes( i + ( (startOctave + 2) * 7 )  ) )
 					{ Pen.width = keyWidth;
-						Color.gray(0.66).blend(Color.red, (notesDict.at( 
-							i + ( (startOctave + 2) * 7 ) ) ? 0.5) / 127 ).set;
+						Pen.color = Color.gray(0.66).blend(Color.red, (notesDict.at( 
+							i + ( (startOctave + 2) * 7 ) ) ? 0.5) / 127 );
 						Pen.moveTo( (keyWidth * (i + 0.5))@0 );
 						Pen.lineTo( (keyWidth * (i + 0.5))@bounds.height );
 						Pen.stroke;  };
 					
-				Color.black.set;
+				Pen.color = Color.black;
 				Pen.width = 1;
 				Pen.moveTo( position@0 );
 				Pen.lineTo( position@bounds.height );
@@ -207,10 +207,10 @@ KeyboardWindow {
 				if( blackKeysStructure.wrapAt(i) == 1 )
 					{ 	if( activeKeys.includes( (i - 0.5) + 
 									( (startOctave + 2) * 7 ) ) )
-							{ Color.gray(0.33).blend( Color.red, 
+							{ Pen.color = Color.gray(0.33).blend( Color.red, 
 								(notesDict.at( 
 									(i - 0.5) + 
-										( (startOctave + 2) * 7 ) ) ? 0.5) / 127 ).set; };
+										( (startOctave + 2) * 7 ) ) ? 0.5) / 127 ); };
 						Pen.width = keyWidth * 0.5;
 						Pen.moveTo( position@0 );
 						Pen.lineTo( position@(bounds.height * 0.66) );
