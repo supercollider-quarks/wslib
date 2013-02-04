@@ -12,6 +12,7 @@ AbsLayout {
 	var <absoluteBounds;
 	
 	*new { arg parent; 
+		this.deprecated( thisMethod );
 		^super.newCopyArgs(parent.absoluteBounds);
 	}
 	
@@ -37,6 +38,7 @@ AbsLayout {
 + Object { // should kick in as soon as relativeOrigin_ is removed
 	
 	relativeOrigin_ { |bool|
+		this.deprecated( thisMethod );
 		if( this.respondsTo( \decorator_ ) ) // both swingosc and osx
 			{ if( this.decorator.class != FlowLayout ) // prevent flowlayout removal
 				{ if( bool == false )

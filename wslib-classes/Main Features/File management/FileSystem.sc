@@ -9,6 +9,7 @@ FileSystemType {
 		}
 		
 	*fromPath { |path|
+		this.deprecated( thisMethod );
 		path = (path ? "~/scwork/FileSystem").standardizePath;
 		if( path.isFolder )
 			{ ^FileSystemType( 
@@ -29,6 +30,7 @@ FileSystem {
 	var <location, <projectName, <fileSystemType;
 	
 	*new { |location, projectName, fileSystemType, check = true|
+		this.deprecated( thisMethod );
 		location = (location ? "~/scwork/").standardizePath;
 		projectName = projectName ? "FileSystem";
 		fileSystemType = fileSystemType ? FileSystemType.default;

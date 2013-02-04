@@ -11,6 +11,7 @@ PlayBufFree {
 	
 	*ar { arg numChannels, bufnum=0, rate=1.0, trigger=1.0, startPos=0.0, loop = 0.0;
 		var out;
+		this.deprecated( thisMethod, Meta_PlayBuf.findMethod(\ar) );
 		out = PlayBuf.ar( numChannels, bufnum, rate, trigger, startPos, loop);
 		FreeSelfWhenDone.kr( out );
 		^out;

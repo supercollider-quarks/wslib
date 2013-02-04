@@ -20,6 +20,7 @@ SynthTracker {
 	
 	*new { arg defName, args, canRelease, maxCount = inf, addAction = \addToTail;
 		var synth, alreadyRunningSynths;
+		this.deprecated( thisMethod );
 		defName = defName.asSymbol;
 		//SynthTracker.initialize;
 		if( runningSynths.at(defName).size < maxCount )

@@ -17,11 +17,13 @@ FolderLibraryElement {
 	var <>type = 'folder'; // the only type for now
 	
 	*new { |name = "New", contents, type = 'folder'|
+		this.deprecated( thisMethod );
 		^super.newCopyArgs( name.asString, contents ? [], type );
 		}
 		
 	*newFromPath { |path = "New/New"|
 		var newElement;
+		this.deprecated( thisMethod );
 		path = path.standardizePath.split( $/ );
 		newElement = FolderLibraryElement( path.last, [], 'folder');
 		path.pop;
@@ -96,6 +98,7 @@ FolderLibrary : FolderLibraryElement {
 	var <>contents;
 	
 	*new { |baseName = "~/scwork", contents|
+		this.deprecated( thisMethod );
 		if( contents.isString )
 			{ contents = [ FolderLibraryElement.newFromPath( contents ) ] };
 		^super.newCopyArgs( baseName.standardizePath, contents ? [] );

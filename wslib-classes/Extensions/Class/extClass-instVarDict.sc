@@ -40,17 +40,5 @@
 		^out;
 		
 		}
-		
-	*testMethod { |a = 0,b = 1,c|
-			var names, values, dict;
-			dict = ();
-			names = thisMethod.argNames[1..];
-			values = [ a,b,c ];
-			names.do({ |name, i|
-				if( values[i].notNil )
-					{ dict.put( name, values[i] ) };
-				});
-			^dict;
-		}
 	
 	}

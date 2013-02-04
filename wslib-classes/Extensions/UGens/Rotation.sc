@@ -1,33 +1,31 @@
 // Rotation of input arrays (RotateL, RotateN, XFadeRotate)
-// and crossfading Select (XFadeSelect)
-// wslib 2005
+// wslib 2005 / 2012
 
-RotateN : MultiOutUGen { // rotate an array of channels
-	*ar { arg n = 0, in;
-		^Array.fill(in.size,
-			{ |i| Select.ar((i + n)%in.size, in); })
+RotateN { // rotate an array of channels
+	
+	*new1 { |rate, n = 0, array|
+		var selector = UGen.methodSelectorForRate(rate);
+		var size = array.size;
+		^Array.fill(size, { |i| 
+			this.selectClass.perform(selector, (i + n)%size, array ); 
+		})
 	}
 	
-	*kr { arg n = 0, in;
-		^Array.fill(in.size,
-			{ |i| Select.kr((i + n)%in.size, in); })
+	*ar { arg n = 0, array;
+		^this.new1(\audio, n, array);
 	}
+	
+	*kr { arg n = 0, array;
+		^this.new1(\control, n, array);
+	}
+		
+	*selectClass { ^Select }
 }
 
-RotateL : MultiOutUGen { // rotate an array of channels with interpolation (linear crossfade)
-	*ar { arg n = 0, in;
-		/* if(amt.rate = 'control')
-			{amt = K2A.ar(n); }; */
-		^Array.fill(in.size,
-			{ |i| SelectL.ar((i + n)%in.size, in); });
-	} 
+RotateL : RotateN { // rotate an array of channels with interpolation (linear crossfade)
 	
-	
-	*kr { arg n = 0, in;
-		^Array.fill(in.size,
-			{ |i| SelectL.kr((i + n)%in.size, in); })
-	}
-	
+	*selectClass { ^SelectL }
+		
 }
 
 XFadeRotate : MultiOutUGen { // same as RotateL, but with equal power crossfading
@@ -46,9 +44,9 @@ XFadeRotate : MultiOutUGen { // same as RotateL, but with equal power crossfadin
 		}
 	
 	}
-	
-SelectL : UGen { // select and interpolate
-	*ar { arg which, array, envDiv = 10;
+
+SelectL : UGen { // select and interpolate // does wrap!!
+	*ar { arg which, array;
 		var whichfrac, whichfloor;
 		// if 'which' is .kr klicks are heard at the turning points..
 		// use .arSwitch to avoid this (or use K2A.ar on the 'which' input)

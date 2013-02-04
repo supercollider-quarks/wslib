@@ -7,6 +7,7 @@ Note {  // based on midiname.sc - part of wslib
 	classvar defaultname = "C3";
 
 	*new { |name, midi, freq, cents = 0|
+		this.deprecated( thisMethod );
 		#name, midi, freq, cents = Note.calculate(name, midi, freq, cents);
 		^super.new.init(name, midi, freq, cents);
 		}

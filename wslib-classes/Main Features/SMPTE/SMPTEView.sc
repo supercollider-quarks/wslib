@@ -6,6 +6,7 @@ SMPTEView { // fps = 1000
 	var <>minTime = 0, <>maxTime = 62330.591114739;
 	
 	*new { |parent, bnds, fontSize = 20| // bounds can be point; only top and left are used anyway
+		this.deprecated( thisMethod );
 		^super.newCopyArgs( parent ).init( bnds ? (0@0), fontSize );
 		}
 	

@@ -160,7 +160,7 @@ SegWarp : Warp {
 
 + Env {
 	asWarp { ^SegWarp( this ); }
-	asSpec { ^ControlSpec(0,1,this) }
+	asSpec { ^ControlSpec(this.levels.minItem,this.levels.maxItem,this) }
 	}
 
 + SequenceableCollection {

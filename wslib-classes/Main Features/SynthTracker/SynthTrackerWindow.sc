@@ -7,6 +7,7 @@ SynthTrackerWindow {
 	
 	*new { arg names, mode = 'toggle'; //only mode so far
 		var closeFunc;
+		this.deprecated( thisMethod );
 		SynthTracker.initialize;
 		if(names.isNil)
 			{ names = SynthTracker.isReleasable.keys; };

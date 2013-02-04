@@ -1,9 +1,10 @@
 + File {
 
-	*isWesleyanBuild { ^File.getcwd.basename == "SC3" } // simple check
+	*isWesleyanBuild { this.deprecated( thisMethod ); ^File.getcwd.basename == "SC3" } // simple check
 	
 	*getBuildDate {
 		var out, file;
+		this.deprecated( thisMethod );
 		if( File.isWesleyanBuild )
 			{ file = File(String.scDir ++ 
 				"/SuperCollider.app/Contents/Resources/English.lproj/Credits.rtf","r");

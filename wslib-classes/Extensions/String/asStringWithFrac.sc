@@ -12,5 +12,12 @@
 	}
 	
 + ArrayedCollection {
-	preExtend { |size, item| ^this.reverse.extend( size, item ).reverse } // optimize?
+	preExtend { |size, item| 
+		var arraySize;
+		case { (arraySize = this.size) > size } {
+			^this[ arraySize - size .. ];
+		} { arraySize < size } {
+			^(item!(size-arraySize)) ++ this;
+		} { ^this };
 	}
+}
