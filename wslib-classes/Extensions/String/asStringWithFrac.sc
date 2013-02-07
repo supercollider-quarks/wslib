@@ -17,7 +17,7 @@
 		case { (arraySize = this.size) > size } {
 			^this[ arraySize - size .. ];
 		} { arraySize < size } {
-			^(item!(size-arraySize)) ++ this;
+			^(item!(size-arraySize)).as(this.class) ++ this;
 		} { ^this };
 	}
 }
