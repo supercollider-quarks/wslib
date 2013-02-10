@@ -6,8 +6,10 @@
 	
 + Float {
 	asStringWithFrac { |fracSize = 3|
-		^(["-", "", ""][ this.sign + 1 ] ++ this.abs.floor.asString ++ "." ++ 
-			( this.abs.frac* (10**fracSize) ).round(1).asInt.asStringToBase(10,fracSize));
+		var val;
+		val = this.round( 10 ** (fracSize.neg) );
+		^(val.asInt.asString ++ "." ++ 
+			( val.abs.frac* (10**fracSize) ).round(1).asInt.asStringToBase(10,fracSize));
 		}
 	}
 	
