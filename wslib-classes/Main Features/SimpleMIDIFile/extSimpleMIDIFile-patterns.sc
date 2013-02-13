@@ -38,7 +38,7 @@
 			inTracks = 2, inTempo = 120, timeSignature|
 		var mf;
 		mf = this.new( "~/Desktop/fromPattern.mid" ).init1( inTracks, inTempo, timeSignature );
-		^mf.fromPattern( pattern );
+		^mf.fromPattern( pattern, maxEvents, maxAmp, startTime );
 	}
 		
 	fromPattern {	|pattern, maxEvents = 1000, maxAmp = 0.2, startTime = 0|
