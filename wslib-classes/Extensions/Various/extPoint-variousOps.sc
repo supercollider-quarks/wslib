@@ -7,10 +7,26 @@
 	asControlInput { ^this.asArray }
 	asOSCArgEmbeddedArray { | array| ^this.asArray.asOSCArgEmbeddedArray(array) }
 	
-	performOnEach { arg selector ...args; // more optimization possible?
-		args = args.collect(_.asArray);
-		^this.asArray.collect({ |item, i| item.perform( selector, *args.collect(_.wrapAt(i)) ) })
-			.asPoint;
+	performOnEach { arg selector ...args;
+		^Point( 
+			x.performList( selector, args ), 
+			y.performList( selector, args )
+		);
+	}
+	
+	binaryPerformOnEach { arg selector ...args;
+		var xargs, yargs;
+		xargs = Array.new(args.size);
+		yargs = Array.new(args.size);
+		args.do({ |item| 
+			item = item.asArray;
+			xargs.add( item[0] );
+			yargs.add( item.wrapAt(1) );
+		});
+		^Point( 
+			x.performList( selector, xargs ), 
+			y.performList( selector, yargs )
+		);
 	}
 	
 	theta_ { |theta = 0|
@@ -73,49 +89,49 @@
 	softclip { ^this.performOnEach( thisMethod.name ) }
 	
 	// binary ops
-	pow { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	min { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	max { arg that=0, adverb; ^this.performOnEach( thisMethod.name, that, adverb )}
-	roundUp { arg that=1.0, adverb; ^this.performOnEach( thisMethod.name, that, adverb )}
+	pow { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	min { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	max { arg that=0, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb )}
+	roundUp { arg that=1.0, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb )}
 	
-	clip2 { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	fold2 { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	wrap2 { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
+	clip2 { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	fold2 { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	wrap2 { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
 
-	excess { arg that, adverb;  ^this.performOnEach( thisMethod.name, that, adverb ) }
-	firstArg { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	rrand { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
-	exprand { arg that, adverb; ^this.performOnEach( thisMethod.name, that, adverb ) }
+	excess { arg that, adverb;  ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	firstArg { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	rrand { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	exprand { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
 	
 	// other methods
-	clip { arg lo, hi; ^this.performOnEach( \clip, lo, hi ) }
-	wrap { arg lo, hi; ^this.performOnEach( \wrap, lo, hi ) }
-	fold { arg lo, hi; ^this.performOnEach( \fold, lo, hi ) }
+	clip { arg lo, hi; ^this.binaryPerformOnEach( \clip, lo, hi ) }
+	wrap { arg lo, hi; ^this.binaryPerformOnEach( \wrap, lo, hi ) }
+	fold { arg lo, hi; ^this.binaryPerformOnEach( \fold, lo, hi ) }
 		
 	linlin { arg inMin = 0, inMax = 1, outMin = 0, outMax = 1, clip=\minmax;
-		^this.performOnEach( \linlin, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \linlin, inMin, inMax, outMin, outMax, clip) }
 		
 	linexp { arg inMin = 0, inMax = 1, outMin = 0.001, outMax = 1, clip=\minmax;
-		^this.performOnEach( \linexp, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \linexp, inMin, inMax, outMin, outMax, clip) }
 		
 	explin { arg inMin = 0.001, inMax = 1, outMin = 0, outMax = 1, clip=\minmax;
-		^this.performOnEach( \explin, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \explin, inMin, inMax, outMin, outMax, clip) }
 		
 	expexp { arg inMin = 0.001, inMax = 1, outMin = 0.001, outMax = 1, clip=\minmax;
-		^this.performOnEach( \expexp, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \expexp, inMin, inMax, outMin, outMax, clip) }
 		
 	lincurve { arg inMin = 0, inMax = 1, outMin = 0, outMax = 1, curve = -4, clip=\minmax;
-		^this.performOnEach( \lincurve, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \lincurve, inMin, inMax, outMin, outMax, clip) }
 		
 	curvelin { arg inMin = 0, inMax = 1, outMin = 0, outMax = 1, curve = -4, clip=\minmax;
-		^this.performOnEach( \curvelin, inMin, inMax, outMin, outMax, clip) }
+		^this.binaryPerformOnEach( \curvelin, inMin, inMax, outMin, outMax, clip) }
 	
 	bilin { arg inCenter, inMin, inMax, outCenter, outMin, outMax, clip=\minmax;
-		^this.performOnEach( \bilin, inMin, inMax, outCenter, outMin, outMax, clip) 
+		^this.binaryPerformOnEach( \bilin, inMin, inMax, outCenter, outMin, outMax, clip) 
 	}
 	
 	biexp { arg inCenter, inMin, inMax, outCenter, outMin, outMax, clip=\minmax;
-		^this.performOnEach( \biexp, inMin, inMax, outCenter, outMin, outMax, clip) 
+		^this.binaryPerformOnEach( \biexp, inMin, inMax, outCenter, outMin, outMax, clip) 
 	}
 	
 	// hmmm... dubious... (works for ControlSpec though)

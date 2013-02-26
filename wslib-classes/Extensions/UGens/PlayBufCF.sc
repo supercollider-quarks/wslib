@@ -161,3 +161,29 @@ PlayBufAlt {
 	
 	
 	}
+	
+SelectCF {
+	
+	*new { |which, array, lag = 0.1, equalPower = 1|
+		^(array * this.getLevels( which, array.size, lag, equalPower )).sum;
+	}
+	
+	*ar { |which, array, lag = 0.1, equalPower = 1|
+		^this.new( which, array, lag, equalPower );
+	}
+	
+	*kr { |which, array, lag = 0.1, equalPower = 1|
+		^this.new( which, array, lag, equalPower );
+	}
+	
+	*getLevels { |which, n = 10, lag = 0.1, equalPower = 1|
+		var method = \ar;
+		if(which.rate == \control ) { method = \kr };
+		lag = 1/lag.asArray.wrapExtend(2);
+		^n.collect({ |i|
+			var on;
+			on = InRange.perform( method, which, i-0.5, i+0.5 );
+			Slew.perform( method, on, lag[0], lag[1] )**(1 - (equalPower*0.5));
+		});
+	}
+}
