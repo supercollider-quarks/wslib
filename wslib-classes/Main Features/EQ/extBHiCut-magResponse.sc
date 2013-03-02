@@ -12,3 +12,19 @@
 	}
 	
 }
+
++ LRHiCut {
+	
+	*magResponse { arg freqs = 1000, sr = 44100, freq = 1200, order = 2;
+		^BHiCut.magResponse( freqs, sr, freq, order ).squared;
+	}
+	
+}
+
++ LRLowCut {
+	
+	*magResponse { arg freqs = 1000, sr = 44100, freq = 1200, order = 2;
+		^BLowCut.magResponse( freqs, sr, freq, order ).squared;
+	}
+	
+}

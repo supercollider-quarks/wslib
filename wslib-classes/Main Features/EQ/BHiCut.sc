@@ -112,6 +112,15 @@ LRLowCut : BLowCut { // dual cascaded butterworth - use for crossovers
 	
 }
 
-LRHiCut : LRLowCut { 
-	*filterClass { ^BHiPass }
+LRHiCut : BHiCut {
+	
+	*ar { |in, freq, order=2, maxOrder=5|
+		in = this.new1( 'audio', in, freq, order, maxOrder );
+		^this.new1( 'audio', in, freq, order, maxOrder );
+	}
+	
+	*kr { |in, freq, order=2, maxOrder=5|
+		in = this.new1( 'control', in, freq, order, maxOrder );
+		^this.new1( 'control', in, freq, order, maxOrder );
+	}
 }
