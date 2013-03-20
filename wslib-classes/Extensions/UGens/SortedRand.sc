@@ -45,3 +45,38 @@ SortedRand {
 	}
 	
 }
+
+Scramble {
+	
+	// scramble an array
+	// if trig == 1, scrambling will be performed once at init
+	// trig can not be audio rate
+	
+	// this Pseudo-UGen can easily use up a lot of UGens. At array sizes > 12
+	// the ugen graph will become too large to send (must load in such cases).
+	// Arrays of size > 100 will crash the Server
+	
+	// functionality like this could probably be made much more efficient as a real UGen in c++
+	
+	*ar { |array, trig = 1|
+		^Select.ar( this.indices( array.size, trig ), array );
+	}
+	
+	*kr { |array, trig = 1|
+		^Select.kr( this.indices( array.size, trig ), array );
+	}
+	
+	*indices { |size = 10, trig = 1|
+		var weights;
+		weights = DC.kr(1.dup(size));
+		^size.collect({ |i|
+			var val;
+			val = TWindex.kr( trig, weights, 1 );
+			weights = weights.collect({ |item, i|
+				(item - InRange.kr( val, i-0.5,i+0.5 )).max(0);
+			});
+			val;
+		});
+	}
+	
+}

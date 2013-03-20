@@ -204,9 +204,7 @@
 	writePDF {  |path, pageSize, args|
 		// requires GhostScript unix command (gs)
 		// http://www.ghostscript.com/awki
-		var ps2pdfwrApp;
 		path = (path ? "~/Desktop/Function.pdf").replaceExtension( "pdf" );
-		ps2pdfwrApp = thisMethod.filenameSymbol.asString.dirname ++"/ps2pdfwr";
 		File.checkDo( "/tmp/" ++ path.basename.replaceExtension( "ps" ), 
 			this.asPostScript( pageSize, *args ),
 			true, // overwrite any existing 
@@ -275,9 +273,7 @@
 	writePDF { |argPath| 
 		// requires GhostScript unix command (gs)
 		// http://www.ghostscript.com/awki
-		var ps2pdfwrApp;
 		argPath = (argPath ? path ? "~/Desktop/Function.pdf").replaceExtension( "pdf" );
-		ps2pdfwrApp = thisMethod.filenameSymbol.asString.dirname ++"/ps2pdfwr";
 		File.checkDo( "/tmp/" ++ argPath.basename.replaceExtension( "ps" ), 
 			this.asPostScript,
 			true, // overwrite any existing 
