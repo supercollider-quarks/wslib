@@ -102,7 +102,7 @@ ServerRecordWindow {
 		
 		counterRoutineFunc = { Routine({ 
 					loop{ controls[ \counter ].posD = 
-						controls[ \counter ].pos + 0.01; 0.01.wait } 
+						controls[ \counter ].pos + 0.05; 0.05.wait } 
 					})
 				.play( SystemClock ); 
 			};

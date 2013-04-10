@@ -568,9 +568,9 @@ MasterEQ {
 			*/
 			s.waitForBoot{
 			// group version (more flexible, more overhead)
-			eq[ \group ] = Group.basicNew(s);
+			eq[ \group ] = Group.basicNew(s, s.nextPermNodeID );
 			eq[ \synths ] = eq[ \numChannels ].collect({ |i|
-				Synth.basicNew( "param_beq" );
+				Synth.basicNew( "param_beq", nodeID: s.nextPermNodeID );
 				});
 					
 			s.sendBundle( nil, 
@@ -588,6 +588,10 @@ MasterEQ {
 			
 		eq[ \free ] = {
 			eq[ \group ].release;
+			s.freePermNodeID( eq[ \group ].nodeID );
+			eq[ \synths ].do({ |item|
+				s.freePermNodeID( item.nodeID );
+			});
 			eq[ \group ] = nil;
 			eq[ \playing ] = false;
 			ServerTree.remove( eq );
