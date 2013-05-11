@@ -103,6 +103,9 @@
 	rrand { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
 	exprand { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
 	
+	xrand { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	xrand2 { arg that, adverb; ^this.binaryPerformOnEach( thisMethod.name, that, adverb ) }
+	
 	// other methods
 	clip { arg lo, hi; ^this.binaryPerformOnEach( \clip, lo, hi ) }
 	wrap { arg lo, hi; ^this.binaryPerformOnEach( \wrap, lo, hi ) }

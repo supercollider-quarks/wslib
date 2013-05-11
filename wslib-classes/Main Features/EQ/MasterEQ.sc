@@ -609,6 +609,7 @@ MasterEQ {
 			input = BPeakEQ.ar( input, *frdb[2][[0,2,1]].lag(0.1));
 			input = BPeakEQ.ar( input, *frdb[3][[0,2,1]].lag(0.1));
 			input = BHiShelf.ar( input, *frdb[4][[0,2,1]].lag(0.1));
+			input = RemoveBadValues.ar( input );
 			
 			input;
 			};
