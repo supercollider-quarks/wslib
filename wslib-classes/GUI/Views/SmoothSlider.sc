@@ -492,8 +492,9 @@ SmoothSlider : RoundView {
 		( this.value - (max(this.step ? 0, this.pixelStep) * zoom) ).max(0); }
 	
 
-	keyDown { arg char, modifiers, unicode,keycode;
+	keyDown { arg char, modifiers, unicode, keycode, key;
 		var zoom = this.getScale(modifiers); 
+		var arrowKey = unicode.getArrowKey ? key.getArrowKey;
 		
 		// standard keydown
 		if (char == $r, { this.valueAction = 1.0.rand; });
@@ -502,10 +503,13 @@ SmoothSlider : RoundView {
 		if (char == $c, { this.valueAction = centerPos; });
 		if (char == $], { this.increment(zoom); ^this });
 		if (char == $[, { this.decrement(zoom); ^this });
-		if (unicode == 16rF700, { this.increment(zoom); ^this });
-		if (unicode == 16rF703, { this.increment(zoom); ^this });
-		if (unicode == 16rF701, { this.decrement(zoom); ^this });
-		if (unicode == 16rF702, { this.decrement(zoom); ^this });
+		
+		switch( arrowKey,
+			\up, { this.increment(zoom); ^this },
+			\right, { this.increment(zoom); ^this },
+			\down, { this.decrement(zoom); ^this },
+			\left, { this.decrement(zoom); ^this }
+		);
 		
 		^nil;
 		

@@ -363,14 +363,17 @@ RoundNumberBox : RoundView {
 		mouseUpAction.value( this, x, y, modifiers, buttonNumber );
  }
 	
-	keyDown { arg char, modifiers, unicode;
+	keyDown { arg char, modifiers, unicode, keycode, key;
 		var zoom = this.getScale(modifiers);
+		var arrowKey = unicode.getArrowKey ? key.getArrowKey;
 		
 		// standard chardown
-		if (unicode == 16rF700, { this.increment(zoom); ^this });
-		if (unicode == 16rF703, { this.increment(zoom); ^this });
-		if (unicode == 16rF701, { this.decrement(zoom); ^this });
-		if (unicode == 16rF702, { this.decrement(zoom); ^this });
+		switch( arrowKey,
+			\up, { this.increment(zoom); ^this },
+			\right, { this.increment(zoom); ^this },
+			\down, { this.decrement(zoom); ^this },
+			\left, { this.decrement(zoom); ^this }
+		);
 		
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key
 			if (keyString.notNil,{ // no error on repeated enter

@@ -63,16 +63,18 @@ SMPTEBox : RoundNumberBox {
 		};
 	}
 	
-	keyDown { arg char, modifiers, unicode;
+	keyDown { arg char, modifiers, unicode, keycode, key;
 		var zoom = this.getScale(modifiers);
+		var arrowKey = unicode.getArrowKey ? key.getArrowKey;
 		
 		// standard chardown
-		if (unicode == 16rF700, { this.increment(zoom); ^this });
-		if (unicode == 16rF701, { this.decrement(zoom); ^this });
-		
-		if (unicode == 16rF703, { this.prCharSelectAmt( 1 ); ^this });
-		if (unicode == 16rF702, { this.prCharSelectAmt( -1); ^this });
-		
+		switch( arrowKey,
+			\up, { this.increment(zoom); ^this },	
+			\down, { this.decrement(zoom); ^this },
+			\right, { this.prCharSelectAmt( 1 ); ^this },
+			\left, { this.prCharSelectAmt( -1); ^this }
+		);
+				
 		if ( [ $., $:, $ ].includes( char ), {
 			charSelectIndex = [3,6,9].detect({ |item| 
 				item > charSelectIndex; 

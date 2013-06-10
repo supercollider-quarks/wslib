@@ -260,6 +260,7 @@ ActionFunc {
 		^result;
 	}
 	
+	storeArgs { ^[ type, action, extra, lastVal ] }
 	
 }
 
