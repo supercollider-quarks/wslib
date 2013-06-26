@@ -386,7 +386,7 @@ RoundNumberBox : RoundView {
 			});
 			^this
 		});
-		if (char == 127.asAscii, { // delete key
+		if (char == 127.asAscii or: { unicode == 8 }, { // delete key
 			keyString = nil;
 			//this.value = object;
 			stringColor = normalColor;

@@ -315,40 +315,48 @@ DrawIcon {
 				
 			lock: { |rect|
 				var size = rect.width.min( rect.height ) * 0.8;
+				var radius = size/6;
+				var corners = [ -1 @ 0, -1 @ -2, 1 @ -2, 1 @ 0 ] * radius;
 				
 				Pen.use({
 					
 					Pen.translate( *rect.center.asArray );
 					
 					Pen.fillRect( Rect( size.neg * 0.25,0, size / 2, size / 3 ) );
-					Pen.line( (size.neg /6)@0, (size.neg /6)@( size.neg / 6) )
-						.addArc( 0@(size.neg / 6), size.neg / 6,0, pi )
-						.lineTo( (size /6)@0 )
-						.lineTo( (size /12)@0 )
-						.lineTo(  (size /12)@( size.neg / 6) )
-						.addArc( 0@(size.neg / 6), size.neg / 12,pi.neg, pi.neg )
-						.lineTo( (size.neg / 12)@0 )
-						.fill;
+					
+					2.do({
+						Pen.moveTo( corners[0] )
+							.arcTo( corners[1], corners[2], radius )
+							.arcTo( corners[2], corners[3], radius )
+							.lineTo( corners[3] );
+						corners = corners.reverse * [0.5@0.75];
+						radius = radius / 2;
+					});
+					Pen.fill;
+			
 					});
 				},
 				
 			unlock: { |rect|
 				var size = rect.width.min( rect.height ) * 0.8;
+				var radius = size/6;
+				var corners = [ 0 @ 0, 0 @ -2, 2 @ -2, 2 @ 0 ] * radius;
 				
 				Pen.use({
 					Pen.translate( *rect.center.asArray );
 					
-					Pen.fillRect( Rect( size.neg * (1/6),0, size / 2, size / 3 ) );
+					Pen.fillRect( Rect( (size.neg * 0.25) - (radius/2),0, size / 2, size / 3 ) );
 					
-					Pen.line( (size.neg / 3)@0, (size.neg /3)@( size.neg / 6) )
-						.addArc( (size.neg / 6)@(size.neg / 6), size.neg / 6,0, pi )
-						.lineTo( 0@0 )
-						.lineTo( (size.neg /12)@0 )
-						.lineTo(  (size.neg /12)@( size.neg / 6) )
-						.addArc( (size.neg / 6)@(size.neg / 6), size.neg / 12,pi.neg, pi.neg )
-						.lineTo( (size.neg * (3/12) )@0 )
-						.lineTo(  (size.neg /3)@0 )
-						.fill;
+					2.do({
+						Pen.moveTo( corners[0] )
+							.arcTo( corners[1], corners[2], radius )
+							.arcTo( corners[2], corners[3], radius )
+							.lineTo( corners[3] );
+						corners = (corners.reverse + [ radius@0 ]) * [0.5@0.75];
+						radius = radius / 2;
+					});
+					Pen.fill;
+					
 					});
 				},
 		
