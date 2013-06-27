@@ -175,14 +175,17 @@ RoundNumberBox : RoundView {
 				background.penFill( rect );
 				};
 			
-			if( extrude )
-				{ Pen.extrudedRect( rect, radius, border, 0.17pi, false,
-					[ shadeSide, lightSide ] ); }
-				{  Pen.color =  shadeSide;
-				   Pen.width = border;
-				   Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
-				   	(border/2)  ).stroke; 
+			if( border > 0 ) {
+				if( extrude ) { 
+					Pen.extrudedRect( rect, radius, border, 0.17pi, false,
+						[ shadeSide, lightSide ] ); 
+				} {  
+					Pen.color = shadeSide;
+					Pen.width = border;
+					Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
+					   	(border/2)  ).stroke; 
 				};
+			};
 			
 			if( innerShadow.notNil )
 				{

@@ -126,15 +126,19 @@ RoundButton : RoundView {
 					states[ value ][ 2 ].penFill( rect ); // requires Gradient:fill method
 					};				
 					
-					
-				if( extrude )
-					{ Pen.extrudedRect( rect, radius, border, 0.17pi, pressed,
-						[ lightSide, shadeSide ] ); }
-					{   if( pressed, { Pen.color = lightSide }, { Pen.color = shadeSide } ); 
-					   Pen.width = border;
-					   Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
-					   	(border/2)  ).stroke; 
-					};							
+				if( border > 0 ) {
+					if( extrude ) { 
+						Pen.extrudedRect( rect, radius, border, 0.17pi, pressed,
+							[ lightSide, shadeSide ] 
+						); 
+					} {  
+						if( pressed, { Pen.color = lightSide }, { Pen.color = shadeSide } );
+						Pen.width = border;
+						Pen.roundedRect( rect.insetBy( border/2,border/2 ), radius - 
+					   		(border/2)  
+					   	).stroke; 
+					};
+				}							
 			};
 			
 		case { states[value][0].isString }
