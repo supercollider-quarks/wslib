@@ -13,6 +13,7 @@ ScaledUserViewContainer {
 	var <composite, <userView, <scaleSliders, <moveSliders;
 	var <viewOffset;
 	var <>maxZoom = 8, <>minZoom = 1;
+	var <>zoomCurve = 0;
 	var resize = 1;
 	var window;
 	var currentBounds;
@@ -92,7 +93,7 @@ ScaledUserViewContainer {
 		 			scaleSliderLength, sliderWidth )  )
 				.value_(0).action_({ |v| 
 					userView.scaleH = 
-						v.value.linlin(0,1,minZoom.asPoint.x, maxZoom.asPoint.x);
+						v.value.lincurve(0,1,minZoom.asPoint.x, maxZoom.asPoint.x, zoomCurve);
 						//1 + (v.value * maxZoom.asPoint.x);
 					this.setMoveSliderWidths( composite.bounds );
 					})
@@ -109,7 +110,7 @@ ScaledUserViewContainer {
 		 				sliderWidth, scaleSliderLength ) )
 				.value_(1).action_({ |v| 
 					userView.scaleV = 
-						(1-v.value).linlin(0,1,minZoom.asPoint.y, maxZoom.asPoint.y);
+						(1-v.value).lincurve(0,1,minZoom.asPoint.y, maxZoom.asPoint.y, zoomCurve);
 						//1 + ((1 - v.value) * maxZoom.asPoint.y);
 					this.setMoveSliderWidths( composite.bounds );
 					})
@@ -157,10 +158,10 @@ ScaledUserViewContainer {
 	updateSliders { |scaleFlag = true, moveFlag = true|
 		if( scaleFlag )
 			{ scaleSliders[0].value = 
-				userView.scaleH.linlin(minZoom.asPoint.x, maxZoom.asPoint.x, 0, 1 );
+				userView.scaleH.curvelin(minZoom.asPoint.x, maxZoom.asPoint.x, 0, 1, zoomCurve );
 				//(userView.scaleH - 1) / maxZoom.asPoint.x;
 			scaleSliders[1].value = 1 - 
-				userView.scaleV.linlin(minZoom.asPoint.y, maxZoom.asPoint.y, 0, 1 );
+				userView.scaleV.linlin(minZoom.asPoint.y, maxZoom.asPoint.y, 0, 1, zoomCurve );
 				//((userView.scaleV - 1) / maxZoom.asPoint.y );
 			this.setMoveSliderWidths;
 			};

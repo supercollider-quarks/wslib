@@ -10,7 +10,7 @@
 		var cpuMeter, composite;
 		
 		
-		font = Font(Font.defaultSansFace, 11);
+		font = Font(Font.defaultSansFace, 10);
 		onColor = onColor ? Color.new255(74, 120, 74);
 		
 		if (window.notNil, { ^window.front });
