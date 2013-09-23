@@ -923,7 +923,7 @@ SimpleMIDIFile  {
 		
 	addTimeSignature { |div = 4, denom = 4, time = 0, sort = true, removeOld = true| 
 		this.removeTimeSignature( time, removeOld );
-		^this.addMetaEvent( [0, time, \timeSignature, [div, denom.log2, 24, 8 ]], sort );
+		^this.addMetaEvent( [0, time, \timeSignature, [div, denom.log2.round.asInteger, 24, 8 ]], sort );
 		}
 		
 	addTimeSignatureString { |string = "4/4", time = 0, sort = true, removeOld = true|
