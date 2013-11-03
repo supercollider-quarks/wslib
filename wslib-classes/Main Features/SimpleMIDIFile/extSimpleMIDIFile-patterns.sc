@@ -1,14 +1,20 @@
 + SimpleMIDIFile {
 	
-	p { |inst, amp = 0.2| // amp: amp when velo == 127
+	p { |inst, amp = 0.2, useTempo = true| // amp: amp when velo == 127
 		var thisFile;
 		inst = ( inst ? 'default' ).asCollection;
 		
 		// todo: create multi-note events from chords, detect rests
 		
-		if( timeMode == 'seconds' )
-			{ thisFile = this }
-			{ thisFile = this.copy.timeMode_( 'seconds' ); };
+		if( useTempo ) {
+			if( timeMode == 'seconds' )
+				{ thisFile = this }
+				{ thisFile = this.copy.timeMode_( 'seconds' ); };
+		} {
+			if( timeMode == 'ticks' )
+				{ thisFile = this }
+				{ thisFile = this.copy.timeMode_( 'ticks' ); };
+		};
 		 ^Ppar(
 			({ |tr|
 				var sustainEvents, deltaTimes;
@@ -16,7 +22,13 @@
 				if( sustainEvents.size > 0 )
 					{ 
 					sustainEvents = sustainEvents.flop;
-					deltaTimes = sustainEvents[1].differentiate;
+					if( useTempo ) {
+						deltaTimes = sustainEvents[1].differentiate;
+					} {
+						// always use 120BPM
+						deltaTimes = (sustainEvents[1] / (division*2)).differentiate;
+						sustainEvents[6] = sustainEvents[6] / (division*2);
+					};
 					Pbind(
 						\instrument, inst.wrapAt( tr + 1 ),
 						\dur, Pseq( deltaTimes ++ [0], 1 ),

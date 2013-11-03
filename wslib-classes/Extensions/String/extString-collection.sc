@@ -3,10 +3,9 @@
 // conversion String <-> SequenceableCollection
 
 + SequenceableCollection {
-	toString { ^String.fill(this.size, { |i| 
-		if(this[i].notNil) {this[i]} {" "} }) }
-	asAscii {  ^String.fill(this.size, { |i| {this[i].asInteger.asAscii}.try ? "" }) } 
-	asDigit {  ^String.fill(this.size, { |i| {this[i].asInteger.asDigit}.try ? "" }) }
+	toString { ^this.collect(_ ? " ").join }
+	asAscii {  ^this.collect({|x| {x.asInteger.asAscii}.try ? "" }).join } 
+	asDigit {  ^this.collect({|x| {x.asInteger.asDigit}.try ? "" }).join }
 	
 }
 
