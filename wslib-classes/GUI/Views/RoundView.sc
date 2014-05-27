@@ -164,7 +164,7 @@ RoundView2 : RoundView { } // still here for backwards compat
 				16rF700, \up,
 				16rF701, \down,
 				16rF702, \left,
-				16rF703, \right,
+				16rF703, \right
 			);
 		};
 	}

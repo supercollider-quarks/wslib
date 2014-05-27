@@ -6,6 +6,7 @@
 
 ViewHolder2 {
 	classvar <>consumeKeyDowns = false;	// should the view by default consume keydowns
+	classvar <>dontRefresh = false;
 
 	// redirected hooks ((J)SCView)
 	var <>action, <>mouseDownAction, <>mouseUpAction, <>mouseOverAction, <>mouseMoveAction;
@@ -143,6 +144,8 @@ ViewHolder2 {
 	viewDidClose { }				// corresponds to onClose
 	
 	// ---- method forwarding ----
+	
+	refresh { if( dontRefresh !== true ) { view.refresh } }
 
 	// forwards any unknown calls to the view
 	doesNotUnderstand { arg ... args;

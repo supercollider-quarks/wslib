@@ -4,7 +4,7 @@
 SmoothSlider : RoundView {
 	var <>color, <value, <>step, hit, <>mode, isCentered = false, <centerPos = 0.5;
 	var <border = 0, <baseWidth = 1, <extrude = false, <knobBorderScale = 2;
-	var <knobSize = 0.25, hitValue = 0;
+	var <knobSize = 0.25, hitValue;
 	var <orientation = \v;
 	var <thumbSize = 0; // compatible with old sliders
 	var <focusColor;
@@ -342,46 +342,39 @@ SmoothSlider : RoundView {
 
 	mouseDown { arg x, y, modifiers, buttonNumber, clickCount;
 		var bounds, oldValue;
-		if( enabled ) {	
-			
-			hit = Point(x,y);
+		if( enabled ) {		
 			mouseDownAction.value( this, x, y, modifiers, buttonNumber, clickCount );
-			if( mode == \jump )
-				{ // move slider to mouse point
-				bounds = this.drawBounds;
-				oldValue = value;
+			bounds = this.drawBounds; 
+			if( orientation == \v ) { 
+				hit = Point(x, y); 
+			} { 
+				hit = Point(y, bounds.right - x); 
+				bounds = Rect( bounds.top, bounds.left, bounds.height, bounds.width );
+			};
+			
+			if( mode == \jump ) { // move slider to mouse point
 				
-				if( orientation == \v )
-					{ if( thumbSize < bounds.height )
-						{ value = 1 - ((y - (bounds.top + (
-							( knobSize * bounds.width )
-								.max( thumbSize.min( bounds.height ) ) / 2))) / 
-							(bounds.height - (knobSize * bounds.width )
-								.max( thumbSize )  ))
-						};
-					}
-					{ if( thumbSize < bounds.width )
-						{ value = (x - (bounds.left + (
-							( knobSize * bounds.height )
-								.max( thumbSize.min( bounds.width ) ) / 2))) / 
-							(bounds.width - (knobSize * bounds.height )
-								.max( thumbSize.min( bounds.width ) ) )
-						};
-					};
+				oldValue = value;
+				if( thumbSize < bounds.height ) { 
+					value = 1 - ((hit.y - (bounds.top + (
+						( knobSize * bounds.width )
+							.max( thumbSize.min( bounds.height ) ) / 2))) / 
+						(bounds.height - (knobSize * bounds.width )
+							.max( thumbSize )  
+						)
+					)
+				};
+				
 				value = value.round( step ? 0 );
 				deltaAction.value( this, value - oldValue );
 				this.clipValue;
 
-				
 				if( allwaysPerformAction or: { oldValue != value } )
 					{ action.value(this, x, y, modifiers); };
 				this.refresh;
-
-				};
+			};
 			
 			hitValue = value;
-			
-			//this.mouseMove(x, y, modifiers);
 		};
 		
 	}
@@ -393,26 +386,27 @@ SmoothSlider : RoundView {
 		if( enabled ) {	
 			mouseMoveAction.value( this, x, y, modifiers );
 			bounds = this.drawBounds;
+			if( orientation == \v ) {
+				pt = Point(x, y);
+			} { 
+				pt = Point(y, bounds.right - x);
+				bounds = Rect( bounds.top, bounds.left, bounds.height, bounds.width );
+			};
+			
 			if (modifiers != 1048576, { // we are not dragging out - apple key
+				
 				oldValue = value;
 				
-				if( orientation == \v )
-					{ if( thumbSize < bounds.height )
-						{ value = ( hitValue + ( 
-									( (hit.y - y) / this.sliderBounds.height )  
-									* this.getScale( modifiers ) ) )
-						 }; 
-					}
-					{ if( thumbSize < bounds.width )
-						{ value = ( hitValue + ( 
-									( (x - hit.x) / this.sliderBounds.height  ) 
-									* this.getScale( modifiers ) ) ) 
-						} 
-					};
+				if( thumbSize < bounds.height ) { 
+					value = ( hitValue + ( 
+						( (hit.y - pt.y) / this.sliderBounds.height )  
+						* this.getScale( modifiers ) ) 
+					)
+				};
+				
 				value = value.round( step ? 0 );
 				deltaAction.value( this, value - oldValue );
 				this.clipValue;
-
 				
 				if( allwaysPerformAction or: { oldValue != value } )
 					{ action.value(this, x, y, modifiers); };
