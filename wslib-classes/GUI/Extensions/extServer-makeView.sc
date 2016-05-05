@@ -177,7 +177,7 @@
 
 				infoString.string =
 					"CPU: %/%\tSynths/Defs: %/%"
-						.format(this.avgCPU.asStringWithFrac(1),  this.peakCPU.asStringWithFrac(1),
+						.format(this.avgCPU.asStringWithFrac(1), this.peakCPU.asStringWithFrac(1),
 							this.numSynths, this.numSynthDefs );
 
 				/*
@@ -361,7 +361,7 @@
 				infoString.string =
 					"%, CPU: %/%S/SD: %/%"
 						.format( addr.port,
-							this.avgCPU.round(0.1),  this.peakCPU.round(0.1),
+							this.avgCPU.round(0.1), this.peakCPU.round(0.1),
 							this.numSynths, this.numSynthDefs );
 			})
 			.put(\cmdPeriod,{
