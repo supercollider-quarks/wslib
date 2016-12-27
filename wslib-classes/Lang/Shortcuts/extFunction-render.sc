@@ -29,12 +29,14 @@
 		options = options ? Score.options;
 		options = options.deepCopy; // copy before we modify
 		options.numOutputBusChannels = numChannels;
+		options.loadDefs = false; // we will load only the one we need
 		
 		// create one synth instance at nodeID 1000
 		synth = Synth.basicNew(def.name, nodeID: 1000);
 		
 		// create a score playing the synth once, with release
 		score = Score( [ 
+			[0.0, [ "/d_load", SynthDef.synthDefDir ++ def.name ++ ".scsyndef" ] ],
 			[0.0, synth.newMsg ], 
 			[duration-fadeTime, synth.releaseMsg],
 			[duration, [\c_set, 0, 0]],
@@ -70,7 +72,7 @@
 		 	+ sampleRate + headerFormat + sampleFormat +
 			options.asOptionsString
 			+ " > ~/Desktop/output.txt; rm" + oscFilePath + 
-				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
+				"; rm" + SynthDef.synthDefDir.escapeChar( $ ) ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
 		).unixCmd({ |...args| // result, pid
 			"done recording file: '%'\n".postf( path ); 
 			action.value( *[path] ++ args ); });
@@ -82,7 +84,7 @@
 				oscFilePath, path.standardizePath, inputFilePath, sampleRate = 44100, 
 				headerFormat, sampleFormat, options, 
 				"; rm" + oscFilePath + 
-				"; rm synthdefs/" ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
+				"; rm" + SynthDef.synthDefDir.escapeChar( $ ) ++ def.name ++ ".scsyndef" // delete synthdef file afterwards
 				); 
 		 "recorded file: '%'\n".postf( path );
 		 ^path;
