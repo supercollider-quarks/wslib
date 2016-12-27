@@ -32,6 +32,7 @@
 					Pbind(
 						\instrument, inst.wrapAt( tr + 1 ),
 						\dur, Pseq( deltaTimes ++ [0], 1 ),
+						\chan, Pseq( [0] ++ sustainEvents[3], 1 ),
 						\midinote, Pseq( [\rest] ++ sustainEvents[4], 1 ),
 						\amp, Pseq( [0] ++ ( sustainEvents[5] / 127 ) * amp, 1 ),
 						\sustain, Pseq( [0] ++ sustainEvents[6], 1 )

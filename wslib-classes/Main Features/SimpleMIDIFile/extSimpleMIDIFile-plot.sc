@@ -5,7 +5,7 @@
 	// - should make use of GUI style ( waiting for color standardization )
 	
 	asPenFunction { |bounds, track = 0, type = \pitchBend, channel = 0, cc = 0, 
-			minVal = 0, maxVal = 127|
+			minVal = 0, maxVal = 127, grid = true|
 			// width is not set here, colors are.
 		var events, length, lastY, step, valRange, c3y;
 		bounds = bounds ? Rect(0,0,400,400);
@@ -17,14 +17,16 @@
 			
 			events = this.noteSustainEvents( channel, track );
 			
+			if( grid == true ) {
 			minVal =  (( (minVal - 1) / 12).floor * 12).max(0);
 			maxVal =  (( maxVal / 12).ceil * 12).min(127);
+			};
 			
 			valRange =  maxVal - minVal;
 			step = 1/valRange;
 
 			// lines
-			
+			if( grid == true ) {
 			 // big red for C3
 			 
 			 if( 60.inRange( minVal, maxVal ) )
@@ -75,6 +77,8 @@
 				});
 				
 			Pen.stroke;
+			
+			};
 			
 			/*
 			// gray for half notes
