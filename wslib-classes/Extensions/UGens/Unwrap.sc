@@ -7,34 +7,29 @@ Unwrap {
 	/* example:
 	(
 	{	var sig, wrapped;
-		sig = LFNoise2.kr(10, 0.75);
+		sig = SinOsc.kr( Line.kr(5,20,1), 0, 0.5);
 		wrapped = Wrap.kr( sig, -0.1, 0.1 );
 		[ sig, wrapped, Unwrap.kr( wrapped, -0.1, 0.1 ) ];
 	}.plot( 1 );
 	)
+	
+	(
+	{	var sig, wrapped;
+		sig = SinOsc.ar( 1000, 0, 0.1 ) + SinOsc.ar( 200, 0, 0.5);
+		wrapped = Wrap.ar( sig, -0.1, 0.1 );
+		[ sig, wrapped, Unwrap.ar( wrapped, -0.1, 0.1 ) ];
+	}.plot;
+	)
 	*/
 	
 	*ar { arg in = 0.0, lo = 0.0, hi = 1.0; 
-		// audio rate version works but with 64 samples lag;
-		// not reliable for > 344hz frequencies @ 44.1KHz
-		var delayed, nch = 1, sig, buf;
-		buf = LocalBuf( 1, nch ).clear;
-		delayed = BufRd.ar( 1, buf, DC.ar(0) );
-		sig = Wrap.ar( in, delayed + lo, delayed + hi );
-		BufWr.ar( sig, buf, DC.ar(0) );
-		^sig;
+		^Integrator.ar( ( HPZ1.ar( in ) * -2 ).round( hi - lo ) ) + in;
 	}
 	
+	*kr { arg in = 0.0, lo = 0.0, hi = 1.0; 
+		^Integrator.kr( ( HPZ1.kr( in ) * -2 ).round( hi - lo ) ) + in;
+	}
 		
-	*kr { arg in = 0.0, lo = 0.0, hi = 1.0;
-		var delayed, nch = 1, sig, buf;
-		buf = LocalBuf( 1, nch ).clear;
-		delayed = BufRd.kr( 1, buf, 0 );
-		sig = Wrap.kr( in, delayed + lo, delayed + hi );
-		BufWr.kr( sig, buf, 0 );
-		^sig;
-	}
-	
 }
 
 + UGen {
