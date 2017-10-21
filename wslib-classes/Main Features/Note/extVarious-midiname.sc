@@ -208,9 +208,9 @@ W. Snoei 2005
 		var addition = 0;
 		if ({this.alt}.try.isNil) {
 			this.do({ |item|
-			if (item == $#) {addition = addition + 1};
-			if (item == $b) {addition = addition - 1};
-			if (item == $x) {addition = addition + 2};
+				if (item == $#) {addition = addition + 1};
+				if (item == $b) {addition = addition - 1};
+				if (item == $x) {addition = addition + 2};
 				});
 			this.addUniqueMethod('alt', {addition}) };
 		^this.alt;
