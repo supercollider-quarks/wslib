@@ -172,7 +172,7 @@
 		w.front;
 
 		ctlr = SimpleController(this)
-			.put(\serverRunning, {	if(this.serverRunning,running,stopped) })
+			.put(\this.serverRunning, {	if(this.serverRunning,running,stopped) })
 			.put(\counts,{
 
 				infoString.string =
@@ -356,7 +356,7 @@
 		w.front;
 
 		ctlr = SimpleController(this)
-			.put(\this.serverRunning, {	if(this.serverRunning,running,stopped) })
+			.put(\serverRunning, {	if(this.serverRunning,running,stopped) })
 			.put(\counts,{
 				infoString.string =
 					"%, CPU: %/%S/SD: %/%"
