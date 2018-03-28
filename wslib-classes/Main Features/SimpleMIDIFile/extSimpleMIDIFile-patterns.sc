@@ -98,7 +98,7 @@
 		while { (event = stream.next( defaultEvent )).notNil && 
 					{ (count = count + 1) <= maxEvents } } 
 			{ event.use({
-				if( event.freq.isRest.not ) // not a \rest
+				if( event.isRest.not ) // not a \rest
 					{ 	[	
 							event.midinote2,
 						 	event.velocity,
@@ -242,7 +242,7 @@ Example:
 						{~track = ~track.asInteger}
 					);
 					if (~channel.isNil, {~channel = 0});
-					if (~freq.value.isRest.not,
+					if (event.isRest.not,
 						{
 							if (~velo.isNil, {~velo = ~amp.value.linlin(0, 1, 0, 127).round(1)});
 							if (~upVelo.isNil, {~upVelo = ~velo});
