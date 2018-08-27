@@ -1,5 +1,14 @@
 
 + Server {
+
+	serverIsRunning {
+		^if( this.respondsTo( \serverRunning ) ) {
+			this.serverRunning
+		} {
+			this.ifRunning({ true }, { false })
+		};
+	}
+
 	makeView { arg w, useRoundButton = true, onColor;
 		var active, booter, killer, makeDefault, running, booting, bundling, stopped;
 		var recorder, scoper;
@@ -40,7 +49,7 @@
 					this.quit;
 				});
 			};
-			booter.value = this.serverRunning.binaryValue;
+			booter.value = this.serverIsRunning.binaryValue;
 		});
 
 		active = StaticText(w, Rect(0,0, 78, 18));
@@ -48,7 +57,7 @@
 		active.align = \center;
 		active.font = GUI.font.new("Helvetica-Bold", 12);
 		active.background = Color.white;
-		if(this.serverRunning,running,stopped);
+		if(this.serverIsRunning,running,stopped);
 
 		/*
 		w.view.keyDownAction = { arg ascii, char;
@@ -144,7 +153,7 @@
 				ctlr.remove;
 			};
 		});
-		if(this.serverRunning,running,stopped);
+		if(this.serverIsRunning,running,stopped);
 
 		//w.view.decorator;
 
@@ -172,7 +181,7 @@
 		w.front;
 
 		ctlr = SimpleController(this)
-			.put(\this.serverRunning, {	if(this.serverRunning,running,stopped) })
+			.put(\serverRunning, {	if(this.serverIsRunning,running,stopped) })
 			.put(\counts,{
 
 				infoString.string =
