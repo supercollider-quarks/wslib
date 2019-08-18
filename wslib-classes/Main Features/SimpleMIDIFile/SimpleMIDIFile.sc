@@ -381,7 +381,9 @@ SimpleMIDIFile  {
 	asSysexChunks {
 		^this.sysexTracks.collect({ |track|
 			track.collect({ |event|
-				[event[0], -9] ++ this.convertToVLInteger( event.size ) ++ event[1..] ++ [-9];
+				var ignoreLast = (event[event.size-1] == -9);
+				var len = if (ignoreLast, event.size-1, event.size);
+				[event[0], -9] ++ this.convertToVLInteger( len ) ++ event[1..] ++ if (ignoreLast, { [] }, { [-9] });
 			});
 		});
 	}
