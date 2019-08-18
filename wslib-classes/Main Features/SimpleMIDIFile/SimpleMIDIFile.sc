@@ -48,7 +48,7 @@ SimpleMIDIFile  {
 
 	var <timeMode = \ticks;  // \ticks or \seconds
 
-	var <>sysexEvents;   /// not yet implemented (probably never will)
+	var <>sysexEvents;
 
 	var	<>format;		// single, multi, or pattern oriented MIDI sequence
 	var	<>division;	// division: number of ticks per quarter note
@@ -416,7 +416,7 @@ SimpleMIDIFile  {
 	asMIDIFileChunks {  // delta times in ticks
 		var chunks;
 		chunks = this.asDeltaChunks;
-		^chunks.collect({ |track, i|
+		^chunks.collect({ |track|
 			track.collect({ |event|
 				this.convertToVLInteger( event[0] ) ++ event[1..];
 			});
