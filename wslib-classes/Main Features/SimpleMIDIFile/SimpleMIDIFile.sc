@@ -186,7 +186,7 @@ SimpleMIDIFile  {
 
 	handleSysex { arg file; var len;
 		len = this.getVl(file);
-		sysexEvents = sysexEvents.asCollection.add(Int8Array.fill( len, { file.getInt8 }));
+		sysexEvents = sysexEvents.asCollection.add( [theTrackNumber, curTime] ++ Int8Array.fill( len, { file.getInt8 }) );
 	}
 
 	// midi events:
