@@ -378,13 +378,22 @@ SimpleMIDIFile  {
 			});
 		}
 
+	asSysexChunks {
+		^this.sysexTracks.collect({ |track|
+			track.collect({ |event|
+				[event[0], -9] ++ this.convertToVLInteger( event.size ) ++ event[1..] ++ [-9];
+			});
+		});
+	}
+
 	asChunks {  // combine meta and midi chunks
-		var temp, midiChunks, metaChunks;
+		var temp, midiChunks, metaChunks, sysexChunks;
 		temp = this.copy.timeMode_( \ticks );
 		midiChunks = temp.asMIDIChunks;
 		metaChunks = temp.asMetaChunks;
+		sysexChunks = temp.asSysexChunks;
 		^midiChunks.collect({ |track, i|
-			(track ++ metaChunks[i]).sort({ |a,b| a[0] <= b[0] }); });
+			(track ++ metaChunks[i] ++ sysexChunks[i]).sort({ |a,b| a[0] <= b[0] }); });
 		}
 
 	asDeltaChunks {
@@ -408,15 +417,9 @@ SimpleMIDIFile  {
 		var chunks;
 		chunks = this.asDeltaChunks;
 		^chunks.collect({ |track, i|
-			var events = track.collect({ |event|
+			track.collect({ |event|
 				this.convertToVLInteger( event[0] ) ++ event[1..];
 			});
-			if (i == 0, {
-				events = events ++ sysexEvents.collect({ |event|
-					[0, -9] ++ this.convertToVLInteger( event.size ) ++ event;
-				});
-			});
-			events;
 		});
 	}
 
@@ -555,6 +558,13 @@ SimpleMIDIFile  {
 		tracksArray = Array.fill( tracks, { |i| metaEvents.select({ |item| item[0] == i }) } );
 		tracksArray.collect({ |item| item.sort({ |a, b| a[1] <= b[1] }); });
 		metaEvents = tracksArray.flatten(1);
+		}
+
+	sortSysexEvents {
+		var tracksArray;
+		tracksArray = Array.fill( tracks, { |i| sysexEvents.select({ |item| item[0] == i }) } );
+		tracksArray.collect({ |item| item.sort({ |a, b| a[1] <= b[1] }); });
+		sysexEvents = tracksArray.flatten(1);
 		}
 
 
@@ -737,6 +747,9 @@ SimpleMIDIFile  {
 	metaTrackEvents { |trackNumber = 0|
 		^metaEvents.select({ |item| item[0] == trackNumber }); }
 
+	sysexTrackEvents { |trackNumber = 0|
+		^sysexEvents.select({ |item| item[0] == trackNumber }); }
+
 	midiTracks {   /// format:  [absTime, type, channel .. rest]
 		^Array.fill( tracks, { |i|
 			this.midiTrackEvents( i ).collect({ |item| item[1..] }); } );
@@ -745,6 +758,11 @@ SimpleMIDIFile  {
 	metaTracks {  /// format: [absTime, type, [ rest ]]
 		^Array.fill( tracks, { |i|
 			this.metaTrackEvents( i ).collect({ |item| item[1..] }); } );
+		}
+
+	sysexTracks {  /// format: [absTime, [ rest ]]
+		^Array.fill( tracks, { |i|
+			this.sysexTrackEvents( i ).collect({ |item| item[1..] }); } );
 		}
 
 	/// getting meta events
@@ -910,6 +928,12 @@ SimpleMIDIFile  {
 		if(sort) { this.sortMetaEvents; }
 		}
 
+	addSysexEvent { |event, sort = true|
+		event = event ? [0, 0]; // [track, absTime, ... data]
+		sysexEvents = sysexEvents.add( event );
+		if(sort) { this.sortSysexEvents; }
+		}
+
 	addNote { |noteNumber = 64, velo = 64, startTime = 0, dur = 1, upVelo, channel=0, track=0,
 				sort=true|
 		upVelo = upVelo ? velo;
@@ -945,10 +969,6 @@ SimpleMIDIFile  {
 		this.removeTempo( time, removeOld );
 		^this.addMetaEvent( [0, time, \tempo, tempo], sort );
 		}
-
-	addSysexEvent { |event|
-		sysexEvents = sysexEvents.add( event );
-	}
 
 /////////// changing / removing events
 
