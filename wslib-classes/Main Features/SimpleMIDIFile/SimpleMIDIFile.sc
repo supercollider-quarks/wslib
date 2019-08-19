@@ -45,10 +45,10 @@ SimpleMIDIFile  {
 	
 	var <>midiEvents;    // format: [trackNumber, absTime, type, channel, val1, val2] 
 	var <>metaEvents;  // format: [trackNumber, absTime, type, [ values ] / value / string ]
+	var <>sysexEvents;
 	
 	var <timeMode = \ticks;  // \ticks or \seconds	
 	
-	var <>sysexEvents;   /// not yet implemented (probably never will) 
 		
 	var	<>format;		// single, multi, or pattern oriented MIDI sequence
 	var	<>division;	// division: number of ticks per quarter note
@@ -69,6 +69,7 @@ SimpleMIDIFile  {
 		pathName = pathName.standardizePath;
 		midiEvents = [];
 		metaEvents = [];
+		sysexEvents = [];
 		tracks = 1;
 		format = 1;
 		division = tempoScale; 
@@ -185,7 +186,7 @@ SimpleMIDIFile  {
 	
 	handleSysex { arg file; var len;
 		len = this.getVl(file);
-		file.seek(len,1);
+		sysexEvents = sysexEvents.asCollection.add( [theTrackNumber, curTime] ++ Int8Array.fill( len, { file.getInt8 }) );
 	}
 	
 	// midi events: 
@@ -376,14 +377,26 @@ SimpleMIDIFile  {
 				});
 			});
 		}
+
+	asSysexChunks {
+		^this.sysexTracks.collect({ |track|
+			track.collect({ |event|
+				var ignoreLast = (event[event.size-1] == -9);
+				var len = if (ignoreLast, event.size-1, event.size);
+				[event[0], -9] ++ this.convertToVLInteger( len ) ++ event[1..] ++ if (ignoreLast, { [] }, { [-9] });
+			});
+		});
+	}
+
 		
 	asChunks {  // combine meta and midi chunks
-		var temp, midiChunks, metaChunks;
+		var temp, midiChunks, metaChunks, sysexChunks;
 		temp = this.copy.timeMode_( \ticks );
 		midiChunks = temp.asMIDIChunks;
 		metaChunks = temp.asMetaChunks;
+		sysexChunks = temp.asSysexChunks;
 		^midiChunks.collect({ |track, i|
-			(track ++ metaChunks[i]).sort({ |a,b| a[0] <= b[0] }); });
+			(track ++ metaChunks[i] ++ sysexChunks[i]).sort({ |a,b| a[0] <= b[0] }); });
 		}
 	
 	asDeltaChunks {
@@ -548,6 +561,13 @@ SimpleMIDIFile  {
 		tracksArray = Array.fill( tracks, { |i| metaEvents.select({ |item| item[0] == i }) } );
 		tracksArray.collect({ |item| item.sort({ |a, b| a[1] <= b[1] }); });
 		metaEvents = tracksArray.flatten(1);
+		}
+
+	sortSysexEvents {
+		var tracksArray;
+		tracksArray = Array.fill( tracks, { |i| sysexEvents.select({ |item| item[0] == i }) } );
+		tracksArray.collect({ |item| item.sort({ |a, b| a[1] <= b[1] }); });
+		sysexEvents = tracksArray.flatten(1);
 		}
 
 
@@ -729,7 +749,10 @@ SimpleMIDIFile  {
 		
 	metaTrackEvents { |trackNumber = 0|
 		^metaEvents.select({ |item| item[0] == trackNumber }); }
-	
+
+	sysexTrackEvents { |trackNumber = 0|
+		^sysexEvents.select({ |item| item[0] == trackNumber }); }
+
 	midiTracks {   /// format:  [absTime, type, channel .. rest]
 		^Array.fill( tracks, { |i|
 			this.midiTrackEvents( i ).collect({ |item| item[1..] }); } ); 
@@ -739,7 +762,12 @@ SimpleMIDIFile  {
 		^Array.fill( tracks, { |i|
 			this.metaTrackEvents( i ).collect({ |item| item[1..] }); } ); 
 		}
-	
+
+	sysexTracks {  /// format: [absTime, [ rest ]]
+		^Array.fill( tracks, { |i|
+			this.sysexTrackEvents( i ).collect({ |item| item[1..] }); } );
+		}
+
 	/// getting meta events
 		
 	trackNames { ^metaEvents.select({ |item|
@@ -901,6 +929,12 @@ SimpleMIDIFile  {
 		event = event ? [0, 0, \text, "added text"];  
 		metaEvents = metaEvents.add( event );
 		if(sort) { this.sortMetaEvents; }
+		}
+
+	addSysexEvent { |event, sort = true|
+		event = event ? [0, 0]; // [track, absTime, ... data]
+		sysexEvents = sysexEvents.add( event );
+		if(sort) { this.sortSysexEvents; }
 		}
 
 	addNote { |noteNumber = 64, velo = 64, startTime = 0, dur = 1, upVelo, channel=0, track=0, 
