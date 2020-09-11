@@ -163,7 +163,7 @@ Parameters:
 		addTrackEventToSeq = {
 			arg seq, event;
 			if (withVelocity, {
-			  seq.add([event.note, event.dur, event.vel]);
+				seq.add([event.note, event.dur, event.vel]);
 			}, {
 				seq.add([event.note, event.dur]);
 			});
@@ -173,7 +173,7 @@ Parameters:
 		addRestEventToSeq = {
 			arg seq, dur;
 			if (withVelocity, {
-			  seq.add([\rest, dur, 0.0]);
+				seq.add([\rest, dur, 0.0]);
 			}, {
 				seq.add([\rest, dur]);
 			});
