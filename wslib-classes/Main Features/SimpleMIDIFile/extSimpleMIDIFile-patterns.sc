@@ -152,8 +152,9 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 
 Parameters:
 
-  * withVelocity: Instead of a 2-element tuple (as above), returns a 3-element
-  with a velocity value [0.0 - 1.0].  Velocity is 0.0 for rests.
+  * withVelocity: Instead of a 2-element tuple (as above), returns a 3-element with a velocity value [0.0 - 1.0].  Velocity is 0.0 for rests.
+	* padStart: If the MIDI file starts with a gap, inserts a rest into the pattern filling the gap from the start of the file until the first note.
+	* totalDurationForPadEnd: In order to create perfect looping patterns, a duration can be specified here.  If there is a gap between the end of the last note event and this duration, a rest will be inserted at the end of the pattern to ensure the pattern is this duration in total.
 
 */	
 		arg withVelocity = false, padStart = false, totalDurationForPadEnd = false;
