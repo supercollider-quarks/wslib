@@ -151,7 +151,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 
 */	
 		arg padStart = false, totalDurationForPadEnd = false;
-		var trackSeqs;
+		var trackSeqs, durationSum;
 		
 		this.timeMode_('ticks');
 		trackSeqs = Array.fill(tracks, {List.new(0)});
@@ -162,7 +162,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 		});
 		
 		trackSeqs = trackSeqs.collect({|track|
-			var trackEvents, seq;
+			var trackEvents, seq, seqAsDur;
 			seq = List.new(0);
 			
 			trackEvents = track.clump(2).collect({|pair|
@@ -199,7 +199,24 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 					}
 				);
 			});
-			seq.collect({|pair| [pair[0], pair[1] / division]});
+			seqAsDur = seq.collect({|pair| [pair[0], pair[1] / division]});
+
+      // Appends a rest at the end of the notes list if `totalDurationForPadEnd`
+      // is set.
+      if (totalDurationForPadEnd != false, {
+        // Sums all durations
+        durationSum = 0;
+        seqAsDur.do({
+          arg midiEvent;
+          durationSum = durationSum + midiEvent[1];
+        });
+        // Adds rest to fill remaining time
+        if (totalDurationForPadEnd > durationSum, {
+          seqAsDur.add([\rest, totalDurationForPadEnd - durationSum]);    
+        });
+      });
+
+      seqAsDur;
 		});
 		
 		^trackSeqs;
