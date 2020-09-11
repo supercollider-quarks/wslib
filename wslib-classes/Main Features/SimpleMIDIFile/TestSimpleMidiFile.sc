@@ -5,6 +5,25 @@ TestSimpleMIDIFile : UnitTest {
 			+/+ "test_fixtures"
 		);
 	}
+
+  test_generatePatternSeqs_withVelocity {
+    var m, pat;
+		m = SimpleMIDIFile.new(
+			this.class.getFixturesPath() +/+ "two-notes-w-velocity.mid"
+		);
+
+    m.read();
+
+		pat = m.generatePatternSeqs(true)[0];
+
+    this.assertEquals(pat, [
+      [60, 1.0, 75/127.0],
+      [\rest, 1.0, 0.0],
+      [60, 1.0, 100/127.0]
+    ]);
+		
+  }
+
 	test_generatePatternSeqs_noPaddingBeginningStart {
     var m, pat;
 		m = SimpleMIDIFile.new(
@@ -47,7 +66,7 @@ TestSimpleMIDIFile : UnitTest {
 
     m.read();
 
-    pat = m.generatePatternSeqs(true)[0];
+    pat = m.generatePatternSeqs(false, true)[0];
     
     this.assertEquals(pat, [
       [\rest, 1.0],
@@ -64,7 +83,7 @@ TestSimpleMIDIFile : UnitTest {
 
     m.read();
 
-    pat = m.generatePatternSeqs(true, 4.0)[0];
+    pat = m.generatePatternSeqs(false, true, 4.0)[0];
     
     this.assertEquals(pat, [
       [60, 1.0],

@@ -135,6 +135,7 @@
 
 // ------------------------------------------------------------
 //// the following methods were kindly added by Jascha Narveson
+
 		
 	generatePatternSeqs {	
 /*
@@ -149,9 +150,34 @@ Pbind( [\midinote, \dur], Pseq(t[1], 1)).play;
 
 Note that the first track in a SimpleMIDIFile often contains no note events if imported from an external midi file (since it's used for metadata), so that the first track of interest is usually the one in index 1 of the getSeqs array.Ê I decided to leave the first blank track in so preserve the mapping from midi track # to getSeqs array #.
 
+Parameters:
+
+  * withVelocity: Instead of a 2-element tuple (as above), returns a 3-element
+  with a velocity value [0.0 - 1.0].  Velocity is 0.0 for rests.
+
 */	
-		arg padStart = false, totalDurationForPadEnd = false;
-		var trackSeqs, durationSum;
+		arg withVelocity = false, padStart = false, totalDurationForPadEnd = false;
+		var trackSeqs, durationSum, addTrackEventToSeq, addRestEventToSeq;
+
+		// Helper method to add a note to the seq.
+		addTrackEventToSeq = {
+			arg seq, event;
+			if (withVelocity, {
+			  seq.add([event.note, event.dur, event.vel]);
+			}, {
+				seq.add([event.note, event.dur]);
+			});
+		};
+
+		// Helper method to add a rest event to the seq.
+		addRestEventToSeq = {
+			arg seq, dur;
+			if (withVelocity, {
+			  seq.add([\rest, dur, 0.0]);
+			}, {
+				seq.add([\rest, dur]);
+			});
+		};
 		
 		this.timeMode_('ticks');
 		trackSeqs = Array.fill(tracks, {List.new(0)});
@@ -169,6 +195,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 				(
 					'dur': pair[1][1] - pair[0][1],
 					'note': pair[0][4],
+					'vel': pair[0][5] / 127.0,
 					'startPos': pair[0][1],
 					'endPos': pair[1][1]
 				)
@@ -181,42 +208,46 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 						// If first note in MIDI file is not at beginning of file, add a
 						// rest at the beginning of the pattern to fill the empty space.
 						if (padStart.and(event.startPos != 0), {
-							seq.add([\rest, event.startPos]);
+							addRestEventToSeq.value(seq, event.startPos);
 						});
-						seq.add([event.note, event.dur]);
+						addTrackEventToSeq.value(seq, event);
 					},
 					{
 						diff = event.startPos - trackEvents[i-1].endPos;
 						if (diff > 0,
 							{
-								seq.add([\rest, diff]);
-								seq.add([event.note, event.dur]);
+								addRestEventToSeq.value(seq, diff);
+								addTrackEventToSeq.value(seq, event);
 							},
 							{
-								seq.add([event.note, event.dur]);
+								addTrackEventToSeq.value(seq, event);
 							}
 						)
 					}
 				);
 			});
-			seqAsDur = seq.collect({|pair| [pair[0], pair[1] / division]});
+			if (withVelocity, {
+				seqAsDur = seq.collect({|e| [e[0], e[1] / division, e[2]]});
+			}, {
+				seqAsDur = seq.collect({|pair| [pair[0], pair[1] / division]});
+			});
 
-      // Appends a rest at the end of the notes list if `totalDurationForPadEnd`
-      // is set.
-      if (totalDurationForPadEnd != false, {
-        // Sums all durations
-        durationSum = 0;
-        seqAsDur.do({
-          arg midiEvent;
-          durationSum = durationSum + midiEvent[1];
-        });
-        // Adds rest to fill remaining time
-        if (totalDurationForPadEnd > durationSum, {
-          seqAsDur.add([\rest, totalDurationForPadEnd - durationSum]);    
-        });
-      });
+			// Appends a rest at the end of the notes list if `totalDurationForPadEnd`
+			// is set.
+			if (totalDurationForPadEnd != false, {
+				// Sums all durations
+				durationSum = 0;
+				seqAsDur.do({
+					arg midiEvent;
+					durationSum = durationSum + midiEvent[1];
+				});
+				// Adds rest to fill remaining time
+				if (totalDurationForPadEnd > durationSum, {
+					addRestEventToSeq.value(seqAsDur, totalDurationForPadEnd - durationSum);
+				});
+			});
 
-      seqAsDur;
+			seqAsDur;
 		});
 		
 		^trackSeqs;
