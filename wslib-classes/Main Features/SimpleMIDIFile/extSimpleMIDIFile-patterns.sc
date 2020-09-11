@@ -177,6 +177,11 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 				var diff;
 				if (i==0,Ê
 					{	
+						// If first note in MIDI file is not at beginning of file, add a
+						// rest at the beginning of the pattern to fill the empty space.
+						if (event.startPos != 0, {
+							seq.add([\rest, event.startPos]);
+						});
 						seq.add([event.note, event.dur]);
 					},
 					{
