@@ -150,6 +150,7 @@ Pbind( [\midinote, \dur], Pseq(t[1], 1)).play;
 Note that the first track in a SimpleMIDIFile often contains no note events if imported from an external midi file (since it's used for metadata), so that the first track of interest is usually the one in index 1 of the getSeqs array.Ê I decided to leave the first blank track in so preserve the mapping from midi track # to getSeqs array #.
 
 */	
+		arg padStart = false, totalDurationForPadEnd = false;
 		var trackSeqs;
 		
 		this.timeMode_('ticks');
@@ -179,7 +180,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 					{	
 						// If first note in MIDI file is not at beginning of file, add a
 						// rest at the beginning of the pattern to fill the empty space.
-						if (event.startPos != 0, {
+						if (padStart.and(event.startPos != 0), {
 							seq.add([\rest, event.startPos]);
 						});
 						seq.add([event.note, event.dur]);
