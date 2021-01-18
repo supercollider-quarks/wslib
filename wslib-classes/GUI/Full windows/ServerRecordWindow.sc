@@ -56,7 +56,7 @@ ServerRecordWindow {
 		StaticText( w, 60@20 ).string_( "#channels" ).align_( \right );
 		nCha = NumberBox( w, 40@20 ).value_( server.recChannels )
 			.clipLo_( 1 )
-			.action_({ |v| server.recChannels = v.value.asInt });
+			.action_({ |v| server.recChannels = v.value.asInteger });
 			
 		//w.view.decorator.nextLine;
 		StaticText( w, 60@20 ).string_( "format" ).align_( \right );
@@ -132,7 +132,7 @@ ServerRecordWindow {
 							 
 						server.recSampleFormat = sFormat.items[ sFormat.value ].asString;
 						server.recHeaderFormat = hFormat.items[ hFormat.value ].asString; 
-						server.recChannels = nCha.value.asInt;
+						server.recChannels = nCha.value.asInteger;
 						server.prepareForRecord( inFileName );
 						controls[ \prepare ].enabled_( false );
 						controls[ \record ].value = 1;

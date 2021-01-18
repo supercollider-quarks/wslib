@@ -52,7 +52,7 @@
 	
 	// conversion to float/int
 	asFloat { ^x.asFloat }
-	asInt { ^x.asInt }
+	asInteger { ^x.asInteger }
 	
 	// unary ops
 	neg { ^this.performOnEach( thisMethod.name ) }

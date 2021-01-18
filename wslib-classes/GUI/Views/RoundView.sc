@@ -153,14 +153,14 @@ RoundView2 : RoundView { } // still here for backwards compat
 		// use like this:
 		// unicode.getArrowKey ? key.getArrowKey;
 		^if( GUI.id == \qt ) {
-			switch( this.asInt,
+			switch( this.asInteger,
 				16r1000012, \left,
 				16r1000013, \up,
 				16r1000014, \right,
 				16r1000015, \down
 			);		
 		} {
-			switch( this.asInt,
+			switch( this.asInteger,
 				16rF700, \up,
 				16rF701, \down,
 				16rF702, \left,

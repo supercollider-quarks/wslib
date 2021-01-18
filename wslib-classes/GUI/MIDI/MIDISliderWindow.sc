@@ -644,7 +644,7 @@ MIDICinetixWindow {
 var busMessage = { |chan, val| Server.default.sendMsg("/c_set", chan + busOffset, val) };
 var routine, routineButton;
 var values;
-if(channels.size == 0) { channels = (_.asInt)!channels };
+if(channels.size == 0) { channels = (_.asInteger)!channels };
 values = channels.collect({0.0});
 MIDIWindow.new;
 

@@ -60,7 +60,7 @@ W. Snoei 2005
 		$# -> ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
 		$b -> ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"],
 		$n -> ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
-		].at(sign)[this.round(1.0) % 12] ++ ((this.round(1.0) / 12).floor - 2).asInt;
+		].at(sign)[this.round(1.0) % 12] ++ ((this.round(1.0) / 12).floor - 2).asInteger;
 		out.addUniqueMethod('cents', { ((this - this.round(1.0)) * 100).round(10e-8) });
 		out.addUniqueMethod('alt', { IdentityDictionary[$# -> 1, $b -> -1].at(out[1]) ? 0 })
 		//out.cents_( ((this - this.round(1.0)) * 100).round(10e-8)  );
@@ -238,7 +238,7 @@ W. Snoei 2005
 		alt.abs.do({ altString = altString ++
 			(if(alt.isPositive) {"#"} {"b"}); });
 		if(alt==2) {altString="x"};
-		out = name.asString ++ altString ++ octave.round(1).asInt;
+		out = name.asString ++ altString ++ octave.round(1).asInteger;
 		out.addUniqueMethod('cents', { cents });
 		out.addUniqueMethod('alt', { alt });
 		^out;

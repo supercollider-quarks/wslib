@@ -44,7 +44,7 @@ ModKey {
 			.collect({ |item| numberDict.findKeyForValue( item ) })
 			.select( _.notNil ) ++ extra;
 		string = String.fill(24, { |i| if( indices.includes( i ) ) { $1 } { $0 } } );
-		^( "2r" ++ string ).interpret.asInt;
+		^( "2r" ++ string ).interpret.asInteger;
 		}
 	
 	init { |args|

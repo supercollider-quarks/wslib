@@ -30,10 +30,10 @@
 		lines = this.split( $\n );
 		maxSizeH = ( ( rect.width + allowWidth ) / this.class.widthM9 );
 		lines = lines.copyRange(0, 
-			(( ( rect.height + allowHeight) / this.class.heightM9 ).floor.asInt - 1) );
+			(( ( rect.height + allowHeight) / this.class.heightM9 ).floor.asInteger - 1) );
 		lines = lines.collect({ |line|
 			if( line.size > maxSizeH  )
-				{ line = line.copyRange(0, maxSizeH.asInt - (clipSign.size + 1) ) ++ clipSign }
+				{ line = line.copyRange(0, maxSizeH.asInteger - (clipSign.size + 1) ) ++ clipSign }
 				{ line };
 			});
 		^lines.join( $\n )

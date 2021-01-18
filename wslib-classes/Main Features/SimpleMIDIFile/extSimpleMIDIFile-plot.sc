@@ -69,7 +69,7 @@
 			  
 			 valRange.do({ |i|	
 			 	var y;
-			 	if( [2,4,7,9,11].includes( i.asInt%12 ) ) // D, E, G, A, B
+			 	if( [2,4,7,9,11].includes( i.asInteger%12 ) ) // D, E, G, A, B
 					{ 
 					y = (( 1 - ( i * step )  ) * bounds.height) + bounds.top;
 					Pen.line( bounds.left@y, bounds.right@y );
@@ -86,7 +86,7 @@
 			  
 			 valRange.do({ |i|	
 			 	var y;
-			 	if( [1,3,6,8,10].includes( i.asInt%12 ) )
+			 	if( [1,3,6,8,10].includes( i.asInteger%12 ) )
 					{ 
 					y = (( 1 - ( i * step )  ) * bounds.height) + bounds.top;
 					Pen.line( bounds.left@y, bounds.right@y );

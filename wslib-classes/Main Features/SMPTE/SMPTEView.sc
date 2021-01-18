@@ -45,7 +45,7 @@ SMPTEView { // fps = 1000
 			
 		view.mouseDownAction = { |v, x, y, mod|
 			selected = (11 - (((x+1) - v.drawBounds.left) /
-				((v.drawBounds.width) / 12) ).floor).asInt;
+				((v.drawBounds.width) / 12) ).floor).asInteger;
 			counterDragStart = [x@y, pos.copy];
 			mouseDownAction.value( this, x, y, mod );
 			};

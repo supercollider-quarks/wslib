@@ -116,7 +116,7 @@ RoundButton : RoundView {
 			
 			Pen.use {
 				
-				if( hiliteColor.notNil && { (value.asInt == 1) && { states[1][2].isNil } } ) {
+				if( hiliteColor.notNil && { (value.asInteger == 1) && { states[1][2].isNil } } ) {
 					Pen.roundedRect( rect, radius );
 					hiliteColor.penFill( rect ); // requires Gradient:fill method
 				};
@@ -229,7 +229,7 @@ RoundButton : RoundView {
 	
 	doAction {
 		if( action.size > 0 ) // if action is in fact an array; couple states to actions
-			{ action.wrapAt( this.value.asInt - 1 ).value( this ); }
+			{ action.wrapAt( this.value.asInteger - 1 ).value( this ); }
 			{ action.value( this ); };
 	}
 	

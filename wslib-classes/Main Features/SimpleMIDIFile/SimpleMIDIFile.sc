@@ -490,7 +490,7 @@ SimpleMIDIFile  {
 			//	to:		from:
 			
 				int16: (	int8: { |item| item[0..3] ++ [ ( (item[5] * 128) + item[4] ) - (2**13) ]; },
-						float: { |item| item[0..3] ++ [ (item[4] * (2**13)).round(1).asInt ]; } ),
+						float: { |item| item[0..3] ++ [ (item[4] * (2**13)).round(1).asInteger ]; } ),
 						
 				int8: ( 	int16: { |item| var item4;
 							item4 = (item[4] + (2**13)) / 128;

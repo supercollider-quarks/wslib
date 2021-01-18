@@ -8,8 +8,8 @@
 	asStringWithFrac { |fracSize = 3|
 		var val;
 		val = this.round( 10 ** (fracSize.neg) );
-		^(val.asInt.asString ++ "." ++ 
-			( val.abs.frac* (10**fracSize) ).round(1).asInt.asStringToBase(10,fracSize));
+		^(val.asInteger.asString ++ "." ++ 
+			( val.abs.frac* (10**fracSize) ).round(1).asInteger.asStringToBase(10,fracSize));
 		}
 	}
 	

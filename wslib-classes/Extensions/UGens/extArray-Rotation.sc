@@ -16,8 +16,8 @@
 		
 	rotateL { |n = 0|  // linear interpolation
 		^case {n.rate == 'scalar'}
-				{ (this.rotate(n.floor.asInt) * (1-n.frac))
-				+ (this.rotate(((n.floor+1)%this.size).asInt) * n.frac) }
+				{ (this.rotate(n.floor.asInteger) * (1-n.frac))
+				+ (this.rotate(((n.floor+1)%this.size).asInteger) * n.frac) }
 			{this.rate == 'audio'}
 				{ RotateL.ar(n, this) }
 			{this.rate == 'control'}
@@ -33,8 +33,8 @@
 		// sinusoid interpolation
 		// only for scalars for now
 		var sinEnv = Env([0,1],[1],\sine);
-		^(this.rotate(n.floor.asInt) * sinEnv[(1-n.frac)])
-				+ (this.rotate(((n.floor+1)%this.size).asInt) * sinEnv[(n.frac)]) ;
+		^(this.rotate(n.floor.asInteger) * sinEnv[(1-n.frac)])
+				+ (this.rotate(((n.floor+1)%this.size).asInteger) * sinEnv[(n.frac)]) ;
 	}
 	
 }

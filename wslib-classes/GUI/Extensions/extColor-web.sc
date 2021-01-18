@@ -19,9 +19,9 @@
 		}
 		
 	hex { ^(
-		(red * 255).asInt.asHexString(2) ++ 
-		(green * 255).asInt.asHexString(2) ++ 
-		(blue  * 255).asInt.asHexString(2)); }
+		(red * 255).asInteger.asHexString(2) ++ 
+		(green * 255).asInteger.asHexString(2) ++ 
+		(blue  * 255).asInteger.asHexString(2)); }
 	
 	webHex { ^"#" ++ this.hex; }
 	
@@ -35,9 +35,9 @@
 		}
 		
 	hexValue { ^("16x" ++ (
-		(red * 255).asInt.asHexString(2) ++ 
-		(green * 255).asInt.asHexString(2) ++ 
-		(blue  * 255).asInt.asHexString(2))).interpret; }
+		(red * 255).asInteger.asHexString(2) ++ 
+		(green * 255).asInteger.asHexString(2) ++ 
+		(blue  * 255).asInteger.asHexString(2))).interpret; }
 	
 	*newName { arg name, table, includeXWindows = false;
 		// test all possible inputs..
