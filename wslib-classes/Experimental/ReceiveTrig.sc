@@ -35,9 +35,9 @@ y.free; // also removes the ReceiveTrig
 
 // example 4: ReceiveReply
 
-y = { SendReply.kr( Impulse.kr(1), 'noise', WhiteNoise.kr(1.dup) ) }.play;
+y = { SendReply.kr( Impulse.kr(1), '/noise', WhiteNoise.kr(1.dup) ) }.play;
 
-y.onReply_( _.postln, 'noise' ); // adds a ReceiveReply to the Synth
+y.onReply_( _.postln, '/noise' ); // adds a ReceiveReply to the Synth
 
 y.free; // also removes the ReceiveReply
 
@@ -54,8 +54,8 @@ ReceiveReply {
 	classvar <all;
 
 	var <source;
-	var <responder, <>action, <>id, <value = 0, <>removeAtReceive = false;
-	var <endResponder;
+	var <oscFunc, <>action, <>id, <value = 0, <>removeAtReceive = false;
+	var <endOSCFunc;
 	var <cmdName;
 
 	*defaultCmdName { ^'/reply' }
@@ -79,53 +79,57 @@ ReceiveReply {
 		var addr;
 
 		case { (source.class == Synth) or: { source.isNumber } } // Synth or nodeID
-		{	
-			addr = NetAddr( source.server.addr.hostname, source.server.addr.port );
-			responder = OSCresponderNode( addr, cmdName,
-				{ arg time, responder, msg;
-					if( msg[1] == source.nodeID ) { this.doAction( time, responder, msg ) }
-				}).add;
-
-			 endResponder = OSCresponderNode( addr, '/n_end', // remove on end
-			 	 { arg time, responder, msg;
-				 	 if( msg[1] == source.nodeID ) { this.remove };
-			 	 }).add;
+			{	
+				addr = NetAddr( source.server.addr.hostname, source.server.addr.port );
+				oscFunc = OSCFunc({ arg msg, time;
+					if( removeAtReceive == true ) { this.free };
+					this.doAction( time, msg );
+				}, cmdName, addr, argTemplate: [ source.nodeID ]);
+	
+				endOSCFunc = OSCFunc({ arg msg, time;
+					 this.free;
+				}, '/n_end', addr, argTemplate: [ source.nodeID ]).oneShot;
 			}
 			{ source.respondsTo( \addr ) } // a Server
 			{ 
 				addr = NetAddr( source.addr.hostname, source.addr.port );
-				responder = OSCresponderNode(addr, cmdName,
-				{ arg time, responder, msg;
-					this.doAction( time, responder, msg ) 				}).add;
+				oscFunc = OSCFunc({ arg msg, time;
+					if( removeAtReceive == true ) { this.free };
+					this.doAction( time, msg );
+				}, cmdName, addr );
 			}
 			{ source.class == NetAddr } // a NetAddr
-			{ responder = OSCresponderNode(source, cmdName,
-				{ arg time, responder, msg;
-					this.doAction( time, responder, msg ) 				}).add;
+			{ 
+				oscFunc = OSCFunc({ arg msg, time;
+					if( removeAtReceive == true ) { this.free };
+					this.doAction( time, msg ); 	
+				}, cmdName, source );
 			}
-			{ true } // anything else (including nil)
-			{ responder = OSCresponderNode( nil, cmdName,
-				{ arg time, responder, msg;
-					this.doAction( time, responder, msg )
-				}).add;
+			{ 
+				oscFunc = OSCFunc({ arg msg, time;
+					if( removeAtReceive == true ) { this.free };
+					this.doAction( time, msg );
+				}, cmdName );
 			};
 		}
 
-	doAction { |time, responder, msg|
+	doAction { |time, msg|
 		if( id.isNil or: { msg[2] == id } )
 			{ value =  msg[3..];
 			if( value.size == 1 ) { value = value[0]; };
-			action.value( value, time, responder, msg );
-			if( removeAtReceive ) { this.remove };
+			action.value( value, time, this, msg );
 		};
 	}
 
 	addToAll { all = all.asCollection ++ [ this ] }
+	
+	free { oscFunc.free; endOSCFunc.free; all.remove( this ); }
+	*free { all.do({ |obj| obj.free }); all = []; }
 
-	remove { responder.remove; endResponder.remove; all.remove( this ); }
-	*remove { all.do({ |obj| obj.remove }); all = []; }
-
-	*cmdPeriod { this.remove; }
+	remove { this.free } // shortcut for backwards compatibility
+	*remove { this.free }
+	
+	*cmdPeriod { this.free; }
 
 	oneShot { removeAtReceive = true; }
 	*oneShot { |source, action, cmdName, id| ^this.new( source, action, cmdName, id ).oneShot; }
@@ -141,12 +145,11 @@ ReceiveTrig : ReceiveReply {
 		}
 
 	// more optimized; SendTrig doesn't do multichannel expansion
-	doAction { |time, responder, msg|
-		if( id.isNil or: { msg[2] == id } )
-			{ value = msg[3];
-			action.value( value, time, responder, msg );
-			if( removeAtReceive ) { this.remove };
-			};
+	doAction { |time, msg|
+		if( id.isNil or: { msg[2] == id } ) { 
+			value = msg[3];
+			action.value( value, time, this, msg );
+		};
 	}
 
 }
