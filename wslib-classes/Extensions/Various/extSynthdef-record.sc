@@ -35,10 +35,12 @@
 			server.sendMsgSync(c, *buffer.allocMsg);
 			server.sendMsgSync(c, "/d_recv", def.asBytes);
 			synth = Synth.basicNew(name, server);
-			if(action.notNil)
-				{ OSCpathResponder(server.addr, ['/n_end', synth.nodeID], { 
-				 action.value(buffer);
-			}).add.removeWhenDone; };
+			if(action.notNil) {
+				OSCFunc({ action.value(buffer) },
+					'/n_end', server.addr,
+					argTemplate: [synth.nodeID]
+				).oneShot
+			};
 			server.listSendMsg(synth.newMsg);
 		});
 		^buffer;
