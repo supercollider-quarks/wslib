@@ -159,7 +159,7 @@ NanoKONTROL {
 		resp = CCResponder( { |port, chan, cc, val| 
 			var view;
 			if( allScenesActive or: { this.isInScene( scene-1 ) } ) {				view =  allViews[ allControllers.detectIndex({ |item| item == [chan, cc] }) ]; 
-				if( view.class == SCKnob )
+				if( view.class == Knob )
 					{ { view.valueAction = val/127; }.defer; }
 					{ view.valueAction = val/127; };
 			};
