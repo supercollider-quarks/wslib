@@ -22,9 +22,9 @@ RoundNumberBox : RoundView {
 		<>scroll=true; //, <>shift_step=0.1, <>ctrl_step=10;
 	
 	var <>wrap = false;
-	
-	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
-		
+
+	var <>shift_scale = 100, <>ctrl_scale = 10, <>alt_scale = 0.1;
+
 	var <charSelectColor, <charSelectIndex = -1;
 	
 	var <>actionOnlyOnChange = true;
@@ -337,9 +337,9 @@ RoundNumberBox : RoundView {
 		var direction;
 		var angle;
 		if( enabled ) {
-		
-		if (scroll == true, {
-			direction = 1.0;
+
+			if (scroll == true && { (x@y) != hit }, {
+			direction = 1;
 				// horizontal or vertical scrolling:
 			//if ( (x - hit.x) < 0 or: { (y - hit.y) > 0 }) { direction = -1.0; };
 			inc = this.getScale( modifiers );
@@ -347,11 +347,11 @@ RoundNumberBox : RoundView {
 			//angle = angle = ((x@y) - startHit).theta.wrap(-0.75pi, 1.25pi);
 			direction = 
 				case { angle.inclusivelyBetween( -0.6pi, 0.1pi ) }
-					{ 1.0 }
+					{ 1 }
 					{ angle.inclusivelyBetween( 0.4pi, 1.1pi )  }
-					{ -1.0 }
+					{ -1 }
 					{ true }
-					{ 0.0 };
+					{ 0 };
 			if( value.respondsTo( '+' ) && { value.class != String }  )
 				{ this.valueAction = (this.value + (inc * this.scroll_step * direction)); };
 			hit = Point(x, y);
