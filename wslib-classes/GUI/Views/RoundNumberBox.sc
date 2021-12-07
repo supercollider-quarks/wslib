@@ -204,7 +204,8 @@ RoundNumberBox : RoundView {
 										
 			Pen.use({
 				Pen.roundedRect( rect.insetBy( border ), radius ).clip;
-				
+
+				if( value.asInteger == value ) { value = value.asInteger };
 				string = keyString ?? { formatFunc.value(value).asString };
 				stringRect = this.stringRect;
 				
