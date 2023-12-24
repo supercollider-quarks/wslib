@@ -401,7 +401,7 @@ W. Snoei 2005
 		}
 	}
 
-+ Array {
++ SequenceableCollection {
 
 	*makeScaleMidi { arg groundNote = 60, type= 'major', startNote, endNote;
 		var outArray = [0];
