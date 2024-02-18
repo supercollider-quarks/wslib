@@ -53,10 +53,10 @@ RoundView : UserViewHolder {
 			};
 	}
 	
-	*skin { ^(skins ? []).last }
 	
 	drawBounds { ^if( expanded ) 
 			{ this.bounds.moveTo(focusRingSize,focusRingSize); } 
+	*skin { ^(skins ? []).last ?? { () } }
 			{ if( shrinkForFocusRing )
 				{ this.bounds.insetBy(focusRingSize,focusRingSize)
 						.moveTo(focusRingSize,focusRingSize) }
