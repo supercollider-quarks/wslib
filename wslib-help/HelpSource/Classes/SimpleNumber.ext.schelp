@@ -10,7 +10,7 @@ Convert a MIDI note number to a note name such as code::Bb3::.
 
 argument:: sign
 
-link::classes/String::, link::classes/Symbol::, or link::classes/Char:: containing code::#:: or code::b::.
+link::Classes/String::, link::Classes/Symbol::, or link::Classes/Char:: containing code::#:: or code::b::.
 Forces notes with accidentals to have the given accidental.
 If not specified, or code::n::, chooses the most common alterations (F#, C#, G#, Bb, Eb).
 returns:: link::Classes/String:: containing the note name, with unique code::-alt:: method
