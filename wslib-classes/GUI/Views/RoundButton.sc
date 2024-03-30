@@ -10,7 +10,7 @@ RoundButton : RoundView {
 	
 	var <value = 0;
 	var <font, <states;
-	var <pressed = false;
+	var <pressed = false, <>changeStateWhenPressed = true;
 	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
@@ -36,9 +36,13 @@ RoundButton : RoundView {
 	mouseUp {arg x, y, modifiers, buttonNumber;
 		if( pressed == true ) // pressed can never be true if not enabled
 			{ mouseUpAction.value(this, x, y, modifiers, buttonNumber);
-			  pressed = false; 
-			  this.valueAction = value + 1; };
-		//this.refresh;	
+			  pressed = false;
+			if( changeStateWhenPressed ) {
+				this.valueAction = value + 1;
+			} {
+				this.doAction; this.refresh;
+			}
+		};
 		}
 	
 	mouseMove { arg x, y, modifiers;
