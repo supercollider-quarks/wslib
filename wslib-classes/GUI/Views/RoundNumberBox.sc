@@ -250,7 +250,11 @@ RoundNumberBox : RoundView {
 			
 			if( enabled.not )
 				{ Pen.use{
-					Pen.fillColor = Color.white.alpha_(0.5);
+				    if( GUI.id == \qt ) {
+					    Pen.fillColor = QtGUI.palette.window.copy.alpha_(0.5);
+				    } {
+					    Pen.fillColor = Color.white.alpha_(0.5);
+				    };
 					Pen.roundedRect( rect, radius ).fill;
 					};
 				};
