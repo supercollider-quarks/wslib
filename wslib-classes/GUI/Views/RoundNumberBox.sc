@@ -43,7 +43,7 @@ RoundNumberBox : RoundView {
 			};
 		});
 		defaultFontSize = 12;
-		defaultInterpretFunc = { |string| string.interpret };
+		defaultInterpretFunc = { |string, val| string.format(val).interpret };
 	}
 		 
 	*defaultFont { ^Font( defaultFontFace, defaultFontSize ) }
@@ -110,7 +110,7 @@ RoundNumberBox : RoundView {
 	interpret {
 		var oldValue;
 		oldValue = value;
-		value = interpretFunc.value(keyString) ? value;
+		value = interpretFunc.value(keyString, value) ? value;
 		keyString = nil;
 		if( actionOnlyOnChange nand: { (value == oldValue) } )
 			{ action.value(this, value); };
@@ -385,7 +385,7 @@ RoundNumberBox : RoundView {
 		
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key
 			if (keyString.notNil,{ // no error on repeated enter
-				value = interpretFunc.value(keyString) ? value;
+				value = interpretFunc.value(keyString, value) ? value;
 				this.prClipValue;
 				keyString = nil;
 				action.value( this, value );
