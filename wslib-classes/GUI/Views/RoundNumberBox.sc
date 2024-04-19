@@ -10,7 +10,7 @@ RoundNumberBox : RoundView {
 	var <extrude = true;
 	var <inverse = false;
 	var <focusColor, <stringColor;
-	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%";
+	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%pi";
 	var <innerShadow;
 	
 	var <autoScale = false; // BETA
