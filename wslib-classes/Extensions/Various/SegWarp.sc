@@ -133,9 +133,13 @@ SegWarp : Warp {
 		
 	unmap { arg value; // finds first occurence, returns previous value if not found (default 0)
 		var node, nextNode;
-		
-		node = array.detectIndex({ |item,i| 
-				value.inclusivelyBetween( *[item[0], (array[i+1] ? item)[0]].sort ); 
+
+		if( value.size > 0 ) {
+			^value.collect( this.unmap(_) );
+		};
+
+		node = array.detectIndex({ |item,i|
+				value.inclusivelyBetween( *[item[0], (array[i+1] ? item)[0]].sort );
 				});
 		
 		if( node.notNil )
