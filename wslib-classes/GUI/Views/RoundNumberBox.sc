@@ -30,7 +30,9 @@ RoundNumberBox : RoundView {
 	var <>actionOnlyOnChange = true;
 	
 	var <>logScale; // nil, 10, 2
-		
+
+	var <>disabledColor;
+
 	// *viewClass { ^SCUserView }
 	
 	refresh { { super.refresh }.defer }
@@ -250,11 +252,7 @@ RoundNumberBox : RoundView {
 			
 			if( enabled.not )
 				{ Pen.use{
-				    if( GUI.id == \qt ) {
-					    Pen.fillColor = QtGUI.palette.window.copy.alpha_(0.5);
-				    } {
-					    Pen.fillColor = Color.white.alpha_(0.5);
-				    };
+					Pen.fillColor = disabledColor ? Color.gray(0.85882352941176, 0.5);
 					Pen.roundedRect( rect, radius ).fill;
 					};
 				};

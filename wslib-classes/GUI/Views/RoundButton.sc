@@ -14,7 +14,8 @@ RoundButton : RoundView {
 	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
-	var bgColor, <stringColor, <hiliteColor, <borderColor; 
+	var bgColor, <stringColor, <hiliteColor, <borderColor;
+	var <>disabledColor;
 		// hiliteColor = color of second state if not provided
 	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
@@ -185,11 +186,7 @@ RoundButton : RoundView {
 		if( enabled.not )
 			{
 			Pen.use {
-				if( GUI.id == \qt ) {
-					Pen.fillColor = QtGUI.palette.window.copy.alpha_(0.5);
-				} {
-					Pen.fillColor = Color.white.alpha_(0.5);
-				};
+				Pen.fillColor = disabledColor ? Color.gray(0.85882352941176, 0.5);
 				Pen.roundedRect( rect, radius ).fill;
 				};
 			};
