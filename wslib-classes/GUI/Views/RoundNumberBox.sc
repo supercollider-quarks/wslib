@@ -375,10 +375,10 @@ RoundNumberBox : RoundView {
 		
 		// standard chardown
 		switch( arrowKey,
-			\up, { this.increment(zoom); ^this },
-			\right, { this.increment(zoom); ^this },
-			\down, { this.decrement(zoom); ^this },
-			\left, { this.decrement(zoom); ^this }
+			\up, { this.increment(zoom); ^true },
+			\right, { this.increment(zoom); ^true },
+			\down, { this.decrement(zoom); ^true },
+			\left, { this.decrement(zoom); ^true }
 		);
 		
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key

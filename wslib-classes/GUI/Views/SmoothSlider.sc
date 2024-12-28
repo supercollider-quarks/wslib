@@ -499,10 +499,10 @@ SmoothSlider : RoundView {
 		if (char == $[, { this.decrement(zoom); ^this });
 		
 		switch( arrowKey,
-			\up, { this.increment(zoom); ^this },
-			\right, { this.increment(zoom); ^this },
-			\down, { this.decrement(zoom); ^this },
-			\left, { this.decrement(zoom); ^this }
+			\up, { this.increment(zoom); ^true },
+			\right, { this.increment(zoom); ^true },
+			\down, { this.decrement(zoom); ^true },
+			\left, { this.decrement(zoom); ^true }
 		);
 		
 		^nil;
