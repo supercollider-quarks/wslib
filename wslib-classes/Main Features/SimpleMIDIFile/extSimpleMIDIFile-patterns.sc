@@ -15,6 +15,7 @@
 				{ thisFile = this }
 				{ thisFile = this.copy.timeMode_( 'ticks' ); };
 		};
+		if( this.midiEvents.size > 0 ) {
 		 ^Ppar(
 			({ |tr|
 				var sustainEvents, deltaTimes;
@@ -41,6 +42,7 @@
 					{ nil }
 				}!this.tracks).select({ |item| item.notNil })
 			);
+		} { ^nil }
 		}
 	
 	play { |clock, protoEvent, quant, inst,  amp = 0.2|  
