@@ -95,8 +95,7 @@ FolderLibraryElement {
 FolderLibrary : FolderLibraryElement {
 	
 	var <name;
-	var <>contents;
-	
+
 	*new { |baseName = "~/scwork", contents|
 		this.deprecated( thisMethod );
 		if( contents.isString )
