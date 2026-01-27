@@ -7,8 +7,7 @@ SmoothSlider : RoundView {
 	var <knobSize = 0.25, hitValue;
 	var <orientation = \v;
 	var <thumbSize = 0; // compatible with old sliders
-	var <focusColor;
-	
+
 	var <>deltaAction, <>allwaysPerformAction = false;
 	var <>outOfBoundsAction;
 	

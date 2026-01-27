@@ -1,7 +1,5 @@
 EZSmoothRanger : EZRanger {
-	
-		var action;
-	
+
 		sliderClass { ^SmoothRangeSlider }
 		numberBoxClass { ^SmoothNumberBox }
 		staticTextClass { ^StaticText }
