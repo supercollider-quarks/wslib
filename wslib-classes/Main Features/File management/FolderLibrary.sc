@@ -93,8 +93,6 @@ FolderLibraryElement {
 	}
 
 FolderLibrary : FolderLibraryElement {
-	
-	var <name;
 
 	*new { |baseName = "~/scwork", contents|
 		this.deprecated( thisMethod );
