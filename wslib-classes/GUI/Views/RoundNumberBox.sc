@@ -9,8 +9,8 @@ RoundNumberBox : RoundView {
 	var <radius, <border = 1;
 	var <extrude = true;
 	var <inverse = false;
-	var <focusColor, <stringColor;
-	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%";
+	var <stringColor;
+	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%pi";
 	var <innerShadow;
 	
 	var <autoScale = false; // BETA
@@ -30,7 +30,9 @@ RoundNumberBox : RoundView {
 	var <>actionOnlyOnChange = true;
 	
 	var <>logScale; // nil, 10, 2
-		
+
+	var <>disabledColor;
+
 	// *viewClass { ^SCUserView }
 	
 	refresh { { super.refresh }.defer }
@@ -43,7 +45,7 @@ RoundNumberBox : RoundView {
 			};
 		});
 		defaultFontSize = 12;
-		defaultInterpretFunc = { |string| string.interpret };
+		defaultInterpretFunc = { |string, val| string.format(val).interpret };
 	}
 		 
 	*defaultFont { ^Font( defaultFontFace, defaultFontSize ) }
@@ -110,7 +112,7 @@ RoundNumberBox : RoundView {
 	interpret {
 		var oldValue;
 		oldValue = value;
-		value = interpretFunc.value(keyString) ? value;
+		value = interpretFunc.value(keyString, value) ? value;
 		keyString = nil;
 		if( actionOnlyOnChange nand: { (value == oldValue) } )
 			{ action.value(this, value); };
@@ -250,7 +252,7 @@ RoundNumberBox : RoundView {
 			
 			if( enabled.not )
 				{ Pen.use{
-					Pen.fillColor = Color.white.alpha_(0.5);
+					Pen.fillColor = disabledColor ? Color.gray(0.85882352941176, 0.5);
 					Pen.roundedRect( rect, radius ).fill;
 					};
 				};
@@ -373,15 +375,15 @@ RoundNumberBox : RoundView {
 		
 		// standard chardown
 		switch( arrowKey,
-			\up, { this.increment(zoom); ^this },
-			\right, { this.increment(zoom); ^this },
-			\down, { this.decrement(zoom); ^this },
-			\left, { this.decrement(zoom); ^this }
+			\up, { this.increment(zoom); ^true },
+			\right, { this.increment(zoom); ^true },
+			\down, { this.decrement(zoom); ^true },
+			\left, { this.decrement(zoom); ^true }
 		);
 		
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key
 			if (keyString.notNil,{ // no error on repeated enter
-				value = interpretFunc.value(keyString) ? value;
+				value = interpretFunc.value(keyString, value) ? value;
 				this.prClipValue;
 				keyString = nil;
 				action.value( this, value );

@@ -115,7 +115,7 @@ RoundView : UserViewHolder {
 					Pen.width = 1.5;
 					Pen.color = Color.white.alpha_(0.75);
 					Pen.roundedRect( rect.insetBy(1,1), radius-1 ).stroke;
-					Pen.color = Color.blue.hue_(0.7).alpha_(0.5);
+					Pen.color = focusColor ?? { Color.blue.hue_(0.7).alpha_(0.5); };
 					Pen.roundedRect( rect.insetBy(0.5,0.5), radius-0.5 ).stroke
 				});
 			} {
