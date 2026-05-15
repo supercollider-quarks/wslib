@@ -56,7 +56,7 @@ PlayBufCF {
 		^Mix(	
 			on.collect({ |on, i| 
 				PlayBuf.ar( numChannels, bufnum, rate.wrapAt(i), on, startPos, loop )
-					* Slew.perform( method, on, lag[0], lag[1] ).sqrt
+				    * ( Slew.perform( method, on, lag[0], lag[1] ) * 0.5pi ).sin
 			})
 		);
 		

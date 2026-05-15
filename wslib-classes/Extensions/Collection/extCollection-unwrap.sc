@@ -15,11 +15,12 @@
 	}
 	
 	unwrap { |lo = -1, hi = 1|
-		var last;
+		var last, range;
 		last = this[0];
+		range = (hi - lo) / 2
 		^[last] ++ this[1..].collect({ |item|
 			var out;
-			out = item.wrap( last + lo, last + hi );
+			out = item.wrap( last - range, last + range );
 			last = out;
 			out;
 		});

@@ -42,7 +42,7 @@ SimpleMIDIFile also supports Event Patterns (see link::Classes/Pattern:: and lin
 
 code::
 // download a Bach midi file:
-"curl http://www.bachcentral.com/BachCentral/ORGAN/toccata1.mid -o ~/Desktop/toccata1.mid".unixCmd;
+"curl http://www.bachcentral.com/ORGAN/toccata1.mid -o ~/Desktop/toccata1.mid".unixCmd;
 
 // read it
 m = SimpleMIDIFile.read( "~/Desktop/toccata1.mid" );

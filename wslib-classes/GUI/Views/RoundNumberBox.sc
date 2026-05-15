@@ -10,7 +10,7 @@ RoundNumberBox : RoundView {
 	var <extrude = true;
 	var <inverse = false;
 	var <stringColor;
-	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%";
+	var <formatFunc, <>interpretFunc, <>allowedChars = "+-.eE*/()%pi";
 	var <innerShadow;
 
 	var <autoScale = false; // BETA
@@ -23,7 +23,7 @@ RoundNumberBox : RoundView {
 
 	var <>wrap = false;
 
-	var <>shift_scale = 100.0, <>ctrl_scale = 10.0, <>alt_scale = 0.1;
+	var <>shift_scale = 100, <>ctrl_scale = 10, <>alt_scale = 0.1;
 
 	var <charSelectColor, <charSelectIndex = -1;
 
@@ -43,7 +43,7 @@ RoundNumberBox : RoundView {
 			};
 		});
 		defaultFontSize = 12;
-		defaultInterpretFunc = { |string| string.interpret };
+		defaultInterpretFunc = { |string, val| string.format(val).interpret };
 	}
 
 	*defaultFont { ^Font( defaultFontFace, defaultFontSize ) }
@@ -110,7 +110,7 @@ RoundNumberBox : RoundView {
 	interpret {
 		var oldValue;
 		oldValue = value;
-		value = interpretFunc.value(keyString) ? value;
+		value = interpretFunc.value(keyString, value) ? value;
 		keyString = nil;
 		if( actionOnlyOnChange nand: { (value == oldValue) } )
 			{ action.value(this, value); };
@@ -205,6 +205,7 @@ RoundNumberBox : RoundView {
 			Pen.use({
 				Pen.roundedRect( rect.insetBy( border ), radius ).clip;
 
+				if( value.asInteger == value ) { value = value.asInteger };
 				string = keyString ?? { formatFunc.value(value).asString };
 				stringRect = this.stringRect;
 
@@ -249,7 +250,7 @@ RoundNumberBox : RoundView {
 
 			if( enabled.not )
 				{ Pen.use{
-					Pen.fillColor = Color.white.alpha_(0.5);
+					Pen.fillColor = disabledColor ? Color.gray(0.85882352941176, 0.5);
 					Pen.roundedRect( rect, radius ).fill;
 					};
 				};
@@ -338,8 +339,8 @@ RoundNumberBox : RoundView {
 		var angle;
 		if( enabled ) {
 
-		if (scroll == true, {
-			direction = 1.0;
+			if (scroll == true && { (x@y) != hit }, {
+			direction = 1;
 				// horizontal or vertical scrolling:
 			//if ( (x - hit.x) < 0 or: { (y - hit.y) > 0 }) { direction = -1.0; };
 			inc = this.getScale( modifiers );
@@ -347,11 +348,11 @@ RoundNumberBox : RoundView {
 			//angle = angle = ((x@y) - startHit).theta.wrap(-0.75pi, 1.25pi);
 			direction =
 				case { angle.inclusivelyBetween( -0.6pi, 0.1pi ) }
-					{ 1.0 }
+					{ 1 }
 					{ angle.inclusivelyBetween( 0.4pi, 1.1pi )  }
-					{ -1.0 }
+					{ -1 }
 					{ true }
-					{ 0.0 };
+					{ 0 };
 			if( value.respondsTo( '+' ) && { value.class != String }  )
 				{ this.valueAction = (this.value + (inc * this.scroll_step * direction)); };
 			hit = Point(x, y);
@@ -372,15 +373,15 @@ RoundNumberBox : RoundView {
 
 		// standard chardown
 		switch( arrowKey,
-			\up, { this.increment(zoom); ^this },
-			\right, { this.increment(zoom); ^this },
-			\down, { this.decrement(zoom); ^this },
-			\left, { this.decrement(zoom); ^this }
+			\up, { this.increment(zoom); ^true },
+			\right, { this.increment(zoom); ^true },
+			\down, { this.decrement(zoom); ^true },
+			\left, { this.decrement(zoom); ^true }
 		);
 
 		if ((char == 3.asAscii) || (char == $\r) || (char == $\n), { // enter key
 			if (keyString.notNil,{ // no error on repeated enter
-				value = interpretFunc.value(keyString) ? value;
+				value = interpretFunc.value(keyString, value) ? value;
 				this.prClipValue;
 				keyString = nil;
 				action.value( this, value );

@@ -4,7 +4,12 @@
 MasterEQ {
 	classvar <>eq; // dict with all variables
 	classvar <window;
-	
+	classvar <>prefsPath;
+
+	*initClass {
+		prefsPath = Platform.userAppSupportDir +/+ "eq-prefs.txt";
+	}
+
 	*new { |numCha = (2), server|
 		
 		if( \TabbedView.asClass.notNil )
@@ -189,7 +194,7 @@ MasterEQ {
 			];
 		
 		eq[ \pu_filebuttons ][0].action_({
-				File.use("eq-prefs.txt", "w",
+				File.use( prefsPath, "w",
 			{ |f| f.write(
 				(  current: eq[ \frdb ],
 				   presets: eq[ \frpresets ] ).asCompileString
@@ -198,8 +203,8 @@ MasterEQ {
 		
 		eq[ \pu_filebuttons ][1].action_({
 			var contents;
-				if( File.exists( "eq-prefs.txt" ) )
-				 {	File.use("eq-prefs.txt", "r", { |f| 
+				if( File.exists( prefsPath ) )
+				 {	File.use( prefsPath, "r", { |f|
 						contents = f.readAllString.interpret;
 						//contents.postln;
 						eq[ \frdb ] = contents[ \current ];

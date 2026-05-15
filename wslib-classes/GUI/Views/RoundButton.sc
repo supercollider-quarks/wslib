@@ -10,11 +10,12 @@ RoundButton : RoundView {
 	
 	var <value = 0;
 	var <font, <states;
-	var <pressed = false;
+	var <pressed = false, <>changeStateWhenPressed = true;
 	var <radius, <border = 2, <>moveWhenPressed = 1;
 	var <extrude = true;
 	var <inverse = false;
-	var bgColor, <stringColor, <hiliteColor, <borderColor; 
+	var bgColor, <stringColor, <hiliteColor, <borderColor;
+	var <>disabledColor;
 		// hiliteColor = color of second state if not provided
 	
 	var <>textOffset; // not used anymore, still there to prevent code breaking 
@@ -36,9 +37,13 @@ RoundButton : RoundView {
 	mouseUp {arg x, y, modifiers, buttonNumber;
 		if( pressed == true ) // pressed can never be true if not enabled
 			{ mouseUpAction.value(this, x, y, modifiers, buttonNumber);
-			  pressed = false; 
-			  this.valueAction = value + 1; };
-		//this.refresh;	
+			  pressed = false;
+			if( changeStateWhenPressed ) {
+				this.valueAction = value + 1;
+			} {
+				this.doAction; this.refresh;
+			}
+		};
 		}
 	
 	mouseMove { arg x, y, modifiers;
@@ -181,7 +186,7 @@ RoundButton : RoundView {
 		if( enabled.not )
 			{
 			Pen.use {
-				Pen.fillColor = Color.white.alpha_(0.5);
+				Pen.fillColor = disabledColor ? Color.gray(0.85882352941176, 0.5);
 				Pen.roundedRect( rect, radius ).fill;
 				};
 			};
