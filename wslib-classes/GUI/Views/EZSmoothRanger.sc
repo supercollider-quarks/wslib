@@ -1,11 +1,9 @@
 EZSmoothRanger : EZRanger {
-	
-		var action;
-	
+
 		sliderClass { ^SmoothRangeSlider }
 		numberBoxClass { ^SmoothNumberBox }
 		staticTextClass { ^StaticText }
-	
+
 		init { arg parentView, bounds, label, argControlSpec, argAction, initVal,
 			initAction, labelWidth, argNumberWidth,argUnitWidth,
 			labelHeight, argLayout, argGap,argMargin;
@@ -90,14 +88,14 @@ EZSmoothRanger : EZRanger {
 		};
 
 		this.prSetViewParams;
-		
-				
+
+
 		labelView.applySkin( RoundView.skin );
 		unitView.applySkin( RoundView.skin );
 		this.applySkin( RoundView.skin );
 
 	}
-	
+
 	setColors{arg stringBackground, stringColor, sliderColor,  numBackground,numStringColor,
 			 numNormalColor, numTypingColor, knobColor,background, hiliteColor ;
 
@@ -125,21 +123,21 @@ EZSmoothRanger : EZRanger {
 				rangeSlider.knobColor_(knobColor);};
 			background.notNil.if{
 				view.background=background;};
-			hiliteColor.notNil.if{	
+			hiliteColor.notNil.if{
 				rangeSlider.hiliteColor=hiliteColor;};
 			hiBox.refresh;
 	}
-		
+
 	setSliderProperty { |key ...value| rangeSlider.perform( (key ++ "_").asSymbol, *value ); }
-	
+
 // 	doAction { action.value(this); } // why not just action.value(this); ?
 
 	action { ^action }
 	action_ { |func| action = func }
-	
+
 	bounds { ^view.bounds }
 	bounds_ { |bounds| view.bounds = bounds }
-	
+
 	labelWidth { ^labelView !? { labelView.bounds.width } ? 0 }
 	labelWidth_ { |width = 60|
 		var delta;
@@ -152,9 +150,9 @@ EZSmoothRanger : EZRanger {
 				.left_( rangeSlider.bounds.left - delta );
 		};
 	}
-	
+
 	numberWidth { ^loBox !? { loBox.bounds.width } ? 0 }
-	
+
 	numberWidth_ { |width = 45|
 		// TODO
 	}
@@ -164,5 +162,5 @@ EZRoundRanger : EZSmoothRanger {
 
 	sliderClass { ^RoundRangeSlider }
 	numberBoxClass { ^RoundNumberBox }
-	
+
 	}
