@@ -498,25 +498,25 @@ DrawIcon {
 				},
 			*/
 				
-			polygon:Ê { |rect, numSides = 6, start, mode = \fill, type = \normal| 
+			polygon: { |rect, numSides = 6, start, mode = \fill, type = \normal| 
 					// type can also be \star ( kindly added by Jesper Elen )
 				var square, sw, wd, factor;
-				if (type == \star) { if (numSides.odd)Ê
+				if (type == \star) { if (numSides.odd)
 						{ factor = (numSides / 2).floor } 
 						{ factor = (numSides / 2) + 1 }} 
 					{ factor = 1 };				
-				square = Rect.aboutPoint( rect.center,Ê
-						rect.width.min( rect.height ) / 3,Ê
+				square = Rect.aboutPoint( rect.center,
+						rect.width.min( rect.height ) / 3,
 						rect.width.min( rect.height ) / 3 );
 				start = start ? -0.5pi;
 				sw = square.width;	
 				wd = sw * (1/8);
 				Pen.moveTo( square.center + Polar( (sw / 2), start ) );
 				(numSides + 1).do({ |i|
-					Pen.lineTo( square.center + Polar( (sw / 2),Ê
+					Pen.lineTo( square.center + Polar( (sw / 2),
 						(2pi * ( i/numSides * factor )) + start).asPoint );
 				});
-				Pen.perform( mode );Ê
+				Pen.perform( mode );
 				},
 			
 				
