@@ -141,7 +141,7 @@
 	generatePatternSeqs {	
 /*
 
-Returns an array of [note, dur] sequence info for each track, with proper accounting of rests. Ê
+Returns an array of [note, dur] sequence info for each track, with proper accounting of rests. 
 
 Thus, if m is a SimpleMIDIFile, you could do the following:
 
@@ -149,7 +149,7 @@ t = m.generatePatternSeqs; // t is now an arry of [note, dur] info for each trac
 
 Pbind( [\midinote, \dur], Pseq(t[1], 1)).play;
 
-Note that the first track in a SimpleMIDIFile often contains no note events if imported from an external midi file (since it's used for metadata), so that the first track of interest is usually the one in index 1 of the getSeqs array.Ê I decided to leave the first blank track in so preserve the mapping from midi track # to getSeqs array #.
+Note that the first track in a SimpleMIDIFile often contains no note events if imported from an external midi file (since it's used for metadata), so that the first track of interest is usually the one in index 1 of the getSeqs array. I decided to leave the first blank track in so preserve the mapping from midi track # to getSeqs array #.
 
 */	
 		var trackSeqs;
@@ -177,7 +177,7 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 			
 			trackEvents.do({|event, i|
 				var diff;
-				if (i==0,Ê
+				if (i==0,
 					{	
 						seq.add([event.note, event.dur]);
 					},
@@ -205,14 +205,14 @@ Note that the first track in a SimpleMIDIFile often contains no note events if i
 	renderPattern {|pattern, maxEvents = 1000, timeSig = "4/4", numTicks = 1024|
 /* This method will accept a pattern and a maximum number of events and turn it in to a SimpleMIDIFile, suitable for writing to disc or using in any other way.
 
-Patterns wishing to involve several tracks should be sure to specify \track and \channel info in the pattern itself. Ê
+Patterns wishing to involve several tracks should be sure to specify \track and \channel info in the pattern itself. 
 
-Currently, only pitch and rhythm and dynamic info is rendered.Ê Pitch may be specified in any of the usual pattern ways, as \freq or \midinote or \degree.Ê The \amp key is used to generate velocity information, with the 0-1 range of amp mapped to the normal midi 0-127.
+Currently, only pitch and rhythm and dynamic info is rendered. Pitch may be specified in any of the usual pattern ways, as \freq or \midinote or \degree. The \amp key is used to generate velocity information, with the 0-1 range of amp mapped to the normal midi 0-127.
 
 Example:
 
 ~high = Pbind(
-	\track, 1, \channel, 0, \degree, Pwhite(-8, 8), \octave, 6, \scale, #[0,2,3,5,7,8,10],Ê
+	\track, 1, \channel, 0, \degree, Pwhite(-8, 8), \octave, 6, \scale, #[0,2,3,5,7,8,10],
 	\dur, Prand( [0.25, 0.5, 0.75, 1], inf)
 );
 
@@ -239,7 +239,7 @@ Example:
 				event.use({
 					var temp;
 					~finish.value;
-					if (~track.isNil,Ê
+					if (~track.isNil,
 						{~track = 1},
 						{~track = ~track.asInteger}
 					);
@@ -266,7 +266,7 @@ Example:
 				});
 			});
 		});
-		tracklists.do({|track|Ê
+		tracklists.do({|track|
 			track.do({|info|
 				this.addNote(
 					noteNumber: info[\noteNumber],
